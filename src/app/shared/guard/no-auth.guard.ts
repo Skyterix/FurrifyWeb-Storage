@@ -1,13 +1,26 @@
 import {Injectable} from "@angular/core";
-import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree} from "@angular/router";
-import {Observable} from "rxjs";
+import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from "@angular/router";
+import {KeycloakAuthGuard, KeycloakService} from "keycloak-angular";
 
-@Injectable({providedIn: 'root'})
-export class NoAuthGuard implements CanActivate {
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    // TODO Implement logic
+@Injectable({
+    providedIn: 'root',
+})
+export class NoAuthGuard extends KeycloakAuthGuard {
+    constructor(
+        protected readonly router: Router,
+        protected readonly keycloak: KeycloakService
+    ) {
+        super(router, keycloak);
+    }
 
-    return true;
-  }
+    public async isAccessAllowed(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ) {
+        if (!this.authenticated) {
+            return true;
+        }
 
+        return this.router.createUrlTree(['/']);
+    }
 }

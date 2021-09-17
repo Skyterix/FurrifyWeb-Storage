@@ -5,31 +5,31 @@ import {LoginComponent} from "./login/login.component";
 import {NoAuthGuard} from "../shared/guard/no-auth.guard";
 
 const routes: Routes = [
-  {
-    path: '',
-    component: AuthenticationComponent,
-    canActivate: [NoAuthGuard],
-    children: [
-      {
+    {
         path: '',
-        redirectTo: 'login',
-        pathMatch: 'full'
-      },
-      {
-        path: 'login',
-        component: LoginComponent
-      }
-    ]
-  }
+        component: AuthenticationComponent,
+        children: [
+            {
+                path: '',
+                redirectTo: 'login',
+                pathMatch: 'full'
+            },
+            {
+                path: 'login',
+                component: LoginComponent,
+                canActivate: [NoAuthGuard]
+            }
+        ]
+    }
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forChild(routes)
-  ],
-  exports: [
-    RouterModule
-  ]
+    imports: [
+        RouterModule.forChild(routes)
+    ],
+    exports: [
+        RouterModule
+    ]
 })
 export class AuthenticationRoutingModule {
 }
