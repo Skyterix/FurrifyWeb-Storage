@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 import {KeycloakService} from "keycloak-angular";
 
@@ -7,19 +7,10 @@ import {KeycloakService} from "keycloak-angular";
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
-
-    public isLoggedIn = false;
+export class LoginComponent {
 
     constructor(private router: Router,
                 private readonly keycloak: KeycloakService) {
-    }
-
-    async ngOnInit() {
-        this.isLoggedIn = await this.keycloak.isLoggedIn();
-
-        if (this.isLoggedIn) {
-        }
     }
 
     signIn(): void {
