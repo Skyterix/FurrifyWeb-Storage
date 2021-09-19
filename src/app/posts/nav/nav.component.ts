@@ -1,60 +1,32 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
-import {faSearch} from "@fortawesome/free-solid-svg-icons/faSearch";
-import {FormControl, FormGroup} from "@angular/forms";
-import {faTimesCircle} from "@fortawesome/free-solid-svg-icons/faTimesCircle";
-import {Subscription} from "rxjs";
+import {Component, OnInit} from '@angular/core';
+import {faCaretDown} from "@fortawesome/free-solid-svg-icons/faCaretDown";
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
-    selector: 'app-posts-nav',
+    selector: 'app-nav',
     templateUrl: './nav.component.html',
     styleUrls: ['./nav.component.css']
 })
-export class NavComponent implements OnInit, OnDestroy {
+export class NavComponent implements OnInit {
 
-    circleNotchIcon = faCircleNotch;
-    searchIcon = faSearch;
+    caretDownIcon = faCaretDown;
 
-    timesCircleIcon = faTimesCircle;
+    isMenuOpened = false;
+    username!: string;
 
-    isSearching = false;
-    isSearchFilled = false;
-
-    searchForm: FormGroup;
-
-    private queryChangeSubscription!: Subscription;
-
-    constructor() {
-        this.searchForm = new FormGroup({
-            query: new FormControl(null)
-        });
+    constructor(private keycloakService: KeycloakService) {
     }
 
     ngOnInit() {
-        // Check if search query is filled, if yes then display clear icon
-        this.queryChangeSubscription =
-            this.searchForm.controls.query.valueChanges.subscribe(value => {
-                this.isSearchFilled = !!value;
-            });
+        this.username = this.keycloakService.getUsername();
     }
 
-    ngOnDestroy() {
-        this.queryChangeSubscription.unsubscribe();
+    toggleMenu(): void {
+        this.isMenuOpened = !this.isMenuOpened;
     }
 
-    // TODO Impement
-    onSearchQuery(): void {
-        this.isSearching = true;
-
-        setTimeout(() => {
-            this.isSearching = false;
-        }, 600)
-    }
-
-    clearSearchQuery(): void {
-        this.searchForm.setValue({
-            query: ''
-        });
+    logout(): void {
+        this.keycloakService.logout();
     }
 
 }

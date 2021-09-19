@@ -6,20 +6,18 @@
         </a>
     </div>
     <!-- Search form -->
-    <form (ngSubmit)="onSearchQuery()" [formGroup]="searchForm" class="search">
-        <div class="input">
-            <!-- Search icon -->
-            <div class="border">
-                <fa-icon [icon]="(isSearching) ? circleNotchIcon : searchIcon" [spin]="isSearching"
-                         class="search-icon"></fa-icon>
-            </div>
-            <!-- Search input -->
-            <input formControlName="query" placeholder="Search" type="text">
-            <!-- Clear icon -->
-            <div class="border reverse">
-                <fa-icon (click)="clearSearchQuery()" *ngIf="isSearchFilled" [icon]="timesCircleIcon"
-                         class="clear-icon"></fa-icon>
-            </div>
+    <app-search></app-search>
+    <!-- User -->
+    <div (click)="toggleMenu()" class="user">
+        <div class="content">
+            <img alt="user avatar" src="./assets/user-default.jpg"/>
+            <fa-icon [class.active]="isMenuOpened" [icon]="caretDownIcon"></fa-icon>
         </div>
-    </form>
+        <nav [class.active]="isMenuOpened" class="menu animate__animated animate__slideInUp">
+            <p>{{ username }}</p>
+            <a>Profile</a>
+            <a>Settings</a>
+            <a (click)="logout()">Logout</a>
+        </nav>
+    </div>
 </nav>

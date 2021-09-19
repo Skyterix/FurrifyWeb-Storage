@@ -9,6 +9,8 @@ import {KeycloakService} from "keycloak-angular";
 })
 export class LoginComponent {
 
+    isLoggedIn = false;
+
     constructor(private router: Router,
                 private readonly keycloak: KeycloakService) {
     }

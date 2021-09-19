@@ -22,8 +22,10 @@ function initializeKeycloak(keycloak: KeycloakService) {
                 silentCheckSsoRedirectUri:
                     window.location.origin + '/assets/silent-check-sso.html',
             },
-            bearerExcludedUrls: ['/assets']
-        });
+            enableBearerInterceptor: true,
+            bearerExcludedUrls: ['/assets', '/auth/login'],
+            loadUserProfileAtStartUp: true
+        }).catch(error => console.error('[Error] Keycloak init failed', error));
 }
 
 @NgModule({

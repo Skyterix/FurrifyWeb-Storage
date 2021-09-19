@@ -5,12 +5,14 @@ import {PostsComponent} from "./posts.component";
 import {PostsRoutingModule} from "./posts-routing.module";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {ReactiveFormsModule} from "@angular/forms";
+import {SearchComponent} from './nav/search/search.component';
 
 
 @NgModule({
     declarations: [
         PostsComponent,
-        NavComponent
+        NavComponent,
+        SearchComponent
     ],
     imports: [
         CommonModule,
