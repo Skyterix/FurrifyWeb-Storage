@@ -8,12 +8,12 @@
     <!-- Search form -->
     <app-search></app-search>
     <!-- User -->
-    <div (click)="toggleMenu()" class="user">
-        <div class="content">
+    <div #menu class="user">
+        <div (click)="toggleMenu()" class="content">
             <img alt="user avatar" src="./assets/user-default.jpg"/>
             <fa-icon [class.active]="isMenuOpened" [icon]="caretDownIcon"></fa-icon>
         </div>
-        <nav [class.active]="isMenuOpened" class="menu animate__animated animate__slideInUp">
+        <nav [class.active]="isMenuOpened" class="menu animate__animated animate__fadeInUp">
             <p>{{ username }}</p>
             <a>Profile</a>
             <a>Settings</a>

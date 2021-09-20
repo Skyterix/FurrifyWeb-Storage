@@ -44,7 +44,7 @@ nav {
 
 .user .content img {
     margin-top: 13px;
-    height: 38px;
+    height: 34px;
     border-radius: 100%;
 }
 
@@ -69,7 +69,7 @@ nav {
     padding: 10px;
     height: auto;
     color: rgba(255, 255, 255, 0.9);
-    animation-duration: .25s;
+    animation-duration: .3s;
 }
 
 .user .menu.active {
