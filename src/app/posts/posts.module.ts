@@ -12,7 +12,7 @@ import {SearchComponent} from './nav/search/search.component';
     declarations: [
         PostsComponent,
         NavComponent,
-        SearchComponent
+        SearchComponent,
     ],
     imports: [
         CommonModule,

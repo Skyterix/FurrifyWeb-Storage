@@ -8,6 +8,12 @@ import {KEYCLOAK_AUTH_URL, KEYCLOAK_CLIENT_ID, KEYCLOAK_REALM} from "./shared/co
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {environment} from '../environments/environment';
 
+import * as fromApp from './store/app.reducer';
+import {StoreModule} from "@ngrx/store";
+import {EffectsModule} from "@ngrx/effects";
+import {PostsEffects} from "./posts/store/posts.effects";
+import {HttpClientModule} from "@angular/common/http";
+
 function initializeKeycloak(keycloak: KeycloakService) {
     return () =>
         keycloak.init({
@@ -36,7 +42,12 @@ function initializeKeycloak(keycloak: KeycloakService) {
         BrowserModule,
         AppRoutingModule,
         KeycloakAngularModule,
+        StoreModule.forRoot(fromApp.appReducerMap),
+        EffectsModule.forRoot([
+            PostsEffects
+        ]),
         StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
+        HttpClientModule
     ],
     providers: [
         {

@@ -4,6 +4,8 @@ import {faTimesCircle} from "@fortawesome/free-solid-svg-icons/faTimesCircle";
 import {faSearch} from "@fortawesome/free-solid-svg-icons/faSearch";
 import {FormControl, FormGroup} from "@angular/forms";
 import {Subscription} from "rxjs";
+import {ActivatedRoute, Router} from "@angular/router";
+import {PostsService} from "../../posts.service";
 
 @Component({
     selector: 'app-search',
@@ -23,7 +25,9 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     private queryChangeSubscription!: Subscription;
 
-    constructor() {
+    constructor(private activatedRoute: ActivatedRoute,
+                private postsService: PostsService,
+                private router: Router) {
         this.searchForm = new FormGroup({
             query: new FormControl(null)
         });
@@ -35,19 +39,30 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.searchForm.controls.query.valueChanges.subscribe(value => {
                 this.isSearchFilled = !!value;
             });
+
+        // Update search params on query params change
+        this.activatedRoute.queryParams.subscribe(params => {
+            // Update query search form on params change
+            this.searchForm.patchValue({
+                query: params.query
+            });
+        });
     }
 
     ngOnDestroy() {
         this.queryChangeSubscription.unsubscribe();
     }
 
-    // TODO Impement
     onSearchQuery(): void {
-        this.isSearching = true;
+        this.router.navigate(
+            ['/'],
+            {queryParams: {query: this.searchForm.controls.query.value}}
+        );
 
+        // Let params change first
         setTimeout(() => {
-            this.isSearching = false;
-        }, 600)
+            this.postsService.triggerSearch();
+        });
     }
 
     clearSearchQuery(): void {
