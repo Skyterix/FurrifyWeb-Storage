@@ -1,0 +1,60 @@
+.post {
+    display: inline-block;
+    border-radius: 8px;
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+    flex-grow: 1;
+    background: #202020;
+    user-select: none;
+    margin: 6px;
+    max-width: 256px;
+}
+
+.icons {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    margin: .25rem;
+    padding-left: .25rem;
+    padding-right: .25rem;
+    border-radius: 50rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.icons fa-icon {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.badges {
+    height: 30px;
+    padding: 0 .35rem 0 .35rem;
+    text-align: left;
+    line-height: 30px;
+}
+
+.badge {
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+    margin-right: .25rem;
+}
+
+.badge a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+}
+
+.badge a:hover {
+    text-decoration: underline;
+}
+
+.thumbnail {
+    height: 250px;
+    width: 250px;
+    object-fit: cover;
+}

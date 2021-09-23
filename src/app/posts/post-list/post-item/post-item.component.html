@@ -1,0 +1,28 @@
+<div class="post">
+    <div class="badges">
+        <span *ngFor="let tag of movieTags" [appColoredTag]="tag.type" class="badge">
+            <a [queryParams]="{ query: '#' + tag.value }" [routerLink]="['/posts']">
+                {{ tag.value | slice:0:36 }}
+            </a>
+        </span>
+
+        <span *ngFor="let tag of characterTags" [appColoredTag]="tag.type" class="badge">
+            <a [queryParams]="{ query: '#' + tag.value }" [routerLink]="['/posts']">
+                {{ tag.value | slice:0:36 }}
+            </a>
+        </span>
+    </div>
+    <a [routerLink]="['/posts', post.postId]">
+        <span class="icons">
+          <fa-icon *ngIf="mediaContains(imageType)" [fixedWidth]="true" [icon]="imageIcon" class="text-white pb-1 pt-1"
+                   size="sm"></fa-icon>
+
+            <!-- //TODO Implement when backend is updated
+            <fa-icon *ngIf="mediaContains()" [fixedWidth]="true" [icon]="videoIcon" class="text-white pb-1 pt-1"
+                   size="sm"></fa-icon>
+          <fa-icon *ngIf="mediaContains()" [fixedWidth]="true" [icon]="bookIcon" class="text-white pb-1 pt-1"
+                   size="sm"></fa-icon>-->
+        </span>
+        <img [src]="thumbnailUrl" alt="post thumbnail" class="thumbnail img-fluid"/>
+    </a>
+</div>

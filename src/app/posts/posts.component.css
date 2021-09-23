@@ -4,4 +4,5 @@ section {
     z-index: -1;
     padding-top: 62px;
     min-height: 100vh;
+    text-align: center;
 }

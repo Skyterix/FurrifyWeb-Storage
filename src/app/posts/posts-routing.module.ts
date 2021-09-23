@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from "@angular/router";
 import {PostsComponent} from "./posts.component";
 import {AuthGuard} from "../shared/guard/auth.guard";
+import {PostListComponent} from "./post-list/post-list.component";
 
 const routes: Routes = [
     {
@@ -10,7 +11,7 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                component: PostsComponent,
+                component: PostListComponent,
                 canActivate: [AuthGuard]
             }
         ]
