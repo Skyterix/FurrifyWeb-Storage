@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {Store} from "@ngrx/store";
 import * as fromApp from '../store/app.reducer';
-import {startSearch, updateSearchQuery} from "./store/posts.actions";
+import {startSearch, updateSearchParams, updateSearchQuery} from "./store/posts.actions";
 import {KeycloakProfile} from "keycloak-js";
 
 @Injectable({
@@ -33,6 +33,7 @@ export class PostsService {
 
         this.activatedRoute.queryParams.subscribe(params => {
             this.updateSearchQuery(params.query);
+            this.updateSearchParams(params.sortBy, params.order, params.size);
         });
     }
 
@@ -52,6 +53,22 @@ export class PostsService {
     private updateSearchQuery(query: string): void {
         this.store.dispatch(updateSearchQuery({
             query: query
+        }));
+    }
+
+    private updateSearchParams(sortBy: string,
+                               order: string,
+                               size: number): void {
+        // Check if values are empty and if so use old values (default if never changed)
+        sortBy = (!!sortBy) ? sortBy : this.sortBy;
+        order = (!!order) ? order : this.order;
+        size = (!!size) ? size : this.size;
+
+
+        this.store.dispatch(updateSearchParams({
+            sortBy: sortBy,
+            order: order,
+            size: size
         }));
     }
 }

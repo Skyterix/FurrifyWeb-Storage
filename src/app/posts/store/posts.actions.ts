@@ -2,6 +2,11 @@ import {createAction, props} from '@ngrx/store';
 import {Post} from '../../shared/model/post.model';
 import {PageInfo} from '../../shared/model/page-info.model';
 
+export const updateSearchParams = createAction(
+    '[Posts] Update search params',
+    props<{ sortBy: string, order: string, size: number }>()
+);
+
 export const updateSearchQuery = createAction(
     '[Posts] Update search query',
     props<{ query: string }>()

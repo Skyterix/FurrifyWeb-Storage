@@ -56,7 +56,12 @@ export class SearchComponent implements OnInit, OnDestroy {
     onSearchQuery(): void {
         this.router.navigate(
             ['/'],
-            {queryParams: {query: this.searchForm.controls.query.value}}
+            {
+                queryParams: {
+                    query: this.searchForm.controls.query.value
+                },
+                queryParamsHandling: "merge"
+            }
         );
 
         // Let params change first

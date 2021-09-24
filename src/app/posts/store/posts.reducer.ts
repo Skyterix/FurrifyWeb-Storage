@@ -7,7 +7,7 @@ import {
     DEFAULT_SEARCH_SORT_BY
 } from "../../shared/config/search.defaults";
 import {createReducer, on} from "@ngrx/store";
-import {failSearch, startSearch, successSearch, updateSearchQuery} from "./posts.actions";
+import {failSearch, startSearch, successSearch, updateSearchParams, updateSearchQuery} from "./posts.actions";
 
 export interface State {
     isFetching: boolean;
@@ -65,6 +65,15 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 query: action.query
+            }
+        }
+    ),
+    on(updateSearchParams, (state, action) => {
+            return {
+                ...state,
+                order: action.order,
+                sortBy: action.sortBy,
+                size: action.size
             }
         }
     )
