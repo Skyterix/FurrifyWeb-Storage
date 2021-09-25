@@ -8,6 +8,7 @@ import {faBook} from "@fortawesome/free-solid-svg-icons/faBook";
 import {faImage} from "@fortawesome/free-solid-svg-icons/faImage";
 import {MediaUtils} from "../../../shared/media.utils";
 import {MediaType} from "../../../shared/enum/media-type.enum";
+import {PostsService} from "../../posts.service";
 
 @Component({
     selector: 'app-post-item',
@@ -29,7 +30,7 @@ export class PostItemComponent implements OnInit {
 
     imageType = MediaType.IMAGE;
 
-    constructor() {
+    constructor(private postsService: PostsService) {
     }
 
     ngOnInit(): void {
@@ -43,4 +44,10 @@ export class PostItemComponent implements OnInit {
         return MediaUtils.containsType(type, this.post.mediaSet);
     }
 
+    searchPosts(): void {
+        // Let router link act out first
+        setTimeout(() => {
+            this.postsService.triggerSearch();
+        });
+    }
 }

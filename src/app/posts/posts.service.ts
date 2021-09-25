@@ -51,6 +51,8 @@ export class PostsService {
     }
 
     private updateSearchQuery(query: string): void {
+        query = (!!query ? query : '');
+
         this.store.dispatch(updateSearchQuery({
             query: query
         }));

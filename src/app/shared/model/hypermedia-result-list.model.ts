@@ -2,7 +2,7 @@ import {PageInfo} from './page-info.model';
 
 export interface HypermediaResultList<T> {
     // tslint:disable-next-line:variable-name
-    content?: T[];
+    _embedded?: T[];
     // tslint:disable-next-line:variable-name
     _links: {
         self: {

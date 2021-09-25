@@ -4,3 +4,5 @@ export const KEYCLOAK_CLIENT_ID = "furrifyws-storage";
 
 export const SERVER_ADDRESS = 'http://localhost:8080';
 export const GET_POSTS_BY_QUERY = SERVER_ADDRESS + '/users/:userId/posts/search';
+
+export const RESPONSE_TYPE = "*";
