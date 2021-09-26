@@ -10,6 +10,9 @@ import {PostListComponent} from './post-list/post-list.component';
 import {PostItemComponent} from './post-list/post-item/post-item.component';
 import {SharedModule} from "../shared/shared.module";
 import {SortNavComponent} from './post-list/sort-nav/sort-nav.component';
+import {PostViewComponent} from './post-view/post-view.component';
+import {PostItemsComponent} from './post-view/post-items/post-items.component';
+import {PostDetailsComponent} from './post-view/post-details/post-details.component';
 
 
 @NgModule({
@@ -19,7 +22,10 @@ import {SortNavComponent} from './post-list/sort-nav/sort-nav.component';
         SearchComponent,
         PostListComponent,
         PostItemComponent,
-        SortNavComponent
+        SortNavComponent,
+        PostViewComponent,
+        PostItemsComponent,
+        PostDetailsComponent
     ],
     imports: [
         CommonModule,

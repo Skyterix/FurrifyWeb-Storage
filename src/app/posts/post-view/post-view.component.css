@@ -1,0 +1,13 @@
+.post-view .grid {
+    display: grid;
+    grid-template-areas: "details details details items";
+}
+
+.post-view .grid .details {
+    grid-area: details;
+}
+
+.post-view .grid .items {
+    grid-area: items;
+}
+

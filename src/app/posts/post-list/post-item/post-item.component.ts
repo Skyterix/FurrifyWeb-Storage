@@ -1,14 +1,17 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Post} from "../../../shared/model/post.model";
-import {PostUtils} from "../../../shared/post.utils";
+import {PostUtils} from "../../../shared/util/post.utils";
 import {Tag} from "../../../shared/model/tag.model";
-import {TagUtils} from "../../../shared/tag.utils";
+import {TagUtils} from "../../../shared/util/tag.utils";
 import {faVideo} from "@fortawesome/free-solid-svg-icons/faVideo";
 import {faBook} from "@fortawesome/free-solid-svg-icons/faBook";
 import {faImage} from "@fortawesome/free-solid-svg-icons/faImage";
-import {MediaUtils} from "../../../shared/media.utils";
+import {MediaUtils} from "../../../shared/util/media.utils";
 import {MediaType} from "../../../shared/enum/media-type.enum";
 import {PostsService} from "../../posts.service";
+import {Store} from "@ngrx/store";
+import * as fromApp from "../../../store/app.reducer";
+import {selectPost} from "../../store/posts.actions";
 
 @Component({
     selector: 'app-post-item',
@@ -30,7 +33,7 @@ export class PostItemComponent implements OnInit {
 
     imageType = MediaType.IMAGE;
 
-    constructor(private postsService: PostsService) {
+    constructor(private postsService: PostsService, private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit(): void {
@@ -49,5 +52,13 @@ export class PostItemComponent implements OnInit {
         setTimeout(() => {
             this.postsService.triggerSearch();
         });
+    }
+
+    selectPost(post: Post): void {
+        this.store.dispatch(
+            selectPost({
+                post: post
+            })
+        );
     }
 }

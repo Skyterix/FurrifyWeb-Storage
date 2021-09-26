@@ -1,4 +1,4 @@
-import {Media} from "./model/media.model";
+import {Media} from "../model/media.model";
 import {MediaUtils} from "./media.utils";
 
 export class PostUtils {

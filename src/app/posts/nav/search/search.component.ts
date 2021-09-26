@@ -6,6 +6,8 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PostsService} from "../../posts.service";
+import {Store} from "@ngrx/store";
+import * as fromApp from "../../../store/app.reducer";
 
 @Component({
     selector: 'app-search',
@@ -27,9 +29,14 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     constructor(private activatedRoute: ActivatedRoute,
                 private postsService: PostsService,
-                private router: Router) {
+                private router: Router,
+                private store: Store<fromApp.AppState>) {
         this.searchForm = new FormGroup({
             query: new FormControl(null)
+        });
+
+        this.store.select('posts').subscribe(state => {
+            this.isSearching = state.isFetching;
         });
     }
 

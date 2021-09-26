@@ -1,0 +1,12 @@
+<section class="post-view">
+    <div *ngIf="!!this.selectedPost && !this.isFetching" class="grid">
+        <!-- Left -->
+        <div class="details">
+            <app-post-details [post]="selectedPost"></app-post-details>
+        </div>
+        <!-- Right -->
+        <div class="items">
+            <app-post-items></app-post-items>
+        </div>
+    </div>
+</section>

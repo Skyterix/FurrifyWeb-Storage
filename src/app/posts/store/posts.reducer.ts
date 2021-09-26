@@ -7,7 +7,19 @@ import {
     DEFAULT_SEARCH_SORT_BY
 } from "../../shared/config/search.defaults";
 import {createReducer, on} from "@ngrx/store";
-import {failSearch, startSearch, successSearch, updateSearchParams, updateSearchQuery} from "./posts.actions";
+import {
+    failSearch,
+    getPostFail,
+    getPostStart,
+    getPostSuccess,
+    selectMedia,
+    selectPost,
+    startSearch,
+    successSearch,
+    updateSearchParams,
+    updateSearchQuery
+} from "./posts.actions";
+import {Media} from "../../shared/model/media.model";
 
 export interface State {
     isFetching: boolean;
@@ -17,8 +29,11 @@ export interface State {
     size: number;
     page: number;
     searchErrorMessage: string | null;
+    fetchErrorMessage: string | null;
     posts: Post[];
     pageInfo: PageInfo | null;
+    selectedPost: Post | null;
+    selectedMedia: Media | null;
 }
 
 const initialState: State = {
@@ -29,8 +44,11 @@ const initialState: State = {
     size: DEFAULT_SEARCH_SIZE,
     page: DEFAULT_SEARCH_PAGE,
     searchErrorMessage: null,
+    fetchErrorMessage: null,
     posts: [],
-    pageInfo: null
+    pageInfo: null,
+    selectedPost: null,
+    selectedMedia: null
 };
 
 
@@ -40,7 +58,9 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
-                searchErrorMessage: null
+                searchErrorMessage: null,
+                selectedPost: null,
+                selectedMedia: null
             }
         }
     ),
@@ -74,6 +94,45 @@ export const postsReducer = createReducer(
                 order: action.order,
                 sortBy: action.sortBy,
                 size: action.size
+            }
+        }
+    ),
+    on(selectPost, (state, action) => {
+            return {
+                ...state,
+                selectedPost: action.post
+            }
+        }
+    ),
+    on(getPostStart, (state, action) => {
+            return {
+                ...state,
+                isFetching: true,
+                selectedPost: null,
+                selectedMedia: null
+            }
+        }
+    ),
+    on(getPostFail, (state, action) => {
+            return {
+                ...state,
+                isFetching: false,
+                fetchErrorMessage: action.postFetchErrorMessage
+            }
+        }
+    ),
+    on(getPostSuccess, (state, action) => {
+            return {
+                ...state,
+                isFetching: false,
+                selectedPost: action.post
+            }
+        }
+    ),
+    on(selectMedia, (state, action) => {
+            return {
+                ...state,
+                selectedMedia: action.media
             }
         }
     )

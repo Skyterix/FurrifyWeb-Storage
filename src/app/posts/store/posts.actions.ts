@@ -1,6 +1,7 @@
 import {createAction, props} from '@ngrx/store';
 import {Post} from '../../shared/model/post.model';
 import {PageInfo} from '../../shared/model/page-info.model';
+import {Media} from "../../shared/model/media.model";
 
 export const updateSearchParams = createAction(
     '[Posts] Update search params',
@@ -24,6 +25,26 @@ export const startSearch = createAction(
     }>()
 );
 
+export const getPostStart = createAction(
+    '[Posts] Get post start',
+    props<{
+        userId: string,
+        postId: string
+    }>()
+);
+
+export const getPostSuccess = createAction(
+    '[Posts] Get post success',
+    props<{
+        post: Post
+    }>()
+);
+
+export const getPostFail = createAction(
+    '[Posts] Get post fail',
+    props<{ postFetchErrorMessage: string }>()
+);
+
 export const failSearch = createAction(
     '[Posts] Search fail',
     props<{ searchErrorMessage: string }>()
@@ -32,4 +53,15 @@ export const failSearch = createAction(
 export const successSearch = createAction(
     '[Posts] Search success',
     props<{ posts: Post[], pageInfo: PageInfo }>()
+);
+
+
+export const selectPost = createAction(
+    '[Posts] Select post',
+    props<{ post: Post }>()
+);
+
+export const selectMedia = createAction(
+    '[Posts] Select media',
+    props<{ media: Media }>()
 );

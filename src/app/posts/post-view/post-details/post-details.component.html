@@ -1,0 +1,29 @@
+<article class="post">
+    <div class="tags">
+        <!-- Tags -->
+        <span *ngFor="let tag of sortedTags" [appColoredTag]="tag.type" class="badge">
+            <a [queryParams]="{ query: '#' + tag.value }" [routerLink]="['/posts']"
+               queryParamsHandling="merge">{{ tag.value }}</a>
+          </span>
+    </div>
+    <!-- Media -->
+    <div class="media">
+        <img #mediaView (load)="onMediaLoaded()" *ngIf="this.post.mediaSet.length != 0" alt="post media"
+             class="image"/>
+        <fa-icon #mediaSpinner [icon]="circleNotchIcon" [spin]="true" class="spinner" size="3x"></fa-icon>
+    </div>
+    <div class="post-info">
+        <div class="watermark">
+            <h1 class="title">{{ post.title }}</h1>
+            <p class="description">{{ post.description }}</p>
+            <h1 class="sources-title">Sources</h1>
+            <!-- Selected Media sources -->
+            <ul *ngIf="selectedMedia != null" class="sources">
+                <!-- TODO Implement href for source -->
+                <li *ngFor="let source of selectedMedia.sources" class="source">
+                    <a href="#">{{ source.strategy | removeText:'SourceStrategy' }}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</article>

@@ -12,7 +12,7 @@
             </a>
         </span>
     </div>
-    <a [routerLink]="['/posts', post.postId]">
+    <a (click)="selectPost(post)" [routerLink]="['/posts', post.postId]" queryParamsHandling="merge">
         <span class="icons">
           <fa-icon *ngIf="mediaContains(imageType)" [fixedWidth]="true" [icon]="imageIcon" class="text-white pb-1 pt-1"
                    size="sm"></fa-icon>

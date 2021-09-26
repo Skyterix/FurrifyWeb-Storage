@@ -1,0 +1,48 @@
+<!--
+<aside class="post-items p-3 shadow rounded">
+    &lt;!&ndash; Media List &ndash;&gt;
+    <p class="h1 font-weight-light p-1">Media</p>
+    <div class="post-media-list">
+        <img (click)="onLoadMediaRequest(media)" *ngFor="let media of sortMediaListByPriority()"
+             [src]="media.thumbnailFileURL"
+             alt="media thumbnail" class="media m-1"/>
+    </div>
+    &lt;!&ndash; Attachments &ndash;&gt;
+    <p class="h1 font-weight-light p-1">Attachment</p>
+    <div class="post-attachments p-1 justify-content-start">
+        <div *ngFor="let attachment of post.attachments" class="attachment">
+            <ul class="attachment-info p-1">
+                <li>
+                    <img [appAttachmentIcon]="attachment.strategy" alt="attachment icon" class="icon mr-2"/>
+                    <a [href]="attachment.attachmentFileURL" target="_blank">{{ attachment.originalFileName }}</a>
+                </li>
+                <li>
+                    <ul class="mt-2">
+                        <li *ngFor="let source of attachment.sources" class="p-2 d-inline ml-n1 mr-2 bg-violet rounded-pill"><a
+                            [href]="getSourceURL(source.sourceStrategy, source.sourceInfo)"
+                            class="text-white text-decoration-none">{{ source.sourceStrategy | removeText:'SourceStrategy' }}</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    &lt;!&ndash; Creators &ndash;&gt;
+    <p class="h1 font-weight-light p-1">Creators</p>
+    <div class="post-creators p-1 justify-content-start">
+        <ul class="creators p-0">
+            <li *ngFor="let creator of post.creators" class="creator text-center rounded mr-3">
+                <a [routerLink]="['/creators', creator.creatorId]" class="text-decoration-none">
+                    <img [src]="creator.cover.thumbnailFileURL" alt="creator avatar cover" class="avatar rounded-circle"/>
+                    <p class="mb-0 mt-1 text-white font-weight-bolder">{{ creator.username }}</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div *ngIf="hasReplacePostPermission()" class="p-1 justify-content-start">
+        <button (click)="onEditPost()" class="btn btn-outline-light">Edit Post</button>
+    </div>
+
+</aside>
+-->
