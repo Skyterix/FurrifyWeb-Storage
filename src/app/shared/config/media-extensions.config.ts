@@ -3,9 +3,9 @@ import {MediaType} from "../enum/media-type.enum";
 export class MediaExtensionsConfig {
 
     private static IMAGES = [
-        'PNG',
-        'JPEG',
-        'JPG'
+        'png',
+        'jpeg',
+        'jpg'
     ];
 
     public static getExtensionsByType(type: MediaType): string[] {

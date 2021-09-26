@@ -35,8 +35,11 @@ export class PostDetailsComponent implements OnInit {
         this.store.select('posts').subscribe(state => {
             this.selectedMedia = state.selectedMedia;
 
-            // Load media after view init
-            setTimeout(() => this.loadMedia(this.sortedMedia[0]));
+            // If selected media is not null
+            if (!!this.selectedMedia) {
+                // Load media after view init
+                setTimeout(() => this.loadMedia(this.selectedMedia!));
+            }
         });
 
         this.sortedTags = TagUtils.sortTagsByPriority([...this.post.tags]);

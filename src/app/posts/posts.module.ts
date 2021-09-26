@@ -13,6 +13,7 @@ import {SortNavComponent} from './post-list/sort-nav/sort-nav.component';
 import {PostViewComponent} from './post-view/post-view.component';
 import {PostItemsComponent} from './post-view/post-items/post-items.component';
 import {PostDetailsComponent} from './post-view/post-details/post-details.component';
+import {AttachmentIconDirective} from "./post-view/post-items/attachment-icon.directive";
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import {PostDetailsComponent} from './post-view/post-details/post-details.compon
         SortNavComponent,
         PostViewComponent,
         PostItemsComponent,
-        PostDetailsComponent
+        PostDetailsComponent,
+        AttachmentIconDirective
     ],
     imports: [
         CommonModule,
