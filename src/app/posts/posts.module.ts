@@ -14,6 +14,7 @@ import {PostViewComponent} from './post-view/post-view.component';
 import {PostItemsComponent} from './post-view/post-items/post-items.component';
 import {PostDetailsComponent} from './post-view/post-details/post-details.component';
 import {AttachmentIconDirective} from "./post-view/post-items/attachment-icon.directive";
+import {DropdownDirective} from "./nav/dropdown.directive";
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import {AttachmentIconDirective} from "./post-view/post-items/attachment-icon.di
         PostViewComponent,
         PostItemsComponent,
         PostDetailsComponent,
-        AttachmentIconDirective
+        AttachmentIconDirective,
+        DropdownDirective
     ],
     imports: [
         CommonModule,

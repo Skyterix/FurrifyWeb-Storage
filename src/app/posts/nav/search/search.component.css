@@ -38,6 +38,7 @@
     min-width: 36px;
     padding: 0 10px 0 10px;
     border-radius: 22px 0 0 22px;
+    border-color: transparent !important;
     color: rgba(255, 255, 255, 0.9);
     background: rgba(32, 32, 32, 0.9);
     align-items: center;

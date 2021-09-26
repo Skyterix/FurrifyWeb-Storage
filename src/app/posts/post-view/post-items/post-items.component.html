@@ -19,7 +19,7 @@
                 </li>
                 <!--                <li>
                                     <ul class="sources">
-                                        <li *ngFor="let source of attachment.sources" class="p-2 d-inline ml-n1 mr-2 bg-violet rounded-pill"><a
+                                        <li *ngFor="let source of attachment.sources" class="p-2 d-inline ms-n1 me-2 bg-violet rounded-pill"><a
                                             [href]="getSourceURL(source.sourceStrategy, source.sourceInfo)"
                                             class="text-white text-decoration-none">{{ source.sourceStrategy | removeText:'SourceStrategy' }}</a>
                                         </li>
@@ -32,7 +32,7 @@
     <!--    <p class="h1 font-weight-light p-1">Cr</p>
         <div class="post-creators p-1 justify-content-start">
             <ul class="creators p-0">
-                <li *ngFor="let creator of post.creators" class="creator text-center rounded mr-3">
+                <li *ngFor="let creator of post.creators" class="creator text-center rounded me-3">
                     <a [routerLink]="['/creators', creator.creatorId]" class="text-decoration-none">
                         <img [src]="creator.cover.thumbnailFileURL" alt="creator avatar cover" class="avatar rounded-circle"/>
                         <p class="mb-0 mt-1 text-white font-weight-bolder">{{ creator.username }}</p>
