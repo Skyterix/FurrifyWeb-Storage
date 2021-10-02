@@ -55,8 +55,6 @@ export class PostDetailsComponent implements OnInit {
                 this.activatedRoute.snapshot.queryParams.index < 0) ?
                 0 : this.activatedRoute.snapshot.queryParams.index;
 
-        console.log(mediaIndex);
-
         // If media exists in post
         if (this.sortedMedia[mediaIndex] !== null) {
             this.store.dispatch(selectMedia({
