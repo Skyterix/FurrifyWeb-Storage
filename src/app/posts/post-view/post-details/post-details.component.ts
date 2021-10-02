@@ -45,10 +45,10 @@ export class PostDetailsComponent implements OnInit {
             this.index = params.index;
 
             // If media exists in post and index is valid
-            if (this.sortedMedia[this.index] !== null) {
+            if (this.sortedMedia[this.index] !== undefined) {
                 setTimeout(() => this.loadMedia(this.sortedMedia[this.index]));
             } else {
-                this.router.navigate(['/posts', this.post.postId, 'media', this.index]);
+                this.router.navigate(['/posts', this.post.postId, 'media', 0]);
             }
         });
     }
