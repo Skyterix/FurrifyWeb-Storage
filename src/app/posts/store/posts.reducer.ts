@@ -12,14 +12,12 @@ import {
     getPostFail,
     getPostStart,
     getPostSuccess,
-    selectMedia,
     selectPost,
     startSearch,
     successSearch,
     updateSearchParams,
     updateSearchQuery
 } from "./posts.actions";
-import {Media} from "../../shared/model/media.model";
 
 export interface State {
     isFetching: boolean;
@@ -33,7 +31,6 @@ export interface State {
     posts: Post[];
     pageInfo: PageInfo | null;
     selectedPost: Post | null;
-    selectedMedia: Media | null;
 }
 
 const initialState: State = {
@@ -47,8 +44,7 @@ const initialState: State = {
     fetchErrorMessage: null,
     posts: [],
     pageInfo: null,
-    selectedPost: null,
-    selectedMedia: null
+    selectedPost: null
 };
 
 
@@ -126,13 +122,6 @@ export const postsReducer = createReducer(
                 ...state,
                 isFetching: false,
                 selectedPost: action.post
-            }
-        }
-    ),
-    on(selectMedia, (state, action) => {
-            return {
-                ...state,
-                selectedMedia: action.media
             }
         }
     )

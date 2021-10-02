@@ -1,7 +1,6 @@
 import {createAction, props} from '@ngrx/store';
 import {Post} from '../../shared/model/post.model';
 import {PageInfo} from '../../shared/model/page-info.model';
-import {Media} from "../../shared/model/media.model";
 
 export const updateSearchParams = createAction(
     '[Posts] Update search params',
@@ -59,9 +58,4 @@ export const successSearch = createAction(
 export const selectPost = createAction(
     '[Posts] Select post',
     props<{ post: Post }>()
-);
-
-export const selectMedia = createAction(
-    '[Posts] Select media',
-    props<{ media: Media }>()
 );

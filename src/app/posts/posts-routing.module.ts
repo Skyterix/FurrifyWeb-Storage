@@ -11,15 +11,30 @@ const routes: Routes = [
         component: PostsComponent,
         children: [
             {
-                path: ':postId',
-                component: PostViewComponent,
+                path: '',
+                pathMatch: 'full',
+                component: PostListComponent,
                 canActivate: [AuthGuard]
             },
             {
-                path: '',
-                pathMatch: 'exact',
-                component: PostListComponent,
-                canActivate: [AuthGuard]
+                path: ':postId',
+                pathMatch: 'full',
+                redirectTo: ':postId/media'
+            },
+            {
+                path: ':postId/media',
+                children: [
+                    {
+                        path: '',
+                        pathMatch: 'full',
+                        redirectTo: '0'
+                    },
+                    {
+                        path: ':index',
+                        component: PostViewComponent,
+                        canActivate: [AuthGuard],
+                    }
+                ]
             }
         ]
     }

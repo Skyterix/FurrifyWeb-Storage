@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {Tag} from "../../../shared/model/tag.model";
 import {Post} from "../../../shared/model/post.model";
 import {TagUtils} from "../../../shared/util/tag.utils";
@@ -7,16 +7,14 @@ import {Media} from "../../../shared/model/media.model";
 import {MediaUtils} from "../../../shared/util/media.utils";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
-import {selectMedia} from "../../store/posts.actions";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Subscription} from "rxjs";
 
 @Component({
     selector: 'app-post-details',
     templateUrl: './post-details.component.html',
     styleUrls: ['./post-details.component.css']
 })
-export class PostDetailsComponent implements OnInit, OnDestroy {
+export class PostDetailsComponent implements OnInit {
 
     @Input() post!: Post;
 
@@ -25,12 +23,10 @@ export class PostDetailsComponent implements OnInit, OnDestroy {
 
     circleNotchIcon = faCircleNotch;
 
+    index!: number;
+
     sortedTags!: Tag[];
     sortedMedia!: Media[];
-
-    selectedMedia!: Media | null;
-
-    private storeSubscription!: Subscription;
 
     constructor(private renderer: Renderer2,
                 private store: Store<fromApp.AppState>,
@@ -39,32 +35,22 @@ export class PostDetailsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.storeSubscription = this.store.select('posts').subscribe(state => {
-            this.selectedMedia = state.selectedMedia;
-
-            // If selected media is not null
-            if (!!this.selectedMedia) {
-                // Load media after view init
-                setTimeout(() => this.loadMedia(this.selectedMedia!));
-            }
-        });
-
+        // Sort
         this.sortedTags = TagUtils.sortTagsByPriority([...this.post.tags]);
         this.sortedMedia = MediaUtils.sortByPriority([...this.post.mediaSet]);
 
-        // Get selected media index from url or default
-        let mediaIndex = this.activatedRoute.snapshot.queryParams.index;
-        mediaIndex = (!mediaIndex ||
-            mediaIndex > this.sortedMedia.length - 1 ||
-            mediaIndex < 0) ?
-            0 : mediaIndex;
+        // On index change
+        this.activatedRoute.params.subscribe(params => {
+            // Get selected media index from url
+            this.index = params.index;
 
-        // If media exists in post
-        if (this.sortedMedia[mediaIndex] !== null) {
-            this.store.dispatch(selectMedia({
-                media: this.sortedMedia[mediaIndex]
-            }));
-        }
+            // If media exists in post and index is valid
+            if (this.sortedMedia[this.index] !== null) {
+                setTimeout(() => this.loadMedia(this.sortedMedia[this.index]));
+            } else {
+                this.router.navigate(['/posts', this.post.postId, 'media', this.index]);
+            }
+        });
     }
 
     onMediaLoaded(): void {
@@ -72,17 +58,7 @@ export class PostDetailsComponent implements OnInit, OnDestroy {
         this.renderer.removeStyle(this.mediaSpinnerRef.nativeElement, 'display');
     }
 
-    ngOnDestroy(): void {
-        this.storeSubscription.unsubscribe();
-    }
-
     private loadMedia(media: Media): void {
-        this.router.navigate([], {
-            queryParams: {
-                index: this.sortedMedia.indexOf(media)
-            }
-        });
-
         this.renderer.setStyle(this.mediaViewRef.nativeElement, 'display', 'none');
         this.renderer.setStyle(this.mediaSpinnerRef.nativeElement, 'display', 'inline-block');
 
