@@ -1,34 +1,15 @@
 .post {
-    border-radius: .25rem;
-    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
     background: #202020;
-    color: rgba(255, 255, 255, 0.9);
-    width: calc(100vw - 400px);
-}
-
-.tags {
-    padding: .25rem .5rem .5rem;
-}
-
-.tag {
-    margin-left: .25rem;
 }
 
 .media {
-    text-align: center;
     display: inline-block;
     max-height: 80vh;
 }
 
-.media .image {
-    cursor: zoom-in;
-    width: 100%;
-}
-
 .watermark {
-    /*
-    background: #202020 url("../../../../assets/watermark.png") no-repeat center;
-    */
+/*    TODO Watermark
+    background: #202020 url("src/assets/img/watermark.png") no-repeat center;*/
     background-size: 50% auto;
     z-index: -1;
     background-origin: content-box;
@@ -41,44 +22,4 @@
     height: 600px;
     line-height: 600px;
     transition: all .3s ease;
-}
-
-.post-info {
-    padding: 0 .75rem .75rem;
-    margin-top: -2.5rem;
-    text-align: left;
-}
-
-h1.title {
-    margin-bottom: .5rem;
-    font-weight: 500;
-    line-height: 1.2;
-    font-size: 2.5rem;
-}
-
-p.description {
-    padding: .25rem;
-}
-
-h1.sources-title {
-    font-weight: 300;
-    line-height: 1.2;
-    font-size: 2.5rem;
-}
-
-.sources {
-    padding: .25rem;
-}
-
-.sources .source {
-    display: inline-block;
-    border-radius: 50rem;
-    padding: .5rem;
-    margin-right: .25rem;
-    background: #37115a;
-}
-
-.sources .source a {
-    color: #fff;
-    text-decoration: none;
 }

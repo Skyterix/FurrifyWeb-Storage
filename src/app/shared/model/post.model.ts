@@ -1,6 +1,7 @@
 import {Media} from "./media.model";
 import {Tag} from "./tag.model";
 import {Attachment} from "./attachment.model";
+import {Artist} from "./artist.model";
 
 export interface Post {
     postId: string;
@@ -9,7 +10,7 @@ export interface Post {
     mediaSet: Media[];
     attachments: Attachment[];
     tags: Tag[];
-    //creators: Creator[];
+    artists: Artist[];
     updateDate: Date;
     createDate: Date;
 }

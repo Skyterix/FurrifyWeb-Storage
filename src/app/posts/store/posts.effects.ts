@@ -17,7 +17,8 @@ export class PostsEffects {
         ofType(startSearch),
         switchMap((state) => {
             return this.httpClient.get<HypermediaResultList<Post>>(
-                GET_POSTS_BY_QUERY.replace(":userId", state.userId), {
+                // TODO Replace with state.userId instead of testing string
+                GET_POSTS_BY_QUERY.replace(":userId", "82722f67-ec52-461f-8294-158d8affe7a3"), {
                     headers: new HttpHeaders()
                         .append("Accept", RESPONSE_TYPE),
                     params: new HttpParams()
@@ -58,7 +59,8 @@ export class PostsEffects {
         switchMap((state) => {
             return this.httpClient.get<Post>(
                 GET_POST
-                    .replace(":userId", state.userId)
+                    // TODO Replace with state.userId instead of testing string
+                    .replace(":userId", "82722f67-ec52-461f-8294-158d8affe7a3")
                     .replace(":postId", state.postId), {
                     headers: new HttpHeaders()
                         .append("Accept", RESPONSE_TYPE)

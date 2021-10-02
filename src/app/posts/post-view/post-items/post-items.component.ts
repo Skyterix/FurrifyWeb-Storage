@@ -28,4 +28,9 @@ export class PostItemsComponent implements OnInit {
             media: media
         }));
     }
+
+    // TODO Implement
+    onEditPost(): void {
+        alert("Not implemented yet.");
+    }
 }

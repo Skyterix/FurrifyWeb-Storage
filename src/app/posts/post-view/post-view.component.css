@@ -1,12 +1,4 @@
-.post-view .grid {
-    display: grid;
-    grid-template-areas: "details details details items items";
+section {
+    color: rgba(255, 255, 255, 0.9);
+    text-align: left;
 }
-
-.post-view .grid .details {
-    grid-area: details;
-}
-.post-view .grid .items {
-    grid-area: items;
-}
-

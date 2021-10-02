@@ -1,48 +1,50 @@
-<aside class="post-items">
+<aside class="post-items-list p-3 shadow rounded">
     <!-- Media List -->
-    <h1 class="title">Media</h1>
-    <div class="set-left">
-        <div class="post-media-set">
-            <img (click)="onLoadMediaRequest(media)" *ngFor="let media of sortedMedia"
-                 [src]="media.thumbnailUrl"
-                 alt="media thumbnail" class="media"/>
-        </div>
+    <p class="h1 font-weight-light p-1">Media</p>
+    <div class="post-media-list">
+        <img (click)="onLoadMediaRequest(media)" *ngFor="let media of sortedMedia"
+             [src]="media.thumbnailUrl"
+             alt="media thumbnail" class="media m-1"/>
     </div>
     <!-- Attachments -->
-    <h1 class="title">Attachment</h1>
-    <div class="post-attachments">
-        <div *ngFor="let attachment of post.attachments" class="attachments">
-            <ul class="attachment-info">
-                <li>
-                    <img [appAttachmentIcon]="attachment.extension" alt="attachment icon" class="icon"/>
-                    <a [href]="attachment.fileUrl" target="_blank">{{ attachment.filename }}</a>
+    <p class="h1 font-weight-light p-1 mt-4">Attachment</p>
+    <div class="post-attachments p-1 justify-content-start">
+        <div *ngFor="let attachment of post.attachments" class="attachment">
+            <ul class="attachment-info p-1">
+                <li class="infs">
+                    <img [appAttachmentIcon]="attachment.extension" alt="attachment icon" class="icon me-2"/>
+                    <a [href]="attachment.fileUrl" class="attachment-link text-decoration-none"
+                       target="_blank">{{ attachment.filename }}</a>
                 </li>
-                <!--                <li>
-                                    <ul class="sources">
-                                        <li *ngFor="let source of attachment.sources" class="p-2 d-inline ms-n1 me-2 bg-violet rounded-pill"><a
-                                            [href]="getSourceURL(source.sourceStrategy, source.sourceInfo)"
-                                            class="text-white text-decoration-none">{{ source.sourceStrategy | removeText:'SourceStrategy' }}</a>
-                                        </li>
-                                    </ul>
-                                </li>-->
+                <li>
+                    <ul class="mt-2">
+                        <!-- TODO Implement href for source, and think if post even needs one or should media only -->
+                        <li *ngFor="let source of attachment.sources"
+                            class="p-2 d-inline ms-n1 me-2 bg-violet rounded-pill">
+                            <a class="text-white text-decoration-none"
+                               href="#">{{ source.strategy | removeText:'SourceStrategy' }}</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>
-    <!-- Creators -->
-    <!--    <p class="h1 font-weight-light p-1">Cr</p>
-        <div class="post-creators p-1 justify-content-start">
-            <ul class="creators p-0">
-                <li *ngFor="let creator of post.creators" class="creator text-center rounded me-3">
-                    <a [routerLink]="['/creators', creator.creatorId]" class="text-decoration-none">
-                        <img [src]="creator.cover.thumbnailFileURL" alt="creator avatar cover" class="avatar rounded-circle"/>
-                        <p class="mb-0 mt-1 text-white font-weight-bolder">{{ creator.username }}</p>
-                    </a>
-                </li>
-            </ul>
-        </div>
+    <!-- Artists -->
+    <p class="h1 font-weight-light p-1">Artists</p>
+    <div class="post-artists p-1 justify-content-start">
+        <ul class="artists p-0">
+            <li *ngFor="let artist of post.artists" class="artist text-center rounded me-3">
+                <a [routerLink]="['/artists', artist.artistId]" class="text-decoration-none">
+                    <!--                    Implement artist cover
+                                        <img [src]="artist.cover.thumbnailFileURL" alt="artist avatar cover" class="avatar rounded-circle"/>-->
+                    <p class="mb-0 mt-1 text-white font-weight-bolder">{{ artist.preferredNickname }}</p>
+                </a>
+            </li>
+        </ul>
+    </div>
 
-        <div *ngIf="hasReplacePostPermission()" class="p-1 justify-content-start">
-            <button (click)="onEditPost()" class="btn btn-outline-light">Edit Post</button>
-        </div>-->
+    <div class="p-1 justify-content-start">
+        <button (click)="onEditPost()" class="btn btn-outline-light">Edit Post</button>
+    </div>
 
 </aside>
