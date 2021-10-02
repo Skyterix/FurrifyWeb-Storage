@@ -1,0 +1,8 @@
+section {
+    background: #000 url("src/assets/posts-bg.jpg") no-repeat top;
+    background-size: 100%;
+    z-index: -1;
+    padding-top: 62px;
+    min-height: 100vh;
+    text-align: center;
+}

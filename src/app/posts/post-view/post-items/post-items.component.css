@@ -1,0 +1,47 @@
+.post-items-list {
+    background: #202020;
+}
+
+.post-items-list {
+    display: block;
+    user-select: none;
+}
+
+.post-items-list .media {
+    display: inline-block;
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.post-attachments {
+    display: block;
+}
+
+.post-attachments .icon {
+    user-select: none;
+    height: 28px;
+}
+
+.post-attachments .attachment-info {
+    display: inline-block;
+    list-style-type: none;
+}
+
+.post-artists .artists {
+    display: block;
+    list-style-type: none;
+}
+
+.post-artists .artists .artist {
+    display: inline-block;
+}
+
+.post-artists .artists .avatar {
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    width: 64px;
+    height: 64px;
+}

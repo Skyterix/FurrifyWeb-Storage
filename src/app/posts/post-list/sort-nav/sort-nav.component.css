@@ -1,0 +1,49 @@
+nav {
+    position: relative;
+    border-top: 1px solid #202020;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: #151515;
+    line-height: 50px;
+    height: 50px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    text-align: left;
+}
+
+select {
+    outline: 0;
+    cursor: pointer;
+    border-radius: 22px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    font-weight: 300;
+}
+
+nav .sort {
+    display: inline-flex;
+}
+
+nav .sort .nav-item {
+    flex-wrap: nowrap;
+    margin-right: 1.5rem;
+}
+
+nav .create-post {
+    display: inline-flex;
+    float: right;
+}
+
+nav .create-post .content button {
+    outline: 0;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 7px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .2s all ease;
+}
+
+nav .create-post .content button:hover {
+    border: 1px solid rgba(255, 255, 255, 0.9);
+}

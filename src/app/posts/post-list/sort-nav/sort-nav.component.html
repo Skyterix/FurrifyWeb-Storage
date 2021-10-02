@@ -1,0 +1,34 @@
+<!-- TODO Make responsive -->
+
+<nav class="navbar navbar-expand navbar-dark">
+    <form [formGroup]="sortForm">
+        <ul class="navbar-nav me-5 d-flex">
+            <li class="nav-item me-4 flex-nowrap">
+                <select (change)="onChanges()" class="custom-select" formControlName="sortBy">
+                    <option value="createDate">Create date</option>
+                </select>
+            </li>
+            <li class="nav-item me-4 flex-nowrap">
+                <select (change)="onChanges()" class="custom-select" formControlName="order">
+                    <option value="desc">Descending</option>
+                    <option value="asc">Ascending</option>
+                </select>
+            </li>
+            <li class="nav-item flex-nowrap">
+                <select (change)="onChanges()" class="custom-select" formControlName="size">
+                    <option value="100">100</option>
+                    <option value="80">80</option>
+                    <option value="60">60</option>
+                    <option value="40">40</option>
+                    <option value="20">20</option>
+                    <option value="10">10</option>
+                </select>
+            </li>
+        </ul>
+    </form>
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item me-2">
+            <button (click)="onCreatePost()" class="btn btn-outline-light">Create Post</button>
+        </li>
+    </ul>
+</nav>
