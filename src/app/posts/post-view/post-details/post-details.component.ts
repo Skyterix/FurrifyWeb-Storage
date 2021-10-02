@@ -8,6 +8,7 @@ import {MediaUtils} from "../../../shared/util/media.utils";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {selectMedia} from "../../store/posts.actions";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-post-details',
@@ -28,7 +29,10 @@ export class PostDetailsComponent implements OnInit {
 
     selectedMedia!: Media | null;
 
-    constructor(private renderer: Renderer2, private store: Store<fromApp.AppState>) {
+    constructor(private renderer: Renderer2,
+                private store: Store<fromApp.AppState>,
+                private activatedRoute: ActivatedRoute,
+                private router: Router) {
     }
 
     ngOnInit(): void {
@@ -45,10 +49,15 @@ export class PostDetailsComponent implements OnInit {
         this.sortedTags = TagUtils.sortTagsByPriority([...this.post.tags]);
         this.sortedMedia = MediaUtils.sortByPriority([...this.post.mediaSet]);
 
+        // Get selected media index from url or default
+        let mediaIndex =
+            (!this.activatedRoute.snapshot.queryParams.index) ?
+                0 : this.activatedRoute.snapshot.queryParams.index;
+
         // If media exists in post
-        if (this.sortedMedia[0] !== null) {
+        if (this.sortedMedia[mediaIndex] !== null) {
             this.store.dispatch(selectMedia({
-                media: this.sortedMedia[0]
+                media: this.sortedMedia[mediaIndex]
             }));
         }
     }
@@ -60,6 +69,13 @@ export class PostDetailsComponent implements OnInit {
 
     // TODO Media index should be loaded from url
     private loadMedia(media: Media): void {
+        this.router.navigate([], {
+            queryParams: {
+                index: this.sortedMedia.indexOf(media)
+            },
+            queryParamsHandling: "merge"
+        });
+
         this.renderer.setStyle(this.mediaViewRef.nativeElement, 'display', 'none');
         this.renderer.setStyle(this.mediaSpinnerRef.nativeElement, 'display', 'inline-block');
 
