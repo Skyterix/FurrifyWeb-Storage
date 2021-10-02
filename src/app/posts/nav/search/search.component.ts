@@ -26,6 +26,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     searchForm: FormGroup;
 
     private queryChangeSubscription!: Subscription;
+    private storeSubscription!: Subscription;
 
     constructor(private activatedRoute: ActivatedRoute,
                 private postsService: PostsService,
@@ -35,7 +36,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             query: new FormControl(null)
         });
 
-        this.store.select('posts').subscribe(state => {
+        this.storeSubscription = this.store.select('posts').subscribe(state => {
             this.isSearching = state.isFetching;
         });
     }
@@ -58,6 +59,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.queryChangeSubscription.unsubscribe();
+        this.storeSubscription.unsubscribe();
     }
 
     onSearchQuery(): void {

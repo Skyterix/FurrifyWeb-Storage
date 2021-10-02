@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {Tag} from "../../../shared/model/tag.model";
 import {Post} from "../../../shared/model/post.model";
 import {TagUtils} from "../../../shared/util/tag.utils";
@@ -9,13 +9,14 @@ import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {selectMedia} from "../../store/posts.actions";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'app-post-details',
     templateUrl: './post-details.component.html',
     styleUrls: ['./post-details.component.css']
 })
-export class PostDetailsComponent implements OnInit {
+export class PostDetailsComponent implements OnInit, OnDestroy {
 
     @Input() post!: Post;
 
@@ -29,6 +30,8 @@ export class PostDetailsComponent implements OnInit {
 
     selectedMedia!: Media | null;
 
+    private storeSubscription!: Subscription;
+
     constructor(private renderer: Renderer2,
                 private store: Store<fromApp.AppState>,
                 private activatedRoute: ActivatedRoute,
@@ -36,7 +39,7 @@ export class PostDetailsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.store.select('posts').subscribe(state => {
+        this.storeSubscription = this.store.select('posts').subscribe(state => {
             this.selectedMedia = state.selectedMedia;
 
             // If selected media is not null
@@ -50,10 +53,11 @@ export class PostDetailsComponent implements OnInit {
         this.sortedMedia = MediaUtils.sortByPriority([...this.post.mediaSet]);
 
         // Get selected media index from url or default
-        const mediaIndex =
-            (!this.activatedRoute.snapshot.queryParams.index ||
-                this.activatedRoute.snapshot.queryParams.index < 0) ?
-                0 : this.activatedRoute.snapshot.queryParams.index;
+        let mediaIndex = this.activatedRoute.snapshot.queryParams.index;
+        mediaIndex = (!mediaIndex ||
+            mediaIndex > this.sortedMedia.length - 1 ||
+            mediaIndex < 0) ?
+            0 : mediaIndex;
 
         // If media exists in post
         if (this.sortedMedia[mediaIndex] !== null) {
@@ -68,13 +72,15 @@ export class PostDetailsComponent implements OnInit {
         this.renderer.removeStyle(this.mediaSpinnerRef.nativeElement, 'display');
     }
 
-    // TODO Media index should be loaded from url
+    ngOnDestroy(): void {
+        this.storeSubscription.unsubscribe();
+    }
+
     private loadMedia(media: Media): void {
         this.router.navigate([], {
             queryParams: {
                 index: this.sortedMedia.indexOf(media)
-            },
-            queryParamsHandling: "merge"
+            }
         });
 
         this.renderer.setStyle(this.mediaViewRef.nativeElement, 'display', 'none');
