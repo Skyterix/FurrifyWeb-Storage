@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {PostCreateService} from "./post-create.service";
 
 @Component({
     selector: 'app-post-create',
@@ -10,13 +11,13 @@ export class PostCreateComponent implements OnInit {
     isFetching = false;
     errorMessage: string | null = null;
 
-    constructor() {
+    constructor(private postCreateService: PostCreateService) {
     }
 
     ngOnInit(): void {
     }
 
-    onClose() {
-
+    onClose(): void {
+        this.postCreateService.postCreateCloseEvent.emit();
     }
 }

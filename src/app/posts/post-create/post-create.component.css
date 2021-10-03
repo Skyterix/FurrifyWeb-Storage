@@ -1,3 +1,8 @@
+section {
+    position: fixed;
+    z-index: 10;
+}
+
 .close {
     float: right;
     outline: none;
@@ -10,6 +15,7 @@
 }
 
 .row {
+    width: 100vw;
     min-height: 600px;
     max-height: 100%;
 }

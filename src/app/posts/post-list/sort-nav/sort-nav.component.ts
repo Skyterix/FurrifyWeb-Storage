@@ -6,6 +6,7 @@ import {updateSearchParams} from "../../store/posts.actions";
 import {PostsService} from "../../posts.service";
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
+import {PostCreateService} from "../../post-create/post-create.service";
 
 @Component({
     selector: 'app-sort-nav',
@@ -24,6 +25,7 @@ export class SortNavComponent implements OnInit, OnDestroy {
 
     constructor(private store: Store<fromApp.AppState>,
                 private postsService: PostsService,
+                private postCreateService: PostCreateService,
                 private router: Router) {
     }
 
@@ -69,7 +71,6 @@ export class SortNavComponent implements OnInit, OnDestroy {
     }
 
     onCreatePost(): void {
-        // TODO Implement
-        alert("Not implemented yet.");
+        this.postCreateService.postCreateOpenEvent.emit();
     }
 }
