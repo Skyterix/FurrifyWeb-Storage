@@ -1,0 +1,70 @@
+<article class="pt-4">
+    <form [formGroup]="postInfoForm">
+        <!-- Title -->
+        <div class="mt-2">
+            <input (change)="onTitleValueChange()" class="form-control" formControlName="title" placeholder="Title"
+                   type="text"/>
+        </div>
+        <!-- Description -->
+        <div class="mt-3">
+        <textarea (change)="onDescriptionValueChange()" class="form-control" formControlName="description"
+                  placeholder="Description"></textarea>
+        </div>
+        <!-- Tags -->
+        <form [formGroup]="tagSelectForm" class="mt-3">
+            <div class="form-control text-start h-auto">
+
+                <span (click)="loadCreateTagForm(tagWrapper)" *ngFor="let tagWrapper of selectedTags"
+                      [appColoredTag]="tagWrapper.tag.type"
+                      [ngClass]="tagWrapper.isExisting != null && !tagWrapper.isExisting ? 'bg-red' : ''"
+                      class="tag badge badge-dark me-1">
+
+                        <fa-icon *ngIf="tagWrapper.isExisting == null" [icon]="spinnerIcon" [spin]="true"
+                                 class="me-1"></fa-icon>
+
+                        <a class="text-white">{{ tagWrapper.tag.value }}</a>
+
+                        <fa-icon (click)="onTagRemove(tagWrapper)" [icon]="timesIcon"
+                                 class="ms-1" style="cursor: pointer"></fa-icon>
+                    </span>
+
+                <input (keyup.enter)="onTagSelectSubmit()"
+                       class="form-control border-0 d-inline-block m-0 p-0"
+                       formControlName="tag"
+                       placeholder="Tag value" type="text"/>
+
+            </div>
+        </form>
+        <!--        &lt;!&ndash; Creators &ndash;&gt;
+                <form [formGroup]="creatorSelectForm" class="form-group">
+                    <div class="form-control h-auto">
+
+                <span (click)="loadCreateCreatorForm(creatorWrapper)" *ngFor="let creatorWrapper of selectedCreators"
+                      [ngClass]="creatorWrapper.isExisting != null && !creatorWrapper.isExisting ? 'bg-red' : ''"
+                      class="badge badge-dark me-1">
+
+                    <fa-icon *ngIf="creatorWrapper.isExisting == null" [icon]="spinnerIcon" class="me-1"
+                             [spin]="true"></fa-icon>
+
+                    <a class="tag text-white">{{ creatorWrapper.creator.username }}</a>
+
+                    <fa-icon (click)="onCreatorRemove(creatorWrapper)" [icon]="timesIcon"
+                             class="ms-1" style="cursor: pointer"></fa-icon>
+                </span>
+
+                        <input (keyup.enter)="onCreatorSelectSubmit()"
+                               class="form-control border-0 d-inline-block m-0 p-0"
+                               formControlName="creator"
+                               placeholder="Creator username" type="text"/>
+
+                    </div>
+                </form>-->
+        <!-- Submit -->
+        <div class="mt-4">
+            <button (click)="onNextStep()"
+                    [disabled]="!postInfoForm.valid || selectedTags.length == 0"
+                    class="btn btn-block btn-primary p-3 pt-2 pb-2">Next
+            </button>
+        </div>
+    </form>
+</article>

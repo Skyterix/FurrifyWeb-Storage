@@ -8,6 +8,9 @@ import {
 } from "../../shared/config/search.defaults";
 import {createReducer, on} from "@ngrx/store";
 import {
+    addTagToSelectedSetFail,
+    addTagToSelectedSetStart,
+    addTagToSelectedSetSuccess,
     failSearch,
     getPostFail,
     getPostStart,
@@ -15,9 +18,18 @@ import {
     selectPost,
     startSearch,
     successSearch,
+    updatePostSavedDescription,
+    updatePostSavedTitle,
     updateSearchParams,
     updateSearchQuery
 } from "./posts.actions";
+import {Tag} from "../../shared/model/tag.model";
+
+export class TagWrapper {
+    constructor(public tag: Tag,
+                public isExisting: boolean | null) {
+    }
+}
 
 export interface State {
     isFetching: boolean;
@@ -31,6 +43,10 @@ export interface State {
     posts: Post[];
     pageInfo: PageInfo | null;
     selectedPost: Post | null;
+    // Create Post
+    selectedTags: TagWrapper[];
+    postSavedTitle: string;
+    postSavedDescription: string;
 }
 
 const initialState: State = {
@@ -44,7 +60,11 @@ const initialState: State = {
     fetchErrorMessage: null,
     posts: [],
     pageInfo: null,
-    selectedPost: null
+    selectedPost: null,
+    // Create Post
+    selectedTags: [],
+    postSavedTitle: "",
+    postSavedDescription: ""
 };
 
 
@@ -123,6 +143,66 @@ export const postsReducer = createReducer(
                 isFetching: false,
                 selectedPost: action.post
             }
+        }
+    ),
+    on(updatePostSavedTitle, (state, action) => {
+            return {
+                ...state,
+                postSavedTitle: action.title
+            }
+        }
+    ),
+    on(updatePostSavedDescription, (state, action) => {
+            return {
+                ...state,
+                postSavedDescription: action.description
+            }
+        }
+    ),
+    on(addTagToSelectedSetStart, (state, action) => {
+            const tag: Tag = {
+                title: "",
+                description: "",
+                ownerId: "",
+                type: "",
+                value: action.value,
+                createDate: new Date()
+            };
+
+            return {
+                ...state,
+                isFetching: true,
+                postErrorMessage: null,
+                // Set temporarily isExisting value to null to show loading spinner
+                selectedTags: [...state.selectedTags, new TagWrapper(tag, null)]
+            };
+        }
+    ),
+    on(addTagToSelectedSetSuccess, (state, action) => {
+            const newSelectedTags = state.selectedTags.slice();
+
+            // Find tag with same value
+            const oldSelectedTagIndex = newSelectedTags.findIndex((tagWrapper) => {
+                return tagWrapper.tag.value === action.tagWrapper.tag.value;
+            });
+
+            // Replace old tag with new one
+            newSelectedTags[oldSelectedTagIndex] = action.tagWrapper;
+
+            return {
+                ...state,
+                isFetching: false,
+                selectedTags: newSelectedTags
+            };
+        }
+    ),
+    on(addTagToSelectedSetFail, (state, action) => {
+            return {
+                ...state,
+                isFetching: false,
+                postErrorMessage: action.errorMessage,
+                selectedTags: state.selectedTags.slice().filter(item => item.tag.value !== action.value)
+            };
         }
     )
 );

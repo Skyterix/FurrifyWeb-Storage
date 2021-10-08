@@ -1,0 +1,12 @@
+.badge {
+    user-select: none;
+}
+
+.badge.bg-red {
+    cursor: pointer;
+    background: red !important;
+}
+
+.tag a:hover {
+    text-decoration: none;
+}

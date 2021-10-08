@@ -24,13 +24,11 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <!--
-                        <app-post-create-steps></app-post-create-steps>
-            -->
+            <app-post-create-steps-menu></app-post-create-steps-menu>
+
             <p *ngIf="!!errorMessage" class="alert-danger p-3 mt-3">{{ errorMessage }}</p>
-            <!--
-                        <ng-template appPlaceholder2></ng-template>
-            -->
+
+            <ng-template #currentStep></ng-template>
         </div>
     </div>
 </section>

@@ -16,6 +16,10 @@ import {PostDetailsComponent} from './post-view/post-details/post-details.compon
 import {AttachmentIconDirective} from "./post-view/post-items/attachment-icon.directive";
 import {DropdownDirective} from "./nav/dropdown.directive";
 import {PostCreateComponent} from './post-create/post-create.component';
+import {PostCreateStepsMenuComponent} from './post-create/post-create-steps-menu/post-create-steps-menu.component';
+import {PostCreateInfoStepComponent} from './post-create/post-create-info-step/post-create-info-step.component';
+import {PostCreateContentStepComponent} from './post-create/post-create-content-step/post-create-content-step.component';
+import {PostCreateUploadStepComponent} from './post-create/post-create-upload-step/post-create-upload-step.component';
 
 
 @NgModule({
@@ -31,7 +35,11 @@ import {PostCreateComponent} from './post-create/post-create.component';
         PostDetailsComponent,
         AttachmentIconDirective,
         DropdownDirective,
-        PostCreateComponent
+        PostCreateComponent,
+        PostCreateStepsMenuComponent,
+        PostCreateInfoStepComponent,
+        PostCreateContentStepComponent,
+        PostCreateUploadStepComponent
     ],
     imports: [
         CommonModule,
@@ -39,6 +47,12 @@ import {PostCreateComponent} from './post-create/post-create.component';
         PostsRoutingModule,
         ReactiveFormsModule,
         SharedModule
+    ],
+    bootstrap: [
+        PostCreateComponent,
+        PostCreateInfoStepComponent,
+        PostCreateContentStepComponent,
+        PostCreateUploadStepComponent
     ]
 })
 export class PostsModule {

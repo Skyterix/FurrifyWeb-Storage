@@ -1,28 +1,28 @@
 export class AttachmentIconsConfig {
-    private static epubAttachmentStrategy = 'assets/icons/epub.png';
-    private static pdfAttachmentStrategy = 'assets/icons/pdf.png';
-    private static xcfAttachmentStrategy = 'assets/icons/xcf.png';
-    private static zipAttachmentStrategy = 'assets/icons/zip.png';
-    private static psdAttachmentStrategy = 'assets/icons/psd.png';
-    private static saiAttachmentStrategy = 'assets/icons/sai.png';
-    private static unknownIcon = 'assets/icons/unknown.png';
+    private static epub = 'assets/icons/epub.png';
+    private static pdf = 'assets/icons/pdf.png';
+    private static xcf = 'assets/icons/xcf.png';
+    private static zip = 'assets/icons/zip.png';
+    private static psd = 'assets/icons/psd.png';
+    private static sai = 'assets/icons/sai.png';
+    private static unknown = 'assets/icons/unknown.png';
 
     public static getAttachmentIcon(extension: string): string {
         switch (extension.toLowerCase()) {
             case 'epub':
-                return this.epubAttachmentStrategy;
+                return this.epub;
             case 'pdf':
-                return this.pdfAttachmentStrategy;
+                return this.pdf;
             case 'xcf':
-                return this.xcfAttachmentStrategy;
+                return this.xcf;
             case 'zip':
-                return this.zipAttachmentStrategy;
+                return this.zip;
             case 'sai':
-                return this.saiAttachmentStrategy;
+                return this.sai;
             case 'psd':
-                return this.psdAttachmentStrategy;
+                return this.psd;
             default:
-                return this.unknownIcon;
+                return this.unknown;
         }
     }
 }
