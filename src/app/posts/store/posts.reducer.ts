@@ -20,6 +20,7 @@ import {
     getPostFail,
     getPostStart,
     getPostSuccess,
+    removeTagFromSelected,
     selectPost,
     startSearch,
     successSearch,
@@ -259,6 +260,13 @@ export const postsReducer = createReducer(
                 ...state,
                 isFetching: false,
                 selectedTags: newTags
+            };
+        }
+    ),
+    on(removeTagFromSelected, (state, action) => {
+            return {
+                ...state,
+                selectedTags: state.selectedTags.slice().filter(item => item.tag !== action.tag)
             };
         }
     )

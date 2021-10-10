@@ -111,3 +111,8 @@ export const fetchTagAfterCreationSuccess = createAction(
     '[Posts] Fetch tag after creation success',
     props<{ tag: Tag }>()
 );
+
+export const removeTagFromSelected = createAction(
+    '[Posts] Remove tag from selected',
+    props<{ tag: Tag }>()
+);

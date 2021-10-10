@@ -5,7 +5,12 @@ import {Store} from "@ngrx/store";
 import {PostCreateService} from "../post-create.service";
 import * as fromApp from '../../../store/app.reducer';
 import {Subscription} from "rxjs";
-import {addTagToSelectedSetStart, updatePostSavedDescription, updatePostSavedTitle} from "../../store/posts.actions";
+import {
+    addTagToSelectedSetStart,
+    removeTagFromSelected,
+    updatePostSavedDescription,
+    updatePostSavedTitle
+} from "../../store/posts.actions";
 import {take} from "rxjs/operators";
 import {TagWrapper} from "../../store/posts.reducer";
 import {KeycloakProfile} from "keycloak-js";
@@ -45,6 +50,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             tag: new FormControl(null, [Validators.required])
         });
     }
+
 // TODO Error message
     ngOnInit(): void {
         this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
@@ -101,7 +107,9 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     onTagRemove(tagWrapper: TagWrapper): void {
-
+        this.store.dispatch(removeTagFromSelected({
+            tag: tagWrapper.tag
+        }));
     }
 
     onTagSelectSubmit(): void {
@@ -114,6 +122,10 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             .toLowerCase()
             // Replace spaces with underscore
             .replace(/ /g, "_");
+
+        if (!tagValue.match("^[a-z_-]*$")) {
+            return;
+        }
 
         // Check if tag already exists
         const isDuplicate = this.selectedTags.find((tagWrapper) => {
