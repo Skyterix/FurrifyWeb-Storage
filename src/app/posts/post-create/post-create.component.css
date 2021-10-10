@@ -1,23 +1,26 @@
-section {
-    position: fixed;
+.modal-backdrop {
     z-index: 10;
 }
 
+section {
+    position: absolute;
+    z-index: 10;
+    width: 100vw;
+}
+
 .close {
-    float: right;
+    position: absolute;
+    top: .75rem;
+    right: .75rem;
     outline: none;
     color: #000;
     font-size: 1.5em;
 }
 
-.modal-backdrop {
-    z-index: 10;
-}
-
 .row {
-    width: 100vw;
-    min-height: 600px;
-    max-height: 100%;
+    min-height: 500px;
+    max-width: 100vw;
+    margin: 0;
 }
 
 .row .right {
@@ -25,6 +28,7 @@ section {
 }
 
 .row .left {
+    position: relative;
     background-image: url("../../../assets/auth.jpg");
     height: 100%;
     background-position: center;
@@ -36,8 +40,9 @@ section {
 .row .left .front {
     z-index: 12;
     position: absolute;
-    max-width: 100%;
     height: 100%;
+    width: 100%;
+    left: 0;
     margin-top: -3rem;
 }
 

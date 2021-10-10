@@ -1,11 +1,11 @@
-<article class="bg-white p-5 h-100 border-right">
+<article class="bg-white p-4 h-100 border-right">
     <div>
-        <button (click)="onClose()" [disabled]="isFetching" class="btn close" type="button">
+        <button (click)="onClose()" [disabled]="isFetching" class="btn close p-1" type="button">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <h1 class="display-4 mb-4">Tag Create</h1>
-    <form [formGroup]="createTagForm">
+    <h1 class="display-4 mb-4 mt-4">Tag Create</h1>
+    <form [formGroup]="createTagForm" class="p-3">
         <p *ngIf="!!errorMessage" class="alert-danger p-3 mb-4">{{ errorMessage }}</p>
         <div>
             <!-- Value -->
