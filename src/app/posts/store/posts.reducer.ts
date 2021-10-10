@@ -11,7 +11,12 @@ import {
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
+    createTagFail,
+    createTagStart,
     failSearch,
+    fetchTagAfterCreationFail,
+    fetchTagAfterCreationStart,
+    fetchTagAfterCreationSuccess,
     getPostFail,
     getPostStart,
     getPostSuccess,
@@ -47,6 +52,7 @@ export interface State {
     selectedTags: TagWrapper[];
     postSavedTitle: string;
     postSavedDescription: string;
+    tagErrorMessage: string;
 }
 
 const initialState: State = {
@@ -64,7 +70,8 @@ const initialState: State = {
     // Create Post
     selectedTags: [],
     postSavedTitle: "",
-    postSavedDescription: ""
+    postSavedDescription: "",
+    tagErrorMessage: ""
 };
 
 
@@ -202,6 +209,56 @@ export const postsReducer = createReducer(
                 isFetching: false,
                 postErrorMessage: action.errorMessage,
                 selectedTags: state.selectedTags.slice().filter(item => item.tag.value !== action.value)
+            };
+        }
+    ),
+    on(createTagStart, (state, action) => {
+            return {
+                ...state,
+                isFetching: true,
+                tagErrorMessage: ""
+            };
+        }
+    ),
+    on(createTagFail, (state, action) => {
+            return {
+                ...state,
+                isFetching: false,
+                tagErrorMessage: action.errorMessage
+            };
+        }
+    ),
+    on(fetchTagAfterCreationStart, (state, action) => {
+            return {
+                ...state,
+                isFetching: true,
+                tagErrorMessage: ""
+            };
+        }
+    ),
+    on(fetchTagAfterCreationFail, (state, action) => {
+            return {
+                ...state,
+                isFetching: false,
+                tagErrorMessage: action.errorMessage
+            };
+        }
+    ),
+    on(fetchTagAfterCreationSuccess, (state, action) => {
+            const newTags = state.selectedTags.slice();
+
+            // Find tag with same value
+            const oldTagIndex = newTags.findIndex((tagWrapper) => {
+                return tagWrapper.tag.value === action.tag.value;
+            });
+
+            // Replace old tag with new one
+            newTags[oldTagIndex] = new TagWrapper(action.tag, true);
+
+            return {
+                ...state,
+                isFetching: false,
+                selectedTags: newTags
             };
         }
     )

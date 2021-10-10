@@ -2,6 +2,8 @@ import {
     Component,
     ComponentFactory,
     ComponentFactoryResolver,
+    ComponentRef,
+    OnDestroy,
     OnInit,
     ViewChild,
     ViewContainerRef
@@ -10,18 +12,24 @@ import {PostCreateService} from "./post-create.service";
 import {PostCreateInfoStepComponent} from "./post-create-info-step/post-create-info-step.component";
 import {PostCreateContentStepComponent} from "./post-create-content-step/post-create-content-step.component";
 import {PostCreateUploadStepComponent} from "./post-create-upload-step/post-create-upload-step.component";
+import {Subscription} from "rxjs";
+import {TagCreateComponent} from "./tag-create/tag-create.component";
 
 @Component({
     selector: 'app-post-create',
     templateUrl: './post-create.component.html',
     styleUrls: ['./post-create.component.css']
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent implements OnInit, OnDestroy {
 
     @ViewChild('currentStep', {read: ViewContainerRef}) currentStepRef!: ViewContainerRef;
+    @ViewChild('currentSideStep', {read: ViewContainerRef}) currentSideStepRef!: ViewContainerRef;
 
     isFetching = false;
     errorMessage: string | null = null;
+
+    private tagCreateOpenEventSubscription!: Subscription;
+    private tagCreateCloseEventSubscription!: Subscription;
 
     constructor(private postCreateService: PostCreateService, private componentFactoryResolver: ComponentFactoryResolver) {
     }
@@ -32,7 +40,6 @@ export class PostCreateComponent implements OnInit {
 
             this.loadStep<PostCreateInfoStepComponent>(postInfoStepComponent);
         });
-
         this.postCreateService.postContentStepOpenEvent.subscribe(() => {
             const postContentStepComponent = this.componentFactoryResolver.resolveComponentFactory(PostCreateContentStepComponent);
 
@@ -45,17 +52,47 @@ export class PostCreateComponent implements OnInit {
             this.loadStep<PostCreateUploadStepComponent>(postUploadStepComponent);
         });
 
+        this.tagCreateOpenEventSubscription = this.postCreateService.tagCreateOpenEvent.subscribe(tagValue => {
+            const createTagComponent = this.componentFactoryResolver.resolveComponentFactory(TagCreateComponent);
+
+            const componentRef = this.loadSideStep<TagCreateComponent>(createTagComponent);
+            componentRef.instance.value = tagValue;
+        });
+        this.tagCreateCloseEventSubscription = this.postCreateService.tagCreateCloseEvent.subscribe(__ => {
+            setTimeout(() => this.clearSideView());
+        });
 
         // Load default step
         setTimeout(() => this.postCreateService.postInfoStepOpenEvent.emit());
+    }
+
+    ngOnDestroy(): void {
+        this.postCreateService.postInfoStepOpenEvent.unsubscribe();
+        this.postCreateService.postContentStepOpenEvent.unsubscribe();
+        this.postCreateService.postUploadStepOpenEvent.unsubscribe();
+        this.tagCreateCloseEventSubscription.unsubscribe();
+        this.tagCreateCloseEventSubscription.unsubscribe();
     }
 
     onClose(): void {
         this.postCreateService.postCreateCloseEvent.emit();
     }
 
-    private loadStep<T>(component: ComponentFactory<T>) {
+    private loadStep<T>(component: ComponentFactory<T>): void {
         this.currentStepRef!.clear();
         this.currentStepRef!.createComponent(component);
+    }
+
+    private loadSideStep<T>(component: ComponentFactory<T>): ComponentRef<T> {
+        this.currentSideStepRef!.clear();
+        return this.currentSideStepRef!.createComponent(component);
+    }
+
+    private clearSideView(): void {
+        if (!this.currentSideStepRef) {
+            return;
+        }
+
+        this.currentSideStepRef.clear();
     }
 }

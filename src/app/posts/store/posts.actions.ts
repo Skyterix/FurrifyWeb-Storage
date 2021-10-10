@@ -2,6 +2,7 @@ import {createAction, props} from '@ngrx/store';
 import {Post} from '../../shared/model/post.model';
 import {PageInfo} from '../../shared/model/page-info.model';
 import {TagWrapper} from "./posts.reducer";
+import {Tag} from "../../shared/model/tag.model";
 
 export const updateSearchParams = createAction(
     '[Posts] Update search params',
@@ -86,4 +87,27 @@ export const addTagToSelectedSetSuccess = createAction(
     props<{ tagWrapper: TagWrapper }>()
 );
 
+export const createTagStart = createAction(
+    '[Posts] Create tag start',
+    props<{ userId: string, tag: Tag }>()
+);
 
+export const createTagFail = createAction(
+    '[Posts] Create tag fail',
+    props<{ errorMessage: string }>()
+);
+
+export const fetchTagAfterCreationStart = createAction(
+    '[Posts] Fetch tag after creation start',
+    props<{ userId: string, value: string }>()
+);
+
+export const fetchTagAfterCreationFail = createAction(
+    '[Posts] Create tag after creation fail',
+    props<{ errorMessage: string }>()
+);
+
+export const fetchTagAfterCreationSuccess = createAction(
+    '[Posts] Fetch tag after creation success',
+    props<{ tag: Tag }>()
+);

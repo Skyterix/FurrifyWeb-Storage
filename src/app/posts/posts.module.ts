@@ -20,6 +20,7 @@ import {PostCreateStepsMenuComponent} from './post-create/post-create-steps-menu
 import {PostCreateInfoStepComponent} from './post-create/post-create-info-step/post-create-info-step.component';
 import {PostCreateContentStepComponent} from './post-create/post-create-content-step/post-create-content-step.component';
 import {PostCreateUploadStepComponent} from './post-create/post-create-upload-step/post-create-upload-step.component';
+import {TagCreateComponent} from './post-create/tag-create/tag-create.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import {PostCreateUploadStepComponent} from './post-create/post-create-upload-st
         PostCreateStepsMenuComponent,
         PostCreateInfoStepComponent,
         PostCreateContentStepComponent,
-        PostCreateUploadStepComponent
+        PostCreateUploadStepComponent,
+        TagCreateComponent
     ],
     imports: [
         CommonModule,

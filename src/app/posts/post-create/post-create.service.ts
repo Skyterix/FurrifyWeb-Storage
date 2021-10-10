@@ -12,6 +12,9 @@ export class PostCreateService {
     postContentStepOpenEvent: EventEmitter<void> = new EventEmitter<void>();
     postUploadStepOpenEvent: EventEmitter<void> = new EventEmitter<void>();
 
+    tagCreateOpenEvent: EventEmitter<string> = new EventEmitter<string>();
+    tagCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
+
     constructor() {
     }
 }

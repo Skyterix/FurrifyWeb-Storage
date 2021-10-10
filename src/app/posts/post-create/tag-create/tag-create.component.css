@@ -1,0 +1,11 @@
+.close {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    outline: none;
+}
+
+h1 {
+    color: black;
+    font-size: 3em;
+}

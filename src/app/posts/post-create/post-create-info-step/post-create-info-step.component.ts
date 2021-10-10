@@ -45,7 +45,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             tag: new FormControl(null, [Validators.required])
         });
     }
-
+// TODO Error message
     ngOnInit(): void {
         this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
             this.isFetching = state.isFetching;
@@ -96,6 +96,8 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         if (this.isFetching || !!tagWrapper.isExisting) {
             return;
         }
+
+        this.postCreateService.tagCreateOpenEvent.emit(tagWrapper.tag.value);
     }
 
     onTagRemove(tagWrapper: TagWrapper): void {
@@ -107,7 +109,11 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const tagValue: string = this.tagSelectForm.controls.tag.value.trim();
+        const tagValue: string = this.tagSelectForm.controls.tag.value
+            .trim()
+            .toLowerCase()
+            // Replace spaces with underscore
+            .replace(/ /g, "_");
 
         // Check if tag already exists
         const isDuplicate = this.selectedTags.find((tagWrapper) => {

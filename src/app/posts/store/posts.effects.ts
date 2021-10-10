@@ -1,14 +1,19 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {catchError, map, switchMap} from 'rxjs/operators';
-import {GET_POST, GET_POSTS_BY_QUERY, GET_TAG, RESPONSE_TYPE} from '../../shared/config/api.constants';
+import {catchError, map, retryWhen, switchMap, tap} from 'rxjs/operators';
+import {CREATE_TAG, GET_POST, GET_POSTS_BY_QUERY, GET_TAG, RESPONSE_TYPE} from '../../shared/config/api.constants';
 import {of} from 'rxjs';
 import {
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
+    createTagFail,
+    createTagStart,
     failSearch,
+    fetchTagAfterCreationFail,
+    fetchTagAfterCreationStart,
+    fetchTagAfterCreationSuccess,
     getPostFail,
     getPostStart,
     getPostSuccess,
@@ -21,6 +26,8 @@ import * as fromApp from '../../store/app.reducer';
 import {HypermediaResultList} from "../../shared/model/hypermedia-result-list.model";
 import {Tag} from "../../shared/model/tag.model";
 import {TagWrapper} from "./posts.reducer";
+import {RETRY_HANDLER} from "../../shared/store/shared.effects";
+import {PostCreateService} from "../post-create/post-create.service";
 
 @Injectable()
 export class PostsEffects {
@@ -133,10 +140,77 @@ export class PostsEffects {
         })
     ));
 
+    createTagStart = createEffect(() => this.actions$.pipe(
+        ofType(createTagStart),
+        switchMap((action) => {
+            return this.httpClient.post(CREATE_TAG
+                    .replace(":userId", action.userId),
+                action.tag, {
+                    observe: 'response'
+                }).pipe(
+                map(response => {
+                    return fetchTagAfterCreationStart({
+                        userId: action.userId,
+                        value: response.headers.get('Id')!
+                    });
+                }),
+                catchError(error => {
+                    switch (error.status) {
+                        default:
+                            return of(createTagFail({
+                                errorMessage: 'Something went wrong. Try again later.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
+    fetchTagAfterCreationStart = createEffect(() => this.actions$.pipe(
+        ofType(fetchTagAfterCreationStart),
+        switchMap((action) => {
+            return this.httpClient.get<Tag>(GET_TAG
+                .replace(":userId", action.userId)
+                .replace(":value", action.value),
+            ).pipe(
+                map(tag => {
+                    return fetchTagAfterCreationSuccess({
+                        tag: tag
+                    });
+                }),
+                retryWhen(RETRY_HANDLER),
+                catchError(error => {
+                    let errorMessage;
+
+                    switch (error.status) {
+                        case 404:
+                            errorMessage = 'Tag creation was not handled yet by servers. Try again in a moment.';
+                            break;
+                        default:
+                            errorMessage = 'Something went wrong. Try again later.';
+                            break;
+                    }
+
+                    return of(fetchTagAfterCreationFail({
+                        errorMessage: errorMessage
+                    }));
+                })
+            );
+        })
+    ));
+
+    tagFetchSuccess = createEffect(() => this.actions$.pipe(
+        ofType(fetchTagAfterCreationSuccess),
+        tap(() => {
+            this.postCreateService.tagCreateCloseEvent.emit();
+        })
+    ), {dispatch: false});
+
     constructor(
         private store: Store<fromApp.AppState>,
         private actions$: Actions,
-        private httpClient: HttpClient
+        private httpClient: HttpClient,
+        private postCreateService: PostCreateService
     ) {
     }
 }
