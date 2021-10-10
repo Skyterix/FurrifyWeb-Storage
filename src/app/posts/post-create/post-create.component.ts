@@ -28,6 +28,9 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     isFetching = false;
     errorMessage: string | null = null;
 
+    private postInfoStepOpenEventSubscription!: Subscription;
+    private postContentStepOpenEventSubscription!: Subscription;
+    private postUploadStepOpenEventSubscription!: Subscription;
     private tagCreateOpenEventSubscription!: Subscription;
     private tagCreateCloseEventSubscription!: Subscription;
 
@@ -35,18 +38,18 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.postCreateService.postInfoStepOpenEvent.subscribe(() => {
+        this.postInfoStepOpenEventSubscription = this.postCreateService.postInfoStepOpenEvent.subscribe(() => {
             const postInfoStepComponent = this.componentFactoryResolver.resolveComponentFactory(PostCreateInfoStepComponent);
 
             this.loadStep<PostCreateInfoStepComponent>(postInfoStepComponent);
         });
-        this.postCreateService.postContentStepOpenEvent.subscribe(() => {
+        this.postContentStepOpenEventSubscription = this.postCreateService.postContentStepOpenEvent.subscribe(() => {
             const postContentStepComponent = this.componentFactoryResolver.resolveComponentFactory(PostCreateContentStepComponent);
 
             this.loadStep<PostCreateContentStepComponent>(postContentStepComponent);
         });
 
-        this.postCreateService.postUploadStepOpenEvent.subscribe(() => {
+        this.postUploadStepOpenEventSubscription = this.postCreateService.postUploadStepOpenEvent.subscribe(() => {
             const postUploadStepComponent = this.componentFactoryResolver.resolveComponentFactory(PostCreateUploadStepComponent);
 
             this.loadStep<PostCreateUploadStepComponent>(postUploadStepComponent);
@@ -67,9 +70,9 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.postCreateService.postInfoStepOpenEvent.unsubscribe();
-        this.postCreateService.postContentStepOpenEvent.unsubscribe();
-        this.postCreateService.postUploadStepOpenEvent.unsubscribe();
+        this.postInfoStepOpenEventSubscription.unsubscribe();
+        this.postContentStepOpenEventSubscription.unsubscribe();
+        this.postUploadStepOpenEventSubscription.unsubscribe();
         this.tagCreateCloseEventSubscription.unsubscribe();
         this.tagCreateCloseEventSubscription.unsubscribe();
     }
