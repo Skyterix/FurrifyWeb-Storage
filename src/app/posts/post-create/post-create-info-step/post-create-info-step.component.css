@@ -7,6 +7,10 @@
     background: red !important;
 }
 
-.tag a:hover {
+.tag a:hover, .artist a:hover {
     text-decoration: none;
+}
+
+.artist {
+    background: #37115a;
 }

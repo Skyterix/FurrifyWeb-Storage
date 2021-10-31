@@ -8,6 +8,9 @@ import {
 } from "../../shared/config/search.defaults";
 import {createReducer, on} from "@ngrx/store";
 import {
+    addArtistToSelectedSetFail,
+    addArtistToSelectedSetStart,
+    addArtistToSelectedSetSuccess,
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
@@ -20,6 +23,7 @@ import {
     getPostFail,
     getPostStart,
     getPostSuccess,
+    removeArtistFromSelected,
     removeTagFromSelected,
     selectPost,
     startSearch,
@@ -30,6 +34,13 @@ import {
     updateSearchQuery
 } from "./posts.actions";
 import {Tag} from "../../shared/model/tag.model";
+import {Artist} from "../../shared/model/artist.model";
+
+export class ArtistWrapper {
+    constructor(public artist: Artist,
+                public isExisting: boolean | null) {
+    }
+}
 
 export class TagWrapper {
     constructor(public tag: Tag,
@@ -51,6 +62,7 @@ export interface State {
     selectedPost: Post | null;
     // Create Post
     selectedTags: TagWrapper[];
+    selectedArtists: ArtistWrapper[];
     postSavedTitle: string;
     postSavedDescription: string;
     tagErrorMessage: string;
@@ -70,6 +82,7 @@ const initialState: State = {
     selectedPost: null,
     // Create Post
     selectedTags: [],
+    selectedArtists: [],
     postSavedTitle: "",
     postSavedDescription: "",
     tagErrorMessage: ""
@@ -269,5 +282,58 @@ export const postsReducer = createReducer(
                 selectedTags: state.selectedTags.slice().filter(item => item.tag !== action.tag)
             };
         }
-    )
+    ),
+    on(addArtistToSelectedSetStart, (state, action) => {
+            const artist = {
+                artistId: '',
+                ownerId: '',
+                nicknames: [],
+                preferredNickname: action.preferredNickname,
+                sources: [],
+                createDate: new Date()
+            };
+
+            return {
+                ...state,
+                isFetching: true,
+                postErrorMessage: null,
+                // Set temporarily isExisting value to null to show loading spinner
+                selectedArtists: [...state.selectedArtists, new ArtistWrapper(artist, null)]
+            };
+        }
+    ),
+    on(addArtistToSelectedSetSuccess, (state, action) => {
+            const newSelectedArtists = state.selectedArtists.slice();
+
+            // Find artist with same value
+            const oldSelectedArtistIndex = newSelectedArtists.findIndex((artistWrapper) => {
+                return artistWrapper.artist.preferredNickname === action.artistWrapper.artist.preferredNickname;
+            });
+
+            // Replace old artist with new one
+            newSelectedArtists[oldSelectedArtistIndex] = action.artistWrapper;
+
+            return {
+                ...state,
+                isFetching: false,
+                selectedArtists: newSelectedArtists
+            };
+        }
+    ),
+    on(addArtistToSelectedSetFail, (state, action) => {
+            return {
+                ...state,
+                isFetching: false,
+                postErrorMessage: action.errorMessage,
+                selectedArtists: state.selectedArtists.slice().filter(item => item.artist.preferredNickname !== action.preferredNickname)
+            };
+        }
+    ),
+    on(removeArtistFromSelected, (state, action) => {
+            return {
+                ...state,
+                selectedArtists: state.selectedArtists.slice().filter(item => item.artist !== action.artist)
+            };
+        }
+    ),
 );

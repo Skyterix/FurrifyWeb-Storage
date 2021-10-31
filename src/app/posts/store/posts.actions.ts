@@ -1,8 +1,9 @@
 import {createAction, props} from '@ngrx/store';
 import {Post} from '../../shared/model/post.model';
 import {PageInfo} from '../../shared/model/page-info.model';
-import {TagWrapper} from "./posts.reducer";
+import {ArtistWrapper, TagWrapper} from "./posts.reducer";
 import {Tag} from "../../shared/model/tag.model";
+import {Artist} from "../../shared/model/artist.model";
 
 export const updateSearchParams = createAction(
     '[Posts] Update search params',
@@ -115,4 +116,24 @@ export const fetchTagAfterCreationSuccess = createAction(
 export const removeTagFromSelected = createAction(
     '[Posts] Remove tag from selected',
     props<{ tag: Tag }>()
+);
+
+export const addArtistToSelectedSetStart = createAction(
+    '[Posts] Add artist to selected set start',
+    props<{ userId: string, preferredNickname: string }>()
+);
+
+export const addArtistToSelectedSetFail = createAction(
+    '[Posts] Add artist to selected set fail',
+    props<{ preferredNickname: string, errorMessage: string }>()
+);
+
+export const addArtistToSelectedSetSuccess = createAction(
+    '[Posts] Add artist to selected set success',
+    props<{ artistWrapper: ArtistWrapper }>()
+);
+
+export const removeArtistFromSelected = createAction(
+    '[Posts] Remove artist from selected',
+    props<{ artist: Artist }>()
 );

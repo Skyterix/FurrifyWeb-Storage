@@ -35,30 +35,31 @@
 
             </div>
         </form>
-        <!--        &lt;!&ndash; Creators &ndash;&gt;
-                <form [formGroup]="creatorSelectForm" class="form-group">
-                    <div class="form-control h-auto">
+        <!-- Artists -->
+        <form [formGroup]="artistSelectForm" class="mt-3">
+            <div class="form-control text-start h-auto">
 
-                <span (click)="loadCreateCreatorForm(creatorWrapper)" *ngFor="let creatorWrapper of selectedCreators"
-                      [ngClass]="creatorWrapper.isExisting != null && !creatorWrapper.isExisting ? 'bg-red' : ''"
-                      class="badge badge-dark me-1">
+                <!-- TODO Show box displaying info on hover -->
+                <span (click)="loadCreateArtistForm(artistWrapper)" *ngFor="let artistWrapper of selectedArtists"
+                      [ngClass]="artistWrapper.isExisting != null && !artistWrapper.isExisting ? 'bg-red' : ''"
+                      class="artist badge badge-dark me-1">
 
-                    <fa-icon *ngIf="creatorWrapper.isExisting == null" [icon]="spinnerIcon" class="me-1"
-                             [spin]="true"></fa-icon>
+                        <fa-icon *ngIf="artistWrapper.isExisting == null" [icon]="spinnerIcon" [spin]="true"
+                                 class="me-1"></fa-icon>
 
-                    <a class="tag text-white">{{ creatorWrapper.creator.username }}</a>
+                        <a class="text-white">{{ artistWrapper.artist.preferredNickname }}</a>
 
-                    <fa-icon (click)="onCreatorRemove(creatorWrapper)" [icon]="timesIcon"
-                             class="ms-1" style="cursor: pointer"></fa-icon>
-                </span>
+                        <fa-icon (click)="onArtistRemove(artistWrapper)" [icon]="timesIcon"
+                                 class="ms-1" style="cursor: pointer"></fa-icon>
+                    </span>
 
-                        <input (keyup.enter)="onCreatorSelectSubmit()"
-                               class="form-control border-0 d-inline-block m-0 p-0"
-                               formControlName="creator"
-                               placeholder="Creator username" type="text"/>
+                <input (keyup.enter)="onArtistSelectSubmit()"
+                       class="form-control border-0 d-inline-block m-0 p-0"
+                       formControlName="artist"
+                       placeholder="Artist value" type="text"/>
 
-                    </div>
-                </form>-->
+            </div>
+        </form>
         <!-- Submit -->
         <div class="mt-4">
             <button (click)="onNextStep()"

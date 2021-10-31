@@ -6,13 +6,15 @@ import {PostCreateService} from "../post-create.service";
 import * as fromApp from '../../../store/app.reducer';
 import {Subscription} from "rxjs";
 import {
+    addArtistToSelectedSetStart,
     addTagToSelectedSetStart,
+    removeArtistFromSelected,
     removeTagFromSelected,
     updatePostSavedDescription,
     updatePostSavedTitle
 } from "../../store/posts.actions";
 import {take} from "rxjs/operators";
-import {TagWrapper} from "../../store/posts.reducer";
+import {ArtistWrapper, TagWrapper} from "../../store/posts.reducer";
 import {KeycloakProfile} from "keycloak-js";
 
 @Component({
@@ -29,8 +31,10 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
 
     postInfoForm: FormGroup;
     tagSelectForm: FormGroup;
+    artistSelectForm: FormGroup;
 
     selectedTags!: TagWrapper[];
+    selectedArtists!: ArtistWrapper[];
 
     private currentUser!: KeycloakProfile | null;
 
@@ -49,13 +53,19 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         this.tagSelectForm = new FormGroup({
             tag: new FormControl(null, [Validators.required])
         });
+
+        // Artist form
+        this.artistSelectForm = new FormGroup({
+            artist: new FormControl(null, [Validators.required])
+        });
     }
 
-// TODO Error message
+    // TODO Error message
     ngOnInit(): void {
         this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
             this.isFetching = state.isFetching;
             this.selectedTags = state.selectedTags;
+            this.selectedArtists = state.selectedArtists;
         });
 
         this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
@@ -106,6 +116,13 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         this.postCreateService.tagCreateOpenEvent.emit(tagWrapper.tag.value);
     }
 
+    loadCreateArtistForm(artistWrapper: ArtistWrapper): void {
+        if (this.isFetching || !!artistWrapper.isExisting) {
+            return;
+        }
+
+    }
+
     onTagRemove(tagWrapper: TagWrapper): void {
         this.store.dispatch(removeTagFromSelected({
             tag: tagWrapper.tag
@@ -142,6 +159,39 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
 
             this.tagSelectForm.setValue({
                 tag: ''
+            });
+        }
+    }
+
+    onArtistRemove(artistWrapper: ArtistWrapper): void {
+        this.store.dispatch(removeArtistFromSelected({
+            artist: artistWrapper.artist
+        }));
+    }
+
+    onArtistSelectSubmit(): void {
+        if (!this.artistSelectForm.controls.artist.value) {
+            return;
+        }
+
+        const artistNickname: string = this.artistSelectForm.controls.artist.value
+            .trim();
+
+        // Check if creator already exists
+        const isDuplicate = this.selectedArtists.find((artistWrapper) => {
+            return artistWrapper.artist.preferredNickname === artistNickname;
+        });
+
+        if (!isDuplicate) {
+            this.store.dispatch(addArtistToSelectedSetStart(
+                {
+                    userId: this.currentUser!.id!,
+                    preferredNickname: artistNickname
+                }
+            ));
+
+            this.artistSelectForm.setValue({
+                artist: ''
             });
         }
     }

@@ -2,9 +2,19 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {catchError, map, retryWhen, switchMap, tap} from 'rxjs/operators';
-import {CREATE_TAG, GET_POST, GET_POSTS_BY_QUERY, GET_TAG, RESPONSE_TYPE} from '../../shared/config/api.constants';
+import {
+    CREATE_TAG,
+    GET_ARTIST,
+    GET_POST,
+    GET_POSTS_BY_QUERY,
+    GET_TAG,
+    RESPONSE_TYPE
+} from '../../shared/config/api.constants';
 import {of} from 'rxjs';
 import {
+    addArtistToSelectedSetFail,
+    addArtistToSelectedSetStart,
+    addArtistToSelectedSetSuccess,
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
@@ -25,9 +35,10 @@ import {Store} from '@ngrx/store';
 import * as fromApp from '../../store/app.reducer';
 import {HypermediaResultList} from "../../shared/model/hypermedia-result-list.model";
 import {Tag} from "../../shared/model/tag.model";
-import {TagWrapper} from "./posts.reducer";
+import {ArtistWrapper, TagWrapper} from "./posts.reducer";
 import {RETRY_HANDLER} from "../../shared/store/shared.effects";
 import {PostCreateService} from "../post-create/post-create.service";
+import {Artist} from "../../shared/model/artist.model";
 
 @Injectable()
 export class PostsEffects {
@@ -205,6 +216,56 @@ export class PostsEffects {
             this.postCreateService.tagCreateCloseEvent.emit();
         })
     ), {dispatch: false});
+
+    selectedArtistsAddStart = createEffect(() => this.actions$.pipe(
+        ofType(addArtistToSelectedSetStart),
+        switchMap((action) => {
+            return this.httpClient.get<HypermediaResultList<Artist>>(
+                GET_ARTIST
+                    .replace(":userId", action.userId), {
+                    params: {
+                        preferredNickname: action.preferredNickname
+                    },
+                    headers: new HttpHeaders()
+                        .append("Accept", RESPONSE_TYPE)
+                }).pipe(
+                map(response => {
+
+                    // If returned list is empty
+                    if (!response._embedded) {
+                        const artist = {
+                            artistId: '',
+                            ownerId: '',
+                            nicknames: [],
+                            preferredNickname: action.preferredNickname,
+                            sources: [],
+                            createDate: new Date()
+                        };
+
+                        return addArtistToSelectedSetSuccess({
+                            artistWrapper: new ArtistWrapper(artist, false)
+                        });
+                    }
+
+                    let artistWrapper =
+                        new ArtistWrapper(response._embedded.artistSnapshotList[0], true);
+
+                    return addArtistToSelectedSetSuccess({
+                        artistWrapper: artistWrapper
+                    });
+                }),
+                catchError(error => {
+                    switch (error.status) {
+                        default:
+                            return of(addArtistToSelectedSetFail({
+                                preferredNickname: action.preferredNickname,
+                                errorMessage: 'Something went wrong. Try again later.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
 
     constructor(
         private store: Store<fromApp.AppState>,
