@@ -14,6 +14,7 @@ import {PostCreateContentStepComponent} from "./post-create-content-step/post-cr
 import {PostCreateUploadStepComponent} from "./post-create-upload-step/post-create-upload-step.component";
 import {Subscription} from "rxjs";
 import {TagCreateComponent} from "./tag-create/tag-create.component";
+import {ArtistCreateComponent} from "./artist-create/artist-create.component";
 
 @Component({
     selector: 'app-post-create',
@@ -33,6 +34,8 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     private postUploadStepOpenEventSubscription!: Subscription;
     private tagCreateOpenEventSubscription!: Subscription;
     private tagCreateCloseEventSubscription!: Subscription;
+    private artistCreateOpenEventSubscription!: Subscription;
+    private artistCreateCloseEventSubscription!: Subscription;
 
     constructor(private postCreateService: PostCreateService, private componentFactoryResolver: ComponentFactoryResolver) {
     }
@@ -65,6 +68,16 @@ export class PostCreateComponent implements OnInit, OnDestroy {
             setTimeout(() => this.clearSideView());
         });
 
+        this.artistCreateOpenEventSubscription = this.postCreateService.artistCreateOpenEvent.subscribe(artistPreferredNickname => {
+            const createArtistComponent = this.componentFactoryResolver.resolveComponentFactory(ArtistCreateComponent);
+
+            const componentRef = this.loadSideStep<ArtistCreateComponent>(createArtistComponent);
+            componentRef.instance.preferredNickname = artistPreferredNickname;
+        });
+        this.artistCreateCloseEventSubscription = this.postCreateService.artistCreateCloseEvent.subscribe(__ => {
+            setTimeout(() => this.clearSideView());
+        });
+
         // Load default step
         setTimeout(() => this.postCreateService.postInfoStepOpenEvent.emit());
     }
@@ -75,6 +88,8 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         this.postUploadStepOpenEventSubscription.unsubscribe();
         this.tagCreateCloseEventSubscription.unsubscribe();
         this.tagCreateCloseEventSubscription.unsubscribe();
+        this.artistCreateOpenEventSubscription.unsubscribe();
+        this.artistCreateCloseEventSubscription.unsubscribe();
     }
 
     onClose(): void {

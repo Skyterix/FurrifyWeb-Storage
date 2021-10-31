@@ -121,6 +121,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             return;
         }
 
+        this.postCreateService.artistCreateOpenEvent.emit(artistWrapper.artist.preferredNickname);
     }
 
     onTagRemove(tagWrapper: TagWrapper): void {

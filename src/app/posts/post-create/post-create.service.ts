@@ -15,6 +15,9 @@ export class PostCreateService {
     tagCreateOpenEvent: EventEmitter<string> = new EventEmitter<string>();
     tagCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
 
+    artistCreateOpenEvent: EventEmitter<string> = new EventEmitter<string>();
+    artistCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
+
     constructor() {
     }
 }
