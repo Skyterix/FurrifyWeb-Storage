@@ -14,9 +14,13 @@ import {
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
+    createArtistFail,
     createTagFail,
     createTagStart,
     failSearch,
+    fetchArtistAfterCreationFail,
+    fetchArtistAfterCreationStart,
+    fetchArtistAfterCreationSuccess,
     fetchTagAfterCreationFail,
     fetchTagAfterCreationStart,
     fetchTagAfterCreationSuccess,
@@ -66,6 +70,7 @@ export interface State {
     postSavedTitle: string;
     postSavedDescription: string;
     tagErrorMessage: string;
+    artistErrorMessage: string;
 }
 
 const initialState: State = {
@@ -85,7 +90,8 @@ const initialState: State = {
     selectedArtists: [],
     postSavedTitle: "",
     postSavedDescription: "",
-    tagErrorMessage: ""
+    tagErrorMessage: "",
+    artistErrorMessage: ""
 };
 
 
@@ -333,6 +339,56 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 selectedArtists: state.selectedArtists.slice().filter(item => item.artist !== action.artist)
+            };
+        }
+    ),
+    on(createTagStart, (state, action) => {
+            return {
+                ...state,
+                isFetching: true,
+                artistErrorMessage: ""
+            };
+        }
+    ),
+    on(createArtistFail, (state, action) => {
+            return {
+                ...state,
+                isFetching: false,
+                artistErrorMessage: action.errorMessage
+            };
+        }
+    ),
+    on(fetchArtistAfterCreationStart, (state, action) => {
+            return {
+                ...state,
+                isFetching: true,
+                artistErrorMessage: ""
+            };
+        }
+    ),
+    on(fetchArtistAfterCreationFail, (state, action) => {
+            return {
+                ...state,
+                isFetching: false,
+                artistErrorMessage: action.errorMessage
+            };
+        }
+    ),
+    on(fetchArtistAfterCreationSuccess, (state, action) => {
+            const newArtists = state.selectedArtists.slice();
+
+            // Find artist with same value
+            const oldArtistIndex = newArtists.findIndex((artistWrapper) => {
+                return artistWrapper.artist.preferredNickname === action.artist.preferredNickname;
+            });
+
+            // Replace old tag with new one
+            newArtists[oldArtistIndex] = new ArtistWrapper(action.artist, true);
+
+            return {
+                ...state,
+                isFetching: false,
+                selectedArtists: newArtists
             };
         }
     ),

@@ -30,7 +30,6 @@ section {
 .row .left {
     position: relative;
     background-image: url("../../../assets/auth.jpg");
-    height: 100%;
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100% 100%;

@@ -137,3 +137,28 @@ export const removeArtistFromSelected = createAction(
     '[Posts] Remove artist from selected',
     props<{ artist: Artist }>()
 );
+
+export const createArtistStart = createAction(
+    '[Posts] Create artist start',
+    props<{ userId: string, artist: Artist }>()
+);
+
+export const createArtistFail = createAction(
+    '[Posts] Create artist fail',
+    props<{ errorMessage: string }>()
+);
+
+export const fetchArtistAfterCreationStart = createAction(
+    '[Posts] Fetch artist after creation start',
+    props<{ userId: string, artistId: string }>()
+);
+
+export const fetchArtistAfterCreationFail = createAction(
+    '[Posts] Create artist after creation fail',
+    props<{ errorMessage: string }>()
+);
+
+export const fetchArtistAfterCreationSuccess = createAction(
+    '[Posts] Fetch artist after creation success',
+    props<{ artist: Artist }>()
+);

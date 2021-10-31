@@ -3,8 +3,10 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {catchError, map, retryWhen, switchMap, tap} from 'rxjs/operators';
 import {
+    CREATE_ARTIST,
     CREATE_TAG,
     GET_ARTIST,
+    GET_ARTISTS_BY_PREFERRED_NICKNAME,
     GET_POST,
     GET_POSTS_BY_QUERY,
     GET_TAG,
@@ -18,9 +20,14 @@ import {
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
+    createArtistFail,
+    createArtistStart,
     createTagFail,
     createTagStart,
     failSearch,
+    fetchArtistAfterCreationFail,
+    fetchArtistAfterCreationStart,
+    fetchArtistAfterCreationSuccess,
     fetchTagAfterCreationFail,
     fetchTagAfterCreationStart,
     fetchTagAfterCreationSuccess,
@@ -221,7 +228,7 @@ export class PostsEffects {
         ofType(addArtistToSelectedSetStart),
         switchMap((action) => {
             return this.httpClient.get<HypermediaResultList<Artist>>(
-                GET_ARTIST
+                GET_ARTISTS_BY_PREFERRED_NICKNAME
                     .replace(":userId", action.userId), {
                     params: {
                         preferredNickname: action.preferredNickname
@@ -266,6 +273,72 @@ export class PostsEffects {
             );
         })
     ));
+
+    createArtistStart = createEffect(() => this.actions$.pipe(
+        ofType(createArtistStart),
+        switchMap((action) => {
+            return this.httpClient.post(CREATE_ARTIST
+                    .replace(":userId", action.userId),
+                action.artist, {
+                    observe: 'response'
+                }).pipe(
+                map(response => {
+                    return fetchArtistAfterCreationStart({
+                        userId: action.userId,
+                        artistId: response.headers.get('Id')!
+                    });
+                }),
+                catchError(error => {
+                    switch (error.status) {
+                        default:
+                            return of(createArtistFail({
+                                errorMessage: 'Something went wrong. Try again later.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
+    fetchArtistAfterCreationStart = createEffect(() => this.actions$.pipe(
+        ofType(fetchArtistAfterCreationStart),
+        switchMap((action) => {
+            return this.httpClient.get<Artist>(GET_ARTIST
+                .replace(":userId", action.userId)
+                .replace(":artistId", action.artistId),
+            ).pipe(
+                map(artist => {
+                    return fetchArtistAfterCreationSuccess({
+                        artist: artist
+                    });
+                }),
+                retryWhen(RETRY_HANDLER),
+                catchError(error => {
+                    let errorMessage;
+
+                    switch (error.status) {
+                        case 404:
+                            errorMessage = 'Artist creation was not handled yet by servers. Try again in a moment.';
+                            break;
+                        default:
+                            errorMessage = 'Something went wrong. Try again later.';
+                            break;
+                    }
+
+                    return of(fetchArtistAfterCreationFail({
+                        errorMessage: errorMessage
+                    }));
+                })
+            );
+        })
+    ));
+
+    artistFetchSuccess = createEffect(() => this.actions$.pipe(
+        ofType(fetchArtistAfterCreationSuccess),
+        tap(() => {
+            this.postCreateService.artistCreateCloseEvent.emit();
+        })
+    ), {dispatch: false});
 
     constructor(
         private store: Store<fromApp.AppState>,

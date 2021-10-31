@@ -131,15 +131,15 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     onTagSelectSubmit(): void {
-        if (!this.tagSelectForm.controls.tag.value) {
-            return;
-        }
-
         const tagValue: string = this.tagSelectForm.controls.tag.value
             .trim()
             .toLowerCase()
             // Replace spaces with underscore
             .replace(/ /g, "_");
+
+        if (!tagValue) {
+            return;
+        }
 
         if (!tagValue.match("^[a-z_-]*$")) {
             return;
@@ -171,14 +171,14 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     onArtistSelectSubmit(): void {
-        if (!this.artistSelectForm.controls.artist.value) {
-            return;
-        }
-
         const artistNickname: string = this.artistSelectForm.controls.artist.value
             .trim();
 
-        // Check if creator already exists
+        if (!artistNickname) {
+            return;
+        }
+
+        // Check if artist already exists
         const isDuplicate = this.selectedArtists.find((artistWrapper) => {
             return artistWrapper.artist.preferredNickname === artistNickname;
         });

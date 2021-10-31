@@ -8,6 +8,7 @@ import * as fromApp from "../../../store/app.reducer";
 import {PostCreateService} from "../post-create.service";
 import {Artist} from "../../../shared/model/artist.model";
 import {Source} from "../../../shared/model/source.model";
+import {createArtistStart} from "../../store/posts.actions";
 
 @Component({
     selector: 'app-artist-create',
@@ -24,6 +25,7 @@ export class ArtistCreateComponent implements OnInit {
     isFetching!: boolean;
 
     createArtistForm!: FormGroup;
+    selectNicknameForm!: FormGroup;
 
     currentUser!: KeycloakProfile | null;
 
@@ -40,36 +42,41 @@ export class ArtistCreateComponent implements OnInit {
     ngOnInit(): void {
         this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
             this.isFetching = state.isFetching;
-            this.errorMessage = state.tagErrorMessage;
+            this.errorMessage = state.artistErrorMessage;
         });
         this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
             this.currentUser = state.currentUser;
         });
 
         this.createArtistForm = new FormGroup({
-            preferredNickname: new FormControl({value: this.preferredNickname, disabled: true}),
-            nicknames: new FormControl(null, [Validators.required])
+            preferredNickname: new FormControl({value: this.preferredNickname, disabled: true})
+        });
+        this.selectNicknameForm = new FormGroup({
+            nickname: new FormControl(null, [Validators.required])
         });
     }
 
     ngOnDestroy(): void {
         this.postsStoreSubscription.unsubscribe();
+        this.authenticationStoreSubscription.unsubscribe()
     }
 
     onSubmit(): void {
+        let nicknames = [...this.selectedNicknames, this.preferredNickname];
+
         const newArtist: Artist = {
             artistId: "",
             ownerId: "",
-            nicknames: this.selectedNicknames,
+            nicknames: nicknames,
             preferredNickname: this.createArtistForm.controls.preferredNickname.value,
             sources: this.selectedSources,
             createDate: new Date()
         };
 
-        /*        this.store.dispatch(createArtistStart({
-                    userId: this.currentUser!.id!,
-                    artist: newArtist
-                }));*/
+        this.store.dispatch(createArtistStart({
+            userId: this.currentUser!.id!,
+            artist: newArtist
+        }));
     }
 
 
@@ -77,4 +84,37 @@ export class ArtistCreateComponent implements OnInit {
         this.postCreateService.artistCreateCloseEvent.emit();
     }
 
+    onArtistNicknameSelect(): void {
+        const nickname = this.selectNicknameForm.controls.nickname.value;
+
+        // If empty
+        if (!nickname.trim()) {
+            return;
+        }
+
+        // Check if nickname already exists
+        const isDuplicate = this.selectedNicknames.find((nicknameItem) => {
+            return nicknameItem === nickname;
+        });
+
+        if (isDuplicate) {
+            return;
+        }
+        // Block adding the same nick as preferred, as it will be added programmatically later
+        if (nickname === this.preferredNickname) {
+            return;
+        }
+
+        this.selectedNicknames.push(nickname);
+
+        this.selectNicknameForm.patchValue({
+            nickname: ""
+        })
+    }
+
+    onNicknameRemove(nicknameToRemove: string): void {
+        this.selectedNicknames = this.selectedNicknames.filter(nickname => {
+            return nickname !== nicknameToRemove;
+        })
+    }
 }

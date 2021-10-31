@@ -56,6 +56,7 @@ export class TagCreateComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.postsStoreSubscription.unsubscribe();
+        this.authenticationStoreSubscription.unsubscribe();
     }
 
     onSubmit(): void {
