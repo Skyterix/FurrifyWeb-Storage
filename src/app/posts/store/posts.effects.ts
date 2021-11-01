@@ -17,6 +17,8 @@ import {
     addArtistToSelectedSetFail,
     addArtistToSelectedSetStart,
     addArtistToSelectedSetSuccess,
+    addAttachment,
+    addMedia,
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
@@ -339,6 +341,21 @@ export class PostsEffects {
             this.postCreateService.artistCreateCloseEvent.emit();
         })
     ), {dispatch: false});
+
+    addMedia = createEffect(() => this.actions$.pipe(
+        ofType(addMedia),
+        tap(() => {
+            this.postCreateService.mediaCreateCloseEvent.emit();
+        })
+    ), {dispatch: false});
+
+    addAttachment = createEffect(() => this.actions$.pipe(
+        ofType(addAttachment),
+        tap(() => {
+            this.postCreateService.attachmentCreateCloseEvent.emit();
+        })
+    ), {dispatch: false});
+
 
     constructor(
         private store: Store<fromApp.AppState>,

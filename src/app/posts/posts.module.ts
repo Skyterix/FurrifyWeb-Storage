@@ -22,6 +22,9 @@ import {PostCreateContentStepComponent} from './post-create/post-create-content-
 import {PostCreateUploadStepComponent} from './post-create/post-create-upload-step/post-create-upload-step.component';
 import {TagCreateComponent} from './post-create/tag-create/tag-create.component';
 import {ArtistCreateComponent} from './post-create/artist-create/artist-create.component';
+import {MediaCreateComponent} from './post-create/media-create/media-create.component';
+import {AttachmentCreateComponent} from './post-create/attachment-create/attachment-create.component';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 
 @NgModule({
@@ -43,9 +46,12 @@ import {ArtistCreateComponent} from './post-create/artist-create/artist-create.c
         PostCreateContentStepComponent,
         PostCreateUploadStepComponent,
         TagCreateComponent,
-        ArtistCreateComponent
+        ArtistCreateComponent,
+        MediaCreateComponent,
+        AttachmentCreateComponent
     ],
     imports: [
+        DragDropModule,
         CommonModule,
         FontAwesomeModule,
         PostsRoutingModule,
@@ -56,7 +62,11 @@ import {ArtistCreateComponent} from './post-create/artist-create/artist-create.c
         PostCreateComponent,
         PostCreateInfoStepComponent,
         PostCreateContentStepComponent,
-        PostCreateUploadStepComponent
+        PostCreateUploadStepComponent,
+        ArtistCreateComponent,
+        MediaCreateComponent,
+        AttachmentCreateComponent,
+        TagCreateComponent
     ]
 })
 export class PostsModule {

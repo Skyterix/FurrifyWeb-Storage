@@ -15,6 +15,8 @@ import {PostCreateUploadStepComponent} from "./post-create-upload-step/post-crea
 import {Subscription} from "rxjs";
 import {TagCreateComponent} from "./tag-create/tag-create.component";
 import {ArtistCreateComponent} from "./artist-create/artist-create.component";
+import {MediaCreateComponent} from "./media-create/media-create.component";
+import {AttachmentCreateComponent} from "./attachment-create/attachment-create.component";
 
 @Component({
     selector: 'app-post-create',
@@ -36,6 +38,10 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     private tagCreateCloseEventSubscription!: Subscription;
     private artistCreateOpenEventSubscription!: Subscription;
     private artistCreateCloseEventSubscription!: Subscription;
+    private mediaCreateOpenEventSubscription!: Subscription;
+    private mediaCreateCloseEventSubscription!: Subscription;
+    private attachmentCreateOpenEventSubscription!: Subscription;
+    private attachmentCreateCloseEventSubscription!: Subscription;
 
     constructor(private postCreateService: PostCreateService, private componentFactoryResolver: ComponentFactoryResolver) {
     }
@@ -64,7 +70,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
             const componentRef = this.loadSideStep<TagCreateComponent>(createTagComponent);
             componentRef.instance.value = tagValue;
         });
-        this.tagCreateCloseEventSubscription = this.postCreateService.tagCreateCloseEvent.subscribe(__ => {
+        this.tagCreateCloseEventSubscription = this.postCreateService.tagCreateCloseEvent.subscribe(() => {
             setTimeout(() => this.clearSideView());
         });
 
@@ -74,7 +80,25 @@ export class PostCreateComponent implements OnInit, OnDestroy {
             const componentRef = this.loadSideStep<ArtistCreateComponent>(createArtistComponent);
             componentRef.instance.preferredNickname = artistPreferredNickname;
         });
-        this.artistCreateCloseEventSubscription = this.postCreateService.artistCreateCloseEvent.subscribe(__ => {
+        this.artistCreateCloseEventSubscription = this.postCreateService.artistCreateCloseEvent.subscribe(() => {
+            setTimeout(() => this.clearSideView());
+        });
+
+        this.mediaCreateOpenEventSubscription = this.postCreateService.mediaCreateOpenEvent.subscribe(() => {
+            const createMediaComponent = this.componentFactoryResolver.resolveComponentFactory(MediaCreateComponent);
+
+            this.loadSideStep<MediaCreateComponent>(createMediaComponent);
+        });
+        this.mediaCreateCloseEventSubscription = this.postCreateService.mediaCreateCloseEvent.subscribe(() => {
+            setTimeout(() => this.clearSideView());
+        });
+
+        this.attachmentCreateOpenEventSubscription = this.postCreateService.attachmentCreateOpenEvent.subscribe(() => {
+            const createAttachmentComponent = this.componentFactoryResolver.resolveComponentFactory(AttachmentCreateComponent);
+
+            this.loadSideStep<AttachmentCreateComponent>(createAttachmentComponent);
+        });
+        this.attachmentCreateCloseEventSubscription = this.postCreateService.attachmentCreateCloseEvent.subscribe(() => {
             setTimeout(() => this.clearSideView());
         });
 
@@ -88,6 +112,10 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         this.postUploadStepOpenEventSubscription.unsubscribe();
         this.tagCreateCloseEventSubscription.unsubscribe();
         this.tagCreateCloseEventSubscription.unsubscribe();
+        this.artistCreateOpenEventSubscription.unsubscribe();
+        this.artistCreateCloseEventSubscription.unsubscribe();
+        this.mediaCreateOpenEventSubscription.unsubscribe();
+        this.mediaCreateCloseEventSubscription.unsubscribe();
         this.artistCreateOpenEventSubscription.unsubscribe();
         this.artistCreateCloseEventSubscription.unsubscribe();
     }

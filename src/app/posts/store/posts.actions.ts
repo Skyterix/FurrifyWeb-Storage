@@ -1,7 +1,7 @@
 import {createAction, props} from '@ngrx/store';
 import {Post} from '../../shared/model/post.model';
 import {PageInfo} from '../../shared/model/page-info.model';
-import {ArtistWrapper, TagWrapper} from "./posts.reducer";
+import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper} from "./posts.reducer";
 import {Tag} from "../../shared/model/tag.model";
 import {Artist} from "../../shared/model/artist.model";
 
@@ -162,3 +162,29 @@ export const fetchArtistAfterCreationSuccess = createAction(
     '[Posts] Fetch artist after creation success',
     props<{ artist: Artist }>()
 );
+
+export const addMedia = createAction(
+    '[Posts] Add media',
+    props<{ mediaWrapper: MediaWrapper }>()
+);
+
+export const removeMedia = createAction(
+    '[Posts] Remove media',
+    props<{ index: number }>()
+);
+
+export const updateMediaSet = createAction(
+    '[Posts] Update media set',
+    props<{ mediaSet: MediaWrapper[] }>()
+);
+
+export const addAttachment = createAction(
+    '[Posts] Add attachment',
+    props<{ attachmentWrapper: AttachmentWrapper }>()
+);
+
+export const removeAttachment = createAction(
+    '[Posts] Remove attachment',
+    props<{ index: number }>()
+);
+

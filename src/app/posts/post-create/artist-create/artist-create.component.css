@@ -39,4 +39,5 @@ ul li {
 ul li .badge {
     cursor: pointer;
     background: dodgerblue;
+    user-select: none;
 }

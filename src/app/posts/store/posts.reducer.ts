@@ -11,6 +11,8 @@ import {
     addArtistToSelectedSetFail,
     addArtistToSelectedSetStart,
     addArtistToSelectedSetSuccess,
+    addAttachment,
+    addMedia,
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
@@ -28,10 +30,13 @@ import {
     getPostStart,
     getPostSuccess,
     removeArtistFromSelected,
+    removeAttachment,
+    removeMedia,
     removeTagFromSelected,
     selectPost,
     startSearch,
     successSearch,
+    updateMediaSet,
     updatePostSavedDescription,
     updatePostSavedTitle,
     updateSearchParams,
@@ -39,6 +44,8 @@ import {
 } from "./posts.actions";
 import {Tag} from "../../shared/model/tag.model";
 import {Artist} from "../../shared/model/artist.model";
+import {CreateMedia} from "../../shared/model/request/create-media.model";
+import {CreateAttachment} from "../../shared/model/request/create-attachment.model";
 
 export class ArtistWrapper {
     constructor(public artist: Artist,
@@ -49,6 +56,18 @@ export class ArtistWrapper {
 export class TagWrapper {
     constructor(public tag: Tag,
                 public isExisting: boolean | null) {
+    }
+}
+
+export class MediaWrapper {
+    constructor(public media: CreateMedia,
+                public file: File) {
+    }
+}
+
+export class AttachmentWrapper {
+    constructor(public attachment: CreateAttachment,
+                public file: File) {
     }
 }
 
@@ -71,6 +90,8 @@ export interface State {
     postSavedDescription: string;
     tagErrorMessage: string;
     artistErrorMessage: string;
+    mediaSet: MediaWrapper[];
+    attachments: AttachmentWrapper[];
 }
 
 const initialState: State = {
@@ -91,7 +112,9 @@ const initialState: State = {
     postSavedTitle: "",
     postSavedDescription: "",
     tagErrorMessage: "",
-    artistErrorMessage: ""
+    artistErrorMessage: "",
+    mediaSet: [],
+    attachments: []
 };
 
 
@@ -389,6 +412,41 @@ export const postsReducer = createReducer(
                 ...state,
                 isFetching: false,
                 selectedArtists: newArtists
+            };
+        }
+    ),
+    on(addMedia, (state, action) => {
+            return {
+                ...state,
+                mediaSet: [...state.mediaSet, action.mediaWrapper]
+            };
+        }
+    ),
+    on(removeMedia, (state, action) => {
+            return {
+                ...state,
+                mediaSet: state.mediaSet.slice().filter((item, index) => index !== action.index)
+            };
+        }
+    ),
+    on(updateMediaSet, (state, action) => {
+            return {
+                ...state,
+                mediaSet: [...action.mediaSet]
+            };
+        }
+    ),
+    on(addAttachment, (state, action) => {
+            return {
+                ...state,
+                attachments: [...state.attachments, action.attachmentWrapper]
+            };
+        }
+    ),
+    on(removeAttachment, (state, action) => {
+            return {
+                ...state,
+                attachments: state.attachments.slice().filter((item, index) => index !== action.index)
             };
         }
     ),

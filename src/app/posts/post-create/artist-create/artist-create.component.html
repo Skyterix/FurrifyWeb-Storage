@@ -25,7 +25,7 @@
                     </li>
                 </ul>
             </form>
-            <button (click)="onSubmit()" [disabled]="isFetching"
+            <button (click)="onSubmit()" [disabled]="isFetching" type="button"
                     class="btn btn-block btn-primary p-3 pt-2 pb-2">
                 <fa-icon *ngIf="isFetching" [fixedWidth]="true" [icon]="spinnerIcon" [spin]="true" class="text-white"
                          size="sm"></fa-icon>

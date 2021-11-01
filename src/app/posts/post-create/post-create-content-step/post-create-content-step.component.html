@@ -1,1 +1,29 @@
-<p>post-create-content-step works!</p>
+<article class="pt-4">
+    <div class="p-3 text-start">
+        <button (click)="loadCreateMediaForm()" class="btn btn-primary" type="button">Add media</button>
+        <!-- Media Set -->
+        <h6 class="mt-3 mb-2 ms-2">Media set</h6>
+        <ul (cdkDropListDropped)="dropMediaItem($event)" cdkDropList class="list-group mt-3">
+            <li *ngFor="let media of this.mediaSet; let index = index" cdkDrag
+                class="list-group-item d-flex justify-content-between align-items-center">
+                {{ media.file.name }}
+                <div>
+                    <span class="badge badge-primary badge-pill">{{ index }}</span>
+                    <span (click)="onMediaRemove(index)" class="badge badge-primary badge-pill remove">x</span>
+                </div>
+            </li>
+        </ul>
+        <button (click)="loadCreateAttachmentForm()" class="btn btn-primary mt-3" type="button">Add attachment</button>
+        <!-- Attachments -->
+        <h6 class="mt-3 mb-2 ms-2">Attachments</h6>
+        <ul class="list-group mt-3">
+            <li *ngFor="let attachment of this.attachments; let index = index"
+                class="list-group-item d-flex justify-content-between align-items-center">
+                {{ attachment.file.name }}
+                <div>
+                    <span (click)="onAttachmentRemove(index)" class="badge badge-primary badge-pill remove">x</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+</article>

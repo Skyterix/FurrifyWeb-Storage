@@ -18,6 +18,12 @@ export class PostCreateService {
     artistCreateOpenEvent: EventEmitter<string> = new EventEmitter<string>();
     artistCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
 
+    mediaCreateOpenEvent: EventEmitter<void> = new EventEmitter<void>();
+    mediaCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
+
+    attachmentCreateOpenEvent: EventEmitter<void> = new EventEmitter<void>();
+    attachmentCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
+
     constructor() {
     }
 }
