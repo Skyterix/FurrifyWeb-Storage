@@ -68,7 +68,7 @@ export class PostsEffects {
                     let posts: Post[] = [];
 
                     if (!!response._embedded) {
-                        posts = response._embedded.postSnapshotList;
+                        posts = response._embedded.List;
                     }
 
                     return successSearch({
