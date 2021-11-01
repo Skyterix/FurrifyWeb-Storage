@@ -36,7 +36,9 @@ export class PostItemsComponent implements OnInit {
             return;
         }
 
-        this.router.navigate(['/posts', this.post.postId, 'media', index]);
+        this.router.navigate(['/posts', this.post.postId, 'media', index], {
+            queryParamsHandling: "merge"
+        });
     }
 
     // TODO Implement
