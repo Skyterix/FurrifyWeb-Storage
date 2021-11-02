@@ -4,6 +4,7 @@ import {PageInfo} from '../../shared/model/page-info.model';
 import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper} from "./posts.reducer";
 import {Tag} from "../../shared/model/tag.model";
 import {Artist} from "../../shared/model/artist.model";
+import {CreatePost} from "../../shared/model/request/create-post.model";
 
 export const updateSearchParams = createAction(
     '[Posts] Update search params',
@@ -188,3 +189,22 @@ export const removeAttachment = createAction(
     props<{ index: number }>()
 );
 
+export const createPostStart = createAction(
+    '[Posts] Create post start',
+    props<{
+        userId: string,
+        createPost: CreatePost,
+        mediaSet: MediaWrapper[],
+        attachments: AttachmentWrapper[]
+    }>()
+);
+
+export const createPostFail = createAction(
+    '[Posts] Create post fail',
+    props<{ errorMessage: string }>()
+);
+
+export const createPostsSuccess = createAction(
+    '[Posts] Create post success',
+    props<{ postId: string }>()
+);

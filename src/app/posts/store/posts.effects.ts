@@ -4,6 +4,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {catchError, map, retryWhen, switchMap, tap} from 'rxjs/operators';
 import {
     CREATE_ARTIST,
+    CREATE_POST,
     CREATE_TAG,
     GET_ARTIST,
     GET_ARTISTS_BY_PREFERRED_NICKNAME,
@@ -24,6 +25,9 @@ import {
     addTagToSelectedSetSuccess,
     createArtistFail,
     createArtistStart,
+    createPostFail,
+    createPostsSuccess,
+    createPostStart,
     createTagFail,
     createTagStart,
     failSearch,
@@ -48,6 +52,7 @@ import {ArtistWrapper, TagWrapper} from "./posts.reducer";
 import {RETRY_HANDLER} from "../../shared/store/shared.effects";
 import {PostCreateService} from "../post-create/post-create.service";
 import {Artist} from "../../shared/model/artist.model";
+import {PostsService} from "../posts.service";
 
 @Injectable()
 export class PostsEffects {
@@ -335,6 +340,43 @@ export class PostsEffects {
         })
     ));
 
+    createPostStart = createEffect(() => this.actions$.pipe(
+        ofType(createPostStart),
+        switchMap((action) => {
+            return this.httpClient.post(CREATE_POST
+                    .replace(":userId", action.userId),
+                action.createPost, {
+                    observe: 'response'
+                }).pipe(
+                map(response => {
+                    return createPostsSuccess({
+                        postId: response.headers.get('Id')!
+                    });
+                }),
+                catchError(error => {
+                    switch (error.status) {
+                        default:
+                            return of(createPostFail({
+                                errorMessage: 'Something went wrong. Try again later.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
+    createPostSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createPostsSuccess),
+        tap(() => {
+            this.postCreateService.postCreateCloseEvent.emit();
+
+            // Give it 100 ms before search so server can have a chance at processing it
+            setTimeout(() => {
+                this.postsService.triggerSearch();
+            }, 100);
+        })
+    ), {dispatch: false});
+
     artistFetchSuccess = createEffect(() => this.actions$.pipe(
         ofType(fetchArtistAfterCreationSuccess),
         tap(() => {
@@ -361,7 +403,8 @@ export class PostsEffects {
         private store: Store<fromApp.AppState>,
         private actions$: Actions,
         private httpClient: HttpClient,
-        private postCreateService: PostCreateService
+        private postCreateService: PostCreateService,
+        private postsService: PostsService
     ) {
     }
 }

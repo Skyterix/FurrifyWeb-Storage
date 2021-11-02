@@ -17,6 +17,8 @@ import {
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
     createArtistFail,
+    createPostFail,
+    createPostStart,
     createTagFail,
     createTagStart,
     failSearch,
@@ -447,6 +449,22 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 attachments: state.attachments.slice().filter((item, index) => index !== action.index)
+            };
+        }
+    ),
+    on(createPostStart, (state, action) => {
+            return {
+                ...state,
+                isFetching: true,
+                errorMessage: ""
+            };
+        }
+    ),
+    on(createPostFail, (state, action) => {
+            return {
+                ...state,
+                isFetching: false,
+                errorMessage: action.errorMessage
             };
         }
     ),

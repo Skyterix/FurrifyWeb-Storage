@@ -1,1 +1,16 @@
-<p>post-create-upload-step works!</p>
+<article class="pt-4">
+    <div class="p-3 text-start">
+        <p *ngIf="!!errorMessage" class="alert-danger p-3 mb-4">{{ errorMessage }}</p>
+        <p class="p-3">Your post is almost ready. Click the button below to start uploading your content.</p>
+        <!-- Submit -->
+        <div class="mt-4 text-center">
+            <button (click)="onSubmit()" [disabled]="isFetching || isFormValid"
+                    class="btn btn-block btn-primary p-3 pt-2 pb-2"
+                    type="button">
+                <fa-icon *ngIf="isFetching" [fixedWidth]="true" [icon]="spinnerIcon" [spin]="true" class="text-white"
+                         size="sm"></fa-icon>
+                <span *ngIf="!isFetching">Create</span>
+            </button>
+        </div>
+    </div>
+</article>

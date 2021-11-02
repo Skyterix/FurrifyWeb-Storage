@@ -21,7 +21,6 @@ export class PostCreateContentStepComponent implements OnInit {
 
     constructor(private postCreateService: PostCreateService,
                 private store: Store<fromApp.AppState>) {
-
     }
 
     ngOnInit(): void {
@@ -59,5 +58,13 @@ export class PostCreateContentStepComponent implements OnInit {
         this.store.dispatch(updateMediaSet({
             mediaSet: newMediaSet
         }));
+    }
+
+    onNextStep(): void {
+        if (this.mediaSet.length == 0) {
+            return;
+        }
+
+        this.postCreateService.postUploadStepOpenEvent.emit();
     }
 }
