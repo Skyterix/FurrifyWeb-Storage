@@ -7,7 +7,6 @@ import {Media} from "../../../shared/model/media.model";
 import {MediaUtils} from "../../../shared/util/media.utils";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
-import {selectMedia} from "../../store/posts.actions";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
@@ -24,10 +23,10 @@ export class PostDetailsComponent implements OnInit {
 
     circleNotchIcon = faCircleNotch;
 
+    index!: number;
+
     sortedTags!: Tag[];
     sortedMedia!: Media[];
-
-    selectedMedia!: Media | null;
 
     constructor(private renderer: Renderer2,
                 private store: Store<fromApp.AppState>,
@@ -36,30 +35,22 @@ export class PostDetailsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.store.select('posts').subscribe(state => {
-            this.selectedMedia = state.selectedMedia;
-
-            // If selected media is not null
-            if (!!this.selectedMedia) {
-                // Load media after view init
-                setTimeout(() => this.loadMedia(this.selectedMedia!));
-            }
-        });
-
+        // Sort
         this.sortedTags = TagUtils.sortTagsByPriority([...this.post.tags]);
         this.sortedMedia = MediaUtils.sortByPriority([...this.post.mediaSet]);
 
-        // Get selected media index from url or default
-        let mediaIndex =
-            (!this.activatedRoute.snapshot.queryParams.index) ?
-                0 : this.activatedRoute.snapshot.queryParams.index;
+        // On index change
+        this.activatedRoute.params.subscribe(params => {
+            // Get selected media index from url
+            this.index = params.index;
 
-        // If media exists in post
-        if (this.sortedMedia[mediaIndex] !== null) {
-            this.store.dispatch(selectMedia({
-                media: this.sortedMedia[mediaIndex]
-            }));
-        }
+            // If media exists in post and index is valid
+            if (this.sortedMedia[this.index] !== undefined) {
+                setTimeout(() => this.loadMedia(this.sortedMedia[this.index]));
+            } else {
+                this.router.navigate(['/posts', this.post.postId, 'media', 0]);
+            }
+        });
     }
 
     onMediaLoaded(): void {
@@ -67,15 +58,7 @@ export class PostDetailsComponent implements OnInit {
         this.renderer.removeStyle(this.mediaSpinnerRef.nativeElement, 'display');
     }
 
-    // TODO Media index should be loaded from url
     private loadMedia(media: Media): void {
-        this.router.navigate([], {
-            queryParams: {
-                index: this.sortedMedia.indexOf(media)
-            },
-            queryParamsHandling: "merge"
-        });
-
         this.renderer.setStyle(this.mediaViewRef.nativeElement, 'display', 'none');
         this.renderer.setStyle(this.mediaSpinnerRef.nativeElement, 'display', 'inline-block');
 

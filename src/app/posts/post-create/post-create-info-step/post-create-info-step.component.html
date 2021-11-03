@@ -1,0 +1,71 @@
+<article class="pt-4">
+    <form [formGroup]="postInfoForm" class="p-3">
+        <!-- Title -->
+        <div class="mt-2">
+            <input (change)="onTitleValueChange()" class="form-control" formControlName="title" placeholder="Title"
+                   type="text"/>
+        </div>
+        <!-- Description -->
+        <div class="mt-3">
+            <textarea (change)="onDescriptionValueChange()" class="form-control" formControlName="description"
+                      placeholder="Description"></textarea>
+        </div>
+        <!-- Tags -->
+        <form [formGroup]="tagSelectForm" class="mt-3">
+            <div class="form-control text-start h-auto">
+
+                <span (click)="loadCreateTagForm(tagWrapper)" *ngFor="let tagWrapper of selectedTags"
+                      [appColoredTag]="tagWrapper.tag.type"
+                      [ngClass]="tagWrapper.isExisting != null && !tagWrapper.isExisting ? 'bg-red' : ''"
+                      class="tag badge badge-dark me-1">
+
+                        <fa-icon *ngIf="tagWrapper.isExisting == null" [icon]="spinnerIcon" [spin]="true"
+                                 class="me-1"></fa-icon>
+
+                        <a class="text-white">{{ tagWrapper.tag.value }}</a>
+
+                        <fa-icon (click)="onTagRemove(tagWrapper)" [icon]="timesIcon"
+                                 class="ms-1" style="cursor: pointer"></fa-icon>
+                    </span>
+
+                <input (keyup.enter)="onTagSelectSubmit()"
+                       class="form-control border-0 d-inline-block m-0 p-0"
+                       formControlName="tag"
+                       placeholder="Tag value" type="text"/>
+
+            </div>
+        </form>
+        <!-- Artists -->
+        <form [formGroup]="artistSelectForm" class="mt-3">
+            <div class="form-control text-start h-auto">
+
+                <!-- TODO Show box displaying info on hover -->
+                <span (click)="loadCreateArtistForm(artistWrapper)" *ngFor="let artistWrapper of selectedArtists"
+                      [ngClass]="artistWrapper.isExisting != null && !artistWrapper.isExisting ? 'bg-red' : ''"
+                      class="artist badge badge-dark me-1">
+
+                        <fa-icon *ngIf="artistWrapper.isExisting == null" [icon]="spinnerIcon" [spin]="true"
+                                 class="me-1"></fa-icon>
+
+                        <a class="text-white">{{ artistWrapper.artist.preferredNickname }}</a>
+
+                        <fa-icon (click)="onArtistRemove(artistWrapper)" [icon]="timesIcon"
+                                 class="ms-1" style="cursor: pointer"></fa-icon>
+                    </span>
+
+                <input (keyup.enter)="onArtistSelectSubmit()"
+                       class="form-control border-0 d-inline-block m-0 p-0"
+                       formControlName="artist"
+                       placeholder="Artist value" type="text"/>
+
+            </div>
+        </form>
+        <!-- Submit -->
+        <div class="mt-4">
+            <button (click)="onNextStep()"
+                    [disabled]="!postInfoForm.valid || selectedTags.length == 0"
+                    class="btn btn-block btn-primary p-3 pt-2 pb-2">Next
+            </button>
+        </div>
+    </form>
+</article>

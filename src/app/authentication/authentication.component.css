@@ -1,7 +1,3 @@
-:root {
-  --phone: 600px;
-}
-
 .background {
   position: absolute;
   background: url("../../assets/auth-bg.jpg") center;

@@ -4,7 +4,7 @@ import {MediaUtils} from "../../../shared/util/media.utils";
 import {Post} from "../../../shared/model/post.model";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
-import {selectMedia} from "../../store/posts.actions";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-post-items',
@@ -16,17 +16,29 @@ export class PostItemsComponent implements OnInit {
 
     sortedMedia!: Media[];
 
-    constructor(private store: Store<fromApp.AppState>) {
+    currentIndex!: number;
+
+    constructor(private store: Store<fromApp.AppState>,
+                private activatedRoute: ActivatedRoute,
+                private router: Router) {
     }
 
     ngOnInit(): void {
         this.sortedMedia = MediaUtils.sortByPriority([...this.post.mediaSet]);
+
+        this.activatedRoute.params.subscribe(params => {
+            this.currentIndex = params.index;
+        });
     }
 
-    onLoadMediaRequest(media: Media): void {
-        this.store.dispatch(selectMedia({
-            media: media
-        }));
+    onLoadMediaRequest(index: number): void {
+        if (index == this.currentIndex) {
+            return;
+        }
+
+        this.router.navigate(['/posts', this.post.postId, 'media', index], {
+            queryParamsHandling: "merge"
+        });
     }
 
     // TODO Implement

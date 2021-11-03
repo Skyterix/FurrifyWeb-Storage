@@ -1,17 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
 import * as fromApp from '../../../store/app.reducer';
 import {updateSearchParams} from "../../store/posts.actions";
 import {PostsService} from "../../posts.service";
 import {Router} from "@angular/router";
+import {Subscription} from "rxjs";
+import {PostCreateService} from "../../post-create/post-create.service";
 
 @Component({
     selector: 'app-sort-nav',
     templateUrl: './sort-nav.component.html',
     styleUrls: ['./sort-nav.component.css']
 })
-export class SortNavComponent implements OnInit {
+export class SortNavComponent implements OnInit, OnDestroy {
 
     sortForm!: FormGroup;
 
@@ -19,13 +21,16 @@ export class SortNavComponent implements OnInit {
     order!: string;
     size!: number;
 
+    private storeSubscription!: Subscription;
+
     constructor(private store: Store<fromApp.AppState>,
                 private postsService: PostsService,
+                private postCreateService: PostCreateService,
                 private router: Router) {
     }
 
     ngOnInit(): void {
-        this.store.select('posts').subscribe(state => {
+        this.storeSubscription = this.store.select('posts').subscribe(state => {
             this.sortBy = state.sortBy;
             this.order = state.order;
             this.size = state.size;
@@ -36,6 +41,10 @@ export class SortNavComponent implements OnInit {
             order: new FormControl(this.order, Validators.required),
             size: new FormControl(this.size, Validators.required)
         });
+    }
+
+    ngOnDestroy(): void {
+        this.storeSubscription.unsubscribe();
     }
 
     onChanges(): void {
@@ -62,7 +71,6 @@ export class SortNavComponent implements OnInit {
     }
 
     onCreatePost(): void {
-        // TODO Implement
-        alert("Not implemented yet.");
+        this.postCreateService.postCreateOpenEvent.emit();
     }
 }

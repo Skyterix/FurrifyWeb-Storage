@@ -26,6 +26,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     searchForm: FormGroup;
 
     private queryChangeSubscription!: Subscription;
+    private storeSubscription!: Subscription;
 
     constructor(private activatedRoute: ActivatedRoute,
                 private postsService: PostsService,
@@ -34,13 +35,13 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searchForm = new FormGroup({
             query: new FormControl(null)
         });
-
-        this.store.select('posts').subscribe(state => {
-            this.isSearching = state.isFetching;
-        });
     }
 
     ngOnInit() {
+        this.storeSubscription = this.store.select('posts').subscribe(state => {
+            this.isSearching = state.isFetching;
+        });
+
         // Check if search query is filled, if yes then display clear icon
         this.queryChangeSubscription =
             this.searchForm.controls.query.valueChanges.subscribe(value => {
@@ -58,6 +59,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.queryChangeSubscription.unsubscribe();
+        this.storeSubscription.unsubscribe();
     }
 
     onSearchQuery(): void {

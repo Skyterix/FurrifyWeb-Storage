@@ -1,0 +1,34 @@
+<div class="modal-backdrop position-fixed"></div>
+
+<section>
+    <div class="row justify-content-center">
+        <!-- Left -->
+        <div class="col-lg-5 col-md-4 left h-auto p-5 text-white">
+            <div class="front">
+                <ng-template #currentSideStep></ng-template>
+            </div>
+            <div class="back user-select-none">
+                <img alt="furrify banner" class="banner" src="../../../assets/auth-logo.png"/>
+                <div class="mt-5">
+                    <h1 class="h1 font-weight-bolder">STORE,</h1>
+                    <h1 class="h1 font-weight-bolder">MANAGE,</h1>
+                    <h1 class="h1 font-weight-bolder">SEARCH.</h1>
+                    <p>Grow your own collection.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Right -->
+        <div class="col-lg-5 col-md-4 right h-auto p-3 position-relative bg-white">
+            <div>
+                <button (click)="onClose()" [disabled]="isFetching" class="btn close" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <app-post-create-steps-menu></app-post-create-steps-menu>
+
+            <p *ngIf="!!errorMessage" class="alert-danger p-3 mt-3">{{ errorMessage }}</p>
+
+            <ng-template #currentStep></ng-template>
+        </div>
+    </div>
+</section>

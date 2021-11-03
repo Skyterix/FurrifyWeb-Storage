@@ -1,0 +1,43 @@
+.close {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    outline: none;
+    color: #000;
+    font-size: 1.5em;
+}
+
+h1 {
+    color: black;
+    font-size: 3em;
+}
+
+input.nickname {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+ul {
+    list-style: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    max-height: 190px;
+    overflow: auto;
+}
+
+ul li:first-of-type {
+    color: #000;
+    font-size: 1em;
+    font-weight: 400;
+}
+
+ul li {
+    border-top: 0;
+    user-select: none;
+}
+
+ul li .badge {
+    cursor: pointer;
+    background: dodgerblue;
+    user-select: none;
+}

@@ -18,11 +18,12 @@
             <p class="p-1">{{ post.description }}</p>
             <p class="h1 font-weight-light">Sources</p>
             <!-- Selected Media sources -->
-            <ul *ngIf="selectedMedia != null" class="p-1">
+            <ul *ngIf="this.sortedMedia[this.index] !== undefined" class="p-1">
                 <!-- TODO Implement href for source, and think if post even needs one or should media only -->
-                <li *ngFor="let source of selectedMedia.sources" class="rounded-pill p-2 d-inline me-1 bg-violet"><a
-                    class="text-decoration-none text-white"
-                    href="#">{{ source.strategy | removeText:'SourceStrategy' }}</a>
+                <li *ngFor="let source of sortedMedia[index].sources" class="rounded-pill p-2 d-inline me-1 bg-violet">
+                    <a
+                        class="text-decoration-none text-white"
+                        href="#">{{ source.strategy | removeText:'SourceStrategy' }}</a>
                 </li>
             </ul>
         </div>

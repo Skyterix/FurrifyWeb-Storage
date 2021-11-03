@@ -2,7 +2,7 @@
     <!-- Media List -->
     <p class="h1 font-weight-light p-1">Media</p>
     <div class="post-media-list">
-        <img (click)="onLoadMediaRequest(media)" *ngFor="let media of sortedMedia"
+        <img (click)="onLoadMediaRequest(index)" *ngFor="let media of sortedMedia; let index = index"
              [src]="media.thumbnailUrl"
              alt="media thumbnail" class="media m-1"/>
     </div>

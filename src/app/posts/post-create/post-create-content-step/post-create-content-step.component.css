@@ -1,0 +1,12 @@
+ul li {
+    user-select: none;
+}
+
+ul li .badge {
+    background: dodgerblue;
+}
+
+.remove {
+    cursor: pointer;
+    background: red !important;
+}

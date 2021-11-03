@@ -1,0 +1,36 @@
+<article class="bg-white p-4 h-100 border-right">
+    <div>
+        <button (click)="onClose()" [disabled]="isFetching" class="btn close p-1" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <h1 class="display-4 mb-4 mt-4">Artist Create</h1>
+    <form [formGroup]="createArtistForm" class="p-3">
+        <p *ngIf="!!errorMessage" class="alert-danger p-3 mb-4">{{ errorMessage }}</p>
+        <div>
+            <!-- Preferred nickname -->
+            <div class="mb-3">
+                <input class="form-control" formControlName="preferredNickname" placeholder="Preferred nickname"
+                       type="text"/>
+            </div>
+            <form [formGroup]="selectNicknameForm" class="mb-3 mt-2 text-start">
+                <input (keyup.enter)="onArtistNicknameSelect()" class="form-control nickname" formControlName="nickname"
+                       placeholder="Nickname" type="text"/>
+
+                <ul class="list-group">
+                    <li *ngFor="let nickname of this.selectedNicknames"
+                        class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ nickname }}
+                        <span (click)="onNicknameRemove(nickname)" class="badge badge-primary badge-pill">x</span>
+                    </li>
+                </ul>
+            </form>
+            <button (click)="onSubmit()" [disabled]="isFetching" type="button"
+                    class="btn btn-block btn-primary p-3 pt-2 pb-2">
+                <fa-icon *ngIf="isFetching" [fixedWidth]="true" [icon]="spinnerIcon" [spin]="true" class="text-white"
+                         size="sm"></fa-icon>
+                <span *ngIf="!isFetching">Create</span>
+            </button>
+        </div>
+    </form>
+</article>

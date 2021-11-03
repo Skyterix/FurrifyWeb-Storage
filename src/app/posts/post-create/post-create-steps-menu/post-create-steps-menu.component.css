@@ -1,0 +1,47 @@
+.steps {
+    padding-bottom: 30px;
+    padding-top: 20px;
+}
+
+.steps .dash {
+    display: inline-block;
+    background: #37115a;
+    width: calc(33.333% - 32px);
+    height: 3px;
+    margin-left: -1px;
+    margin-right: -1px;
+    margin-bottom: 5px;
+}
+
+.steps .circle.active {
+    background: #37115a;
+    font-weight: bold;
+}
+
+
+.steps .circle.active .step {
+    color: #fff;
+}
+
+.steps .circle {
+    display: inline-block;
+    border-radius: 100%;
+    border: 2px solid #37115a;
+    height: 32px;
+    width: 32px;
+    color: #000;
+    line-height: 29px;
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+    transition: .3s background-color ease;
+}
+
+.steps .circle .step {
+    font-weight: bold;
+}
+
+.steps .circle .name {
+    position: absolute;
+    margin-top: -10px;
+}
