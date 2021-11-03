@@ -1,6 +1,7 @@
 import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {faCaretDown} from "@fortawesome/free-solid-svg-icons/faCaretDown";
 import {KeycloakService} from "keycloak-angular";
+import {PostsService} from "../posts.service";
 
 @Component({
     selector: 'app-nav',
@@ -17,7 +18,8 @@ export class NavComponent implements OnInit {
     @ViewChild('menu')
     menuRef!: ElementRef;
 
-    constructor(private keycloakService: KeycloakService) {
+    constructor(private keycloakService: KeycloakService,
+                private postsService: PostsService) {
     }
 
     ngOnInit() {
@@ -40,7 +42,14 @@ export class NavComponent implements OnInit {
         this.keycloakService.logout();
     }
 
-    onMenuToggle() {
+    onMenuToggle(): void {
+        alert("Not implemented.");
+    }
 
+    triggerSearch(): void {
+        // Let it navigate first
+        setTimeout(() => {
+            this.postsService.triggerSearch();
+        });
     }
 }
