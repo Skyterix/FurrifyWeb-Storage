@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
-import {PostCreateService} from "../post-create.service";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper} from "../../store/posts.reducer";
 import {createPostStart} from "../../store/posts.actions";
@@ -30,17 +29,19 @@ export class PostCreateUploadStepComponent implements OnInit, OnDestroy {
 
     currentUser!: KeycloakProfile | null;
 
+    currentMediaUploadIndex = 0;
+    currentAttachmentUploadIndex = 0;
+
     private postsStoreSubscription!: Subscription;
     private authenticationStoreSubscription!: Subscription;
 
-    constructor(private store: Store<fromApp.AppState>,
-                private postCreateService: PostCreateService) {
+    constructor(private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit(): void {
         this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
             this.isFetching = state.isFetching;
-            this.errorMessage = state.artistErrorMessage;
+            this.errorMessage = state.postCreateErrorMessage;
 
             this.title = state.postSavedTitle;
             this.description = state.postSavedDescription;
@@ -48,6 +49,9 @@ export class PostCreateUploadStepComponent implements OnInit, OnDestroy {
             this.tags = state.selectedTags;
             this.mediaSet = state.mediaSet;
             this.attachments = state.attachments;
+
+            this.currentMediaUploadIndex = state.currentMediaUploadIndex;
+            this.currentAttachmentUploadIndex = state.currentAttachmentUploadIndex;
 
             this.isFormValid = (
                 !state.postSavedTitle || // Is title present

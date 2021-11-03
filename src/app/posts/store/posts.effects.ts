@@ -4,6 +4,8 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {catchError, map, retryWhen, switchMap, tap} from 'rxjs/operators';
 import {
     CREATE_ARTIST,
+    CREATE_ATTACHMENT,
+    CREATE_MEDIA,
     CREATE_POST,
     CREATE_TAG,
     GET_ARTIST,
@@ -26,8 +28,10 @@ import {
     createArtistFail,
     createArtistStart,
     createPostFail,
-    createPostsSuccess,
     createPostStart,
+    createPostSuccess,
+    createPostUploadAttachmentStart,
+    createPostUploadMediaStart,
     createTagFail,
     createTagStart,
     failSearch,
@@ -310,34 +314,35 @@ export class PostsEffects {
     fetchArtistAfterCreationStart = createEffect(() => this.actions$.pipe(
         ofType(fetchArtistAfterCreationStart),
         switchMap((action) => {
-            return this.httpClient.get<Artist>(GET_ARTIST
-                .replace(":userId", action.userId)
-                .replace(":artistId", action.artistId),
-            ).pipe(
-                map(artist => {
-                    return fetchArtistAfterCreationSuccess({
-                        artist: artist
-                    });
-                }),
-                retryWhen(RETRY_HANDLER),
-                catchError(error => {
-                    let errorMessage;
+                return this.httpClient.get<Artist>(GET_ARTIST
+                    .replace(":userId", action.userId)
+                    .replace(":artistId", action.artistId),
+                ).pipe(
+                    map(artist => {
+                        return fetchArtistAfterCreationSuccess({
+                            artist: artist
+                        });
+                    }),
+                    retryWhen(RETRY_HANDLER),
+                    catchError(error => {
+                        let errorMessage;
 
-                    switch (error.status) {
-                        case 404:
-                            errorMessage = 'Artist creation was not handled yet by servers. Try again in a moment.';
-                            break;
-                        default:
-                            errorMessage = 'Something went wrong. Try again later.';
-                            break;
-                    }
+                        switch (error.status) {
+                            case 404:
+                                errorMessage = 'Artist creation was not handled yet by servers. Try again in a moment.';
+                                break;
+                            default:
+                                errorMessage = 'Something went wrong. Try again later.';
+                                break;
+                        }
 
-                    return of(fetchArtistAfterCreationFail({
-                        errorMessage: errorMessage
-                    }));
-                })
-            );
-        })
+                        return of(fetchArtistAfterCreationFail({
+                            errorMessage: errorMessage
+                        }));
+                    })
+                );
+            }
+        )
     ));
 
     createPostStart = createEffect(() => this.actions$.pipe(
@@ -349,8 +354,12 @@ export class PostsEffects {
                     observe: 'response'
                 }).pipe(
                 map(response => {
-                    return createPostsSuccess({
-                        postId: response.headers.get('Id')!
+                    return createPostUploadMediaStart({
+                        userId: action.userId,
+                        postId: response.headers.get('Id')!,
+                        currentIndex: 0,
+                        mediaSet: action.mediaSet,
+                        attachments: action.attachments
                     });
                 }),
                 catchError(error => {
@@ -365,15 +374,108 @@ export class PostsEffects {
         })
     ));
 
+    createPostUploadMediaStart = createEffect(() => this.actions$.pipe(
+        ofType(createPostUploadMediaStart),
+        switchMap((action) => {
+            const data = new FormData();
+            const mediaWrapper = action.mediaSet[action.currentIndex];
+
+            const media = {...mediaWrapper.media};
+            // Overwrite priority based on index given by user
+            media.priority = action.mediaSet.length - action.currentIndex - 1;
+
+            data.append("media", new Blob([JSON.stringify(media)], {
+                type: "application/json"
+            }));
+            data.append("file", mediaWrapper.file, mediaWrapper.file.name);
+
+            return this.httpClient.post(CREATE_MEDIA
+                    .replace(":userId", action.userId)
+                    .replace(":postId", action.postId),
+                data).pipe(
+                map(response => {
+                    // If all media are uploaded
+                    if (action.currentIndex == action.mediaSet.length - 1) {
+                        return createPostUploadAttachmentStart({
+                            userId: action.userId,
+                            postId: action.postId,
+                            currentIndex: 0,
+                            attachments: action.attachments
+                        });
+                    }
+
+                    return createPostUploadMediaStart({
+                        userId: action.userId,
+                        postId: action.postId,
+                        currentIndex: action.currentIndex + 1,
+                        mediaSet: action.mediaSet,
+                        attachments: action.attachments
+                    });
+                }),
+                retryWhen(RETRY_HANDLER),
+                catchError(error => {
+                    switch (error.status) {
+                        default:
+                            return of(createPostFail({
+                                errorMessage: 'Something went wrong while uploading "' +
+                                    action.mediaSet[action.currentIndex].file.name +
+                                    '" file. The upload of other files has been canceled.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
+    createPostUploadAttachmentStart = createEffect(() => this.actions$.pipe(
+        ofType(createPostUploadAttachmentStart),
+        switchMap((action) => {
+            const data = new FormData();
+            const attachmentWrapper = action.attachments[action.currentIndex];
+
+            data.append("attachment", new Blob([JSON.stringify(attachmentWrapper.attachment)], {
+                type: "application/json"
+            }));
+            data.append("file", attachmentWrapper.file, attachmentWrapper.file.name);
+
+            return this.httpClient.post(CREATE_ATTACHMENT
+                    .replace(":userId", action.userId)
+                    .replace(":postId", action.postId),
+                data).pipe(
+                map(response => {
+                    // If all attachments are uploaded
+                    if (action.currentIndex == action.attachments.length - 1) {
+                        return createPostSuccess();
+                    }
+
+                    return createPostUploadAttachmentStart({
+                        userId: action.userId,
+                        postId: action.postId,
+                        currentIndex: action.currentIndex + 1,
+                        attachments: action.attachments
+                    });
+                }),
+                retryWhen(RETRY_HANDLER),
+                catchError(error => {
+                    switch (error.status) {
+                        default:
+                            return of(createPostFail({
+                                errorMessage: 'Something went wrong while uploading "' +
+                                    action.attachments[action.currentIndex].file.name +
+                                    '" file. The upload of other files has been canceled.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
     createPostSuccess = createEffect(() => this.actions$.pipe(
-        ofType(createPostsSuccess),
+        ofType(createPostSuccess),
         tap(() => {
             this.postCreateService.postCreateCloseEvent.emit();
 
-            // Give it 100 ms before search so server can have a chance at processing it
-            setTimeout(() => {
-                this.postsService.triggerSearch();
-            }, 100);
+            this.postsService.triggerSearch();
         })
     ), {dispatch: false});
 

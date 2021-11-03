@@ -19,6 +19,9 @@ import {
     createArtistFail,
     createPostFail,
     createPostStart,
+    createPostSuccess,
+    createPostUploadAttachmentStart,
+    createPostUploadMediaStart,
     createTagFail,
     createTagStart,
     failSearch,
@@ -94,6 +97,9 @@ export interface State {
     artistErrorMessage: string;
     mediaSet: MediaWrapper[];
     attachments: AttachmentWrapper[];
+    currentMediaUploadIndex: number;
+    currentAttachmentUploadIndex: number;
+    postCreateErrorMessage: string;
 }
 
 const initialState: State = {
@@ -116,7 +122,10 @@ const initialState: State = {
     tagErrorMessage: "",
     artistErrorMessage: "",
     mediaSet: [],
-    attachments: []
+    attachments: [],
+    currentMediaUploadIndex: -1,
+    currentAttachmentUploadIndex: -1,
+    postCreateErrorMessage: ""
 };
 
 
@@ -456,7 +465,25 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
-                errorMessage: ""
+                postCreateErrorMessage: ""
+            };
+        }
+    ),
+    on(createPostSuccess, (state, action) => {
+            return {
+                ...state,
+                isFetching: true,
+                selectedTags: [],
+                selectedArtists: [],
+                postSavedTitle: "",
+                postSavedDescription: "",
+                tagErrorMessage: "",
+                artistErrorMessage: "",
+                mediaSet: [],
+                attachments: [],
+                currentMediaUploadIndex: -1,
+                currentAttachmentUploadIndex: -1,
+                postCreateErrorMessage: ""
             };
         }
     ),
@@ -464,7 +491,21 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 isFetching: false,
-                errorMessage: action.errorMessage
+                postCreateErrorMessage: action.errorMessage
+            };
+        }
+    ),
+    on(createPostUploadMediaStart, (state, action) => {
+            return {
+                ...state,
+                currentMediaUploadIndex: action.currentIndex
+            };
+        }
+    ),
+    on(createPostUploadAttachmentStart, (state, action) => {
+            return {
+                ...state,
+                currentAttachmentUploadIndex: action.currentIndex
             };
         }
     ),

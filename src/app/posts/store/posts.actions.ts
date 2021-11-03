@@ -204,7 +204,16 @@ export const createPostFail = createAction(
     props<{ errorMessage: string }>()
 );
 
-export const createPostsSuccess = createAction(
-    '[Posts] Create post success',
-    props<{ postId: string }>()
+export const createPostSuccess = createAction(
+    '[Posts] Create post success'
+);
+
+export const createPostUploadMediaStart = createAction(
+    '[Posts] Create post upload media start',
+    props<{ userId: string, postId: string, currentIndex: number, mediaSet: MediaWrapper[], attachments: AttachmentWrapper[] }>()
+);
+
+export const createPostUploadAttachmentStart = createAction(
+    '[Posts] Create post upload attachment start',
+    props<{ userId: string, postId: string, currentIndex: number, attachments: AttachmentWrapper[] }>()
 );
