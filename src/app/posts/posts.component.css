@@ -1,6 +1,6 @@
 section {
-    background: #000 url("src/assets/posts-bg.jpg") no-repeat top;
-    background-size: 100%;
+    background: rgb(24, 24, 24);
+    background: linear-gradient(315deg, rgba(24, 24, 24, 1) 0%, rgba(37, 37, 37, 1) 60%, rgba(43, 43, 43, 1) 100%);
     z-index: -1;
     padding-top: 62px;
     min-height: 100vh;

@@ -1,4 +1,4 @@
-<div class="post">
+<div class="post shadow-lg">
     <div class="badges">
         <span *ngFor="let tag of movieTags" [appColoredTag]="tag.type" class="badge">
             <a (click)="searchPosts()" [queryParams]="{ query: '#' + tag.value }" [routerLink]="['/posts']">

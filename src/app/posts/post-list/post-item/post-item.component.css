@@ -3,7 +3,7 @@
     border-radius: 8px;
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
     flex-grow: 1;
-    background: #202020;
+    background: rgba(50, 50, 50, 0.9);
     user-select: none;
     margin: 6px;
     max-width: 256px;
