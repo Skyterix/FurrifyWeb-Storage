@@ -1,8 +1,20 @@
 section {
-    background: rgb(24, 24, 24);
-    background: linear-gradient(315deg, rgba(24, 24, 24, 1) 0%, rgba(37, 37, 37, 1) 60%, rgba(43, 43, 43, 1) 100%);
+    background: rgba(24, 24, 24, 0.89);
+    background: linear-gradient(315deg, rgba(32, 32, 32, 0.89) 0%, rgba(41, 41, 41, 0.89) 60%, rgba(47, 47, 47, 0.89) 100%);
     z-index: -1;
     padding-top: 62px;
     min-height: 100vh;
     text-align: center;
+}
+
+.bg {
+    z-index: -10;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    filter: blur(12px);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    opacity: 0;
+    transition: opacity .25s ease;
 }
