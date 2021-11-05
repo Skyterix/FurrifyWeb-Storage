@@ -1,13 +1,4 @@
-import {
-    Component,
-    ComponentFactory,
-    ComponentFactoryResolver,
-    ComponentRef,
-    OnDestroy,
-    OnInit,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
+import {Component, ComponentRef, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
 import {PostCreateService} from "./post-create.service";
 import {PostCreateInfoStepComponent} from "./post-create-info-step/post-create-info-step.component";
 import {PostCreateContentStepComponent} from "./post-create-content-step/post-create-content-step.component";
@@ -43,31 +34,25 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     private attachmentCreateOpenEventSubscription!: Subscription;
     private attachmentCreateCloseEventSubscription!: Subscription;
 
-    constructor(private postCreateService: PostCreateService, private componentFactoryResolver: ComponentFactoryResolver) {
+    constructor(private postCreateService: PostCreateService) {
     }
 
     ngOnInit(): void {
         this.postInfoStepOpenEventSubscription = this.postCreateService.postInfoStepOpenEvent.subscribe(() => {
-            const postInfoStepComponent = this.componentFactoryResolver.resolveComponentFactory(PostCreateInfoStepComponent);
 
-            this.loadStep<PostCreateInfoStepComponent>(postInfoStepComponent);
+            this.loadStep<PostCreateInfoStepComponent>(PostCreateInfoStepComponent);
         });
         this.postContentStepOpenEventSubscription = this.postCreateService.postContentStepOpenEvent.subscribe(() => {
-            const postContentStepComponent = this.componentFactoryResolver.resolveComponentFactory(PostCreateContentStepComponent);
-
-            this.loadStep<PostCreateContentStepComponent>(postContentStepComponent);
+            this.loadStep<PostCreateContentStepComponent>(PostCreateContentStepComponent);
         });
 
         this.postUploadStepOpenEventSubscription = this.postCreateService.postUploadStepOpenEvent.subscribe(() => {
-            const postUploadStepComponent = this.componentFactoryResolver.resolveComponentFactory(PostCreateUploadStepComponent);
 
-            this.loadStep<PostCreateUploadStepComponent>(postUploadStepComponent);
+            this.loadStep<PostCreateUploadStepComponent>(PostCreateUploadStepComponent);
         });
 
         this.tagCreateOpenEventSubscription = this.postCreateService.tagCreateOpenEvent.subscribe(tagValue => {
-            const createTagComponent = this.componentFactoryResolver.resolveComponentFactory(TagCreateComponent);
-
-            const componentRef = this.loadSideStep<TagCreateComponent>(createTagComponent);
+            const componentRef = this.loadSideStep<TagCreateComponent>(TagCreateComponent);
             componentRef.instance.value = tagValue;
         });
         this.tagCreateCloseEventSubscription = this.postCreateService.tagCreateCloseEvent.subscribe(() => {
@@ -75,9 +60,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         });
 
         this.artistCreateOpenEventSubscription = this.postCreateService.artistCreateOpenEvent.subscribe(artistPreferredNickname => {
-            const createArtistComponent = this.componentFactoryResolver.resolveComponentFactory(ArtistCreateComponent);
-
-            const componentRef = this.loadSideStep<ArtistCreateComponent>(createArtistComponent);
+            const componentRef = this.loadSideStep<ArtistCreateComponent>(ArtistCreateComponent);
             componentRef.instance.preferredNickname = artistPreferredNickname;
         });
         this.artistCreateCloseEventSubscription = this.postCreateService.artistCreateCloseEvent.subscribe(() => {
@@ -85,18 +68,14 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         });
 
         this.mediaCreateOpenEventSubscription = this.postCreateService.mediaCreateOpenEvent.subscribe(() => {
-            const createMediaComponent = this.componentFactoryResolver.resolveComponentFactory(MediaCreateComponent);
-
-            this.loadSideStep<MediaCreateComponent>(createMediaComponent);
+            this.loadSideStep<MediaCreateComponent>(MediaCreateComponent);
         });
         this.mediaCreateCloseEventSubscription = this.postCreateService.mediaCreateCloseEvent.subscribe(() => {
             setTimeout(() => this.clearSideView());
         });
 
         this.attachmentCreateOpenEventSubscription = this.postCreateService.attachmentCreateOpenEvent.subscribe(() => {
-            const createAttachmentComponent = this.componentFactoryResolver.resolveComponentFactory(AttachmentCreateComponent);
-
-            this.loadSideStep<AttachmentCreateComponent>(createAttachmentComponent);
+            this.loadSideStep<AttachmentCreateComponent>(AttachmentCreateComponent);
         });
         this.attachmentCreateCloseEventSubscription = this.postCreateService.attachmentCreateCloseEvent.subscribe(() => {
             setTimeout(() => this.clearSideView());
@@ -124,12 +103,12 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         this.postCreateService.postCreateCloseEvent.emit();
     }
 
-    private loadStep<T>(component: ComponentFactory<T>): void {
+    private loadStep<T>(component: Type<T>): void {
         this.currentStepRef!.clear();
         this.currentStepRef!.createComponent(component);
     }
 
-    private loadSideStep<T>(component: ComponentFactory<T>): ComponentRef<T> {
+    private loadSideStep<T>(component: Type<T>): ComponentRef<T> {
         this.currentSideStepRef!.clear();
         return this.currentSideStepRef!.createComponent(component);
     }
