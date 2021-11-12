@@ -73,7 +73,7 @@ input.search {
 }
 
 .dropdown-menu {
-    background: rgba(20, 20, 20);
+    background: rgba(50, 50, 50, 0.9);
 }
 
 .dropdown-item {
@@ -125,7 +125,7 @@ input.search {
 .user .dropdown-menu {
     display: none;
     position: absolute;
-    margin-top: 20px;
+    margin-top: 25px;
     margin-left: -80px;
     border-radius: 16px;
     padding: 10px;
@@ -151,6 +151,7 @@ input.search {
 .user .dropdown-menu p {
     font-size: 0.9em;
     font-weight: bold;
-    color: #494949;
+    color: #6b6b6b;
     padding: 10px 0 0 10px;
+    cursor: auto;
 }

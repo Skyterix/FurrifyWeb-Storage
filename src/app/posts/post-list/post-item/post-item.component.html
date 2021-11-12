@@ -1,4 +1,4 @@
-<div class="post shadow-lg">
+<div class="post shadow-lg animate__animated animate__fadeIn">
     <div class="badges">
         <span *ngFor="let tag of movieTags" [appColoredTag]="tag.type" class="badge">
             <a (click)="searchPosts()" [queryParams]="{ query: '#' + tag.value }" [routerLink]="['/posts']">
@@ -23,6 +23,6 @@
           <fa-icon *ngIf="mediaContains()" [fixedWidth]="true" [icon]="bookIcon" class="text-white pb-1 pt-1"
                    size="sm"></fa-icon>-->
         </span>
-        <img [src]="thumbnailUrl" alt="post thumbnail" class="thumbnail img-fluid"/>
+        <img [src]="thumbnailUri" alt="post thumbnail" class="thumbnail img-fluid"/>
     </a>
 </div>

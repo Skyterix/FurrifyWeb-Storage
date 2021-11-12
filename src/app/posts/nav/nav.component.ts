@@ -1,7 +1,9 @@
-import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {faCaretDown} from "@fortawesome/free-solid-svg-icons/faCaretDown";
 import {KeycloakService} from "keycloak-angular";
 import {PostsService} from "../posts.service";
+import {faTimes} from "@fortawesome/free-solid-svg-icons/faTimes";
+import {faBars} from "@fortawesome/free-solid-svg-icons/faBars";
 
 @Component({
     selector: 'app-nav',
@@ -10,16 +12,19 @@ import {PostsService} from "../posts.service";
 })
 export class NavComponent implements OnInit {
 
+    menuToggleIcon = faBars;
     caretDownIcon = faCaretDown;
 
     isMenuOpened = false;
     username!: string;
 
-    @ViewChild('menu')
+    @ViewChild('menuRef')
     menuRef!: ElementRef;
 
+
     constructor(private keycloakService: KeycloakService,
-                private postsService: PostsService) {
+                private postsService: PostsService,
+                private renderer: Renderer2) {
     }
 
     ngOnInit() {
@@ -43,7 +48,15 @@ export class NavComponent implements OnInit {
     }
 
     onMenuToggle(): void {
-        alert("Not implemented.");
+        if (this.isMenuOpened) {
+            this.menuToggleIcon = faTimes;
+            this.renderer.setStyle(this.menuRef.nativeElement, 'display', 'block');
+        } else {
+            this.menuToggleIcon = faBars;
+            this.renderer.setStyle(this.menuRef.nativeElement, 'display', 'none');
+        }
+
+        this.isMenuOpened = !this.isMenuOpened;
     }
 
     triggerSearch(): void {

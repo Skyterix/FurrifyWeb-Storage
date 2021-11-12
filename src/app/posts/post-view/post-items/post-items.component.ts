@@ -5,6 +5,7 @@ import {Post} from "../../../shared/model/post.model";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {ActivatedRoute, Router} from "@angular/router";
+import {CDN_ADDRESS} from "../../../shared/config/api.constants";
 
 @Component({
     selector: 'app-post-items',
@@ -15,6 +16,8 @@ export class PostItemsComponent implements OnInit {
     @Input() post!: Post;
 
     sortedMedia!: Media[];
+
+    cdnAddress = CDN_ADDRESS;
 
     currentIndex!: number;
 

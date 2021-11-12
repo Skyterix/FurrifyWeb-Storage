@@ -3,7 +3,7 @@
     <p class="h1 font-weight-light p-1">Media</p>
     <div class="post-media-list">
         <img (click)="onLoadMediaRequest(index)" *ngFor="let media of sortedMedia; let index = index"
-             [src]="media.thumbnailUrl"
+             [src]="cdnAddress + media.thumbnailUri"
              alt="media thumbnail" class="media m-1"/>
     </div>
     <!-- Attachments -->
@@ -13,7 +13,7 @@
             <ul class="attachment-info p-1">
                 <li class="infs">
                     <img [appAttachmentIcon]="attachment.extension" alt="attachment icon" class="icon me-2"/>
-                    <a [href]="attachment.fileUrl" class="attachment-link text-decoration-none"
+                    <a [href]="attachment.fileUri" class="attachment-link text-decoration-none"
                        target="_blank">{{ attachment.filename }}</a>
                 </li>
                 <li>

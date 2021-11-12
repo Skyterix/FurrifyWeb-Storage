@@ -1,18 +1,56 @@
-export class TagColorsConfig {
-    private static movie = '#4c0000';
-    private static universe = '#4c0000';
-    private static company = '#031a55';
-    private static character = '#37115a';
-    private static sex = '#5a114d';
-    private static specie = '#5a112d';
-    private static body = '#343a40';
-    private static age = '#343a40';
-    private static action = '#343a40';
-    private static amount = '#343a40';
-    private static background = '#343a40';
+interface TagColor {
+    background: string,
+    color: string
+}
 
-    public static getTagColorByStrategy(tagStrategy: string): string {
-        switch (tagStrategy) {
+export class TagColorsConfig {
+    private static movie: TagColor = {
+        background: '#924915',
+        color: '#fff'
+    };
+    private static universe: TagColor = {
+        background: '#4c0000',
+        color: '#fff'
+    };
+    private static company: TagColor = {
+        background: '#37115a',
+        color: '#fff'
+    };
+    private static character: TagColor = {
+        background: '#37115a',
+        color: '#fff'
+    };
+    private static sex: TagColor = {
+        background: '#5a114d',
+        color: '#fff'
+    };
+    private static specie: TagColor = {
+        background: '#5a112d',
+        color: '#fff'
+    };
+    private static body: TagColor = {
+        background: '#636363',
+        color: '#fff'
+    };
+    private static age: TagColor = {
+        background: '#636363',
+        color: '#fff'
+    };
+    private static action: TagColor = {
+        background: '#636363',
+        color: '#fff'
+    };
+    private static amount: TagColor = {
+        background: '#636363',
+        color: '#fff'
+    };
+    private static background: TagColor = {
+        background: '#636363',
+        color: '#fff'
+    };
+
+    public static getTagColorByType(tagType: string): TagColor {
+        switch (tagType) {
             case 'COMPANY':
                 return this.company;
             case 'SEX':

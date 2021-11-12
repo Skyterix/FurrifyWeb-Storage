@@ -22,7 +22,7 @@ export class PostItemComponent implements OnInit {
 
     @Input() post!: Post;
 
-    thumbnailUrl!: string;
+    thumbnailUri!: string;
 
     movieTags!: Tag[];
     characterTags!: Tag[];
@@ -37,7 +37,7 @@ export class PostItemComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.thumbnailUrl = PostUtils.getPostThumbnailUrlFromMediaSet(this.post.mediaSet)!;
+        this.thumbnailUri = PostUtils.getPostThumbnailUrlFromMediaSet(this.post.mediaSet)!;
 
         this.movieTags = TagUtils.filterTagsByType("MOVIE", this.post.tags);
         this.characterTags = TagUtils.filterTagsByType("CHARACTER", this.post.tags);

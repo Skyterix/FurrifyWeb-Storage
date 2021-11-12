@@ -8,6 +8,7 @@ import {MediaUtils} from "../../../shared/util/media.utils";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {ActivatedRoute, Router} from "@angular/router";
+import {CDN_ADDRESS} from "../../../shared/config/api.constants";
 
 @Component({
     selector: 'app-post-details',
@@ -62,6 +63,6 @@ export class PostDetailsComponent implements OnInit {
         this.renderer.setStyle(this.mediaViewRef.nativeElement, 'display', 'none');
         this.renderer.setStyle(this.mediaSpinnerRef.nativeElement, 'display', 'inline-block');
 
-        this.renderer.setAttribute(this.mediaViewRef.nativeElement, 'src', media.fileUrl);
+        this.renderer.setAttribute(this.mediaViewRef.nativeElement, 'src', CDN_ADDRESS + media.fileUri);
     }
 }

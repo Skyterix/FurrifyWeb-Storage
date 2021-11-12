@@ -16,6 +16,8 @@ import {Store} from "@ngrx/store";
 import * as fromApp from "../store/app.reducer";
 import {Post} from "../shared/model/post.model";
 import {MediaUtils} from "../shared/util/media.utils";
+import {PostsService} from "./posts.service";
+import {CDN_ADDRESS} from "../shared/config/api.constants";
 
 @Component({
     selector: 'app-posts',
@@ -35,6 +37,7 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     constructor(private store: Store<fromApp.AppState>,
                 private postCreateService: PostCreateService,
+                private postsService: PostsService,
                 private router: Router,
                 private activatedRoute: ActivatedRoute,
                 private renderer: Renderer2) {
@@ -53,6 +56,8 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
             // Set timeout to let @ViewChild initialize
             setTimeout(() => this.postCreateService.postCreateOpenEvent.emit());
         }
+
+        this.postsService.triggerSearch();
     }
 
     ngAfterViewInit(): void {
@@ -101,7 +106,7 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
                 return;
             }
 
-            this.renderer.setStyle(this.backgroundRef.nativeElement, "background-image", "url(" + media.thumbnailUrl + ")")
+            this.renderer.setStyle(this.backgroundRef.nativeElement, "background-image", "url(" + CDN_ADDRESS + media.thumbnailUri + ")")
             this.renderer.setStyle(this.backgroundRef.nativeElement, "opacity", "1")
         } else {
             this.renderer.setStyle(this.backgroundRef.nativeElement, "opacity", "0")

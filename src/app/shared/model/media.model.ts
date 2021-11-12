@@ -8,8 +8,8 @@ export interface Media {
     filename: string;
     extension: string;
     sources: Source[];
-    fileUrl: string;
-    thumbnailUrl: string;
+    fileUri: string;
+    thumbnailUri: string;
     md5: string;
     createDate: Date;
 }

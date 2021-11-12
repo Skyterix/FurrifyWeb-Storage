@@ -61,7 +61,7 @@ export const successSearch = createAction(
 
 export const selectPost = createAction(
     '[Posts] Select post',
-    props<{ post: Post }>()
+    props<{ post: Post | null }>()
 );
 
 export const updatePostSavedTitle = createAction(
