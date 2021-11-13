@@ -13,7 +13,7 @@
             <ul class="attachment-info p-1">
                 <li class="infs">
                     <img [appAttachmentIcon]="attachment.extension" alt="attachment icon" class="icon me-2"/>
-                    <a [href]="attachment.fileUri" class="attachment-link text-decoration-none"
+                    <a [href]="cdnAddress + attachment.fileUri" class="attachment-link text-decoration-none"
                        target="_blank">{{ attachment.filename }}</a>
                 </li>
                 <li>
