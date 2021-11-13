@@ -39,7 +39,7 @@
 }
 
 .post-artists .artists .avatar {
-    display: block;
+    display: inline-block;
     object-fit: cover;
     object-position: center;
     width: 64px;

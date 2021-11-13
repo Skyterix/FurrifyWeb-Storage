@@ -70,6 +70,7 @@ export class ArtistCreateComponent implements OnInit {
             nicknames: nicknames,
             preferredNickname: this.createArtistForm.controls.preferredNickname.value,
             sources: this.selectedSources,
+            avatar: null,
             createDate: new Date()
         };
 

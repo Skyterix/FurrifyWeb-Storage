@@ -18,7 +18,7 @@
                 </li>
                 <li>
                     <ul class="mt-2">
-                        <!-- TODO Implement href for source, and think if post even needs one or should media only -->
+                        <!-- TODO Implement href for source -->
                         <li *ngFor="let source of attachment.sources"
                             class="p-2 d-inline ms-n1 me-2 bg-violet rounded-pill">
                             <a class="text-white text-decoration-none"
@@ -33,13 +33,14 @@
     <p class="h1 font-weight-light p-1">Artists</p>
     <div class="post-artists p-1 justify-content-start">
         <ul class="artists p-0">
-            <li *ngFor="let artist of post.artists" class="artist text-center rounded me-3">
-                <a [routerLink]="['/artists', artist.artistId]" class="text-decoration-none">
-                    <!--                    Implement artist cover
-                                        <img [src]="artist.cover.thumbnailFileURL" alt="artist avatar cover" class="avatar rounded-circle"/>-->
+            <li *ngFor="let artist of post.artists" class="artist rounded me-3 mt-2">
+                <a [routerLink]="['/artists', artist.artistId]" class="text-decoration-none text-center d-inline-block">
+                    <img *ngIf="!!artist.avatar" [src]="cdnAddress + artist.avatar.thumbnailUri"
+                         alt="artist avatar cover" class="avatar rounded-circle"/>
                     <p class="mb-0 mt-1 text-white font-weight-bolder">{{ artist.preferredNickname }}</p>
                 </a>
             </li>
+
         </ul>
     </div>
 

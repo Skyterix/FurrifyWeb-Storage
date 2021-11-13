@@ -329,6 +329,7 @@ export const postsReducer = createReducer(
                 ownerId: '',
                 nicknames: [],
                 preferredNickname: action.preferredNickname,
+                avatar: null,
                 sources: [],
                 createDate: new Date()
             };
