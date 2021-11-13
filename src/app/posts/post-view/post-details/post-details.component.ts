@@ -1,6 +1,5 @@
 import {Component, ElementRef, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {Tag} from "../../../shared/model/tag.model";
-import {Post} from "../../../shared/model/post.model";
 import {TagUtils} from "../../../shared/util/tag.utils";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import {Media} from "../../../shared/model/media.model";
@@ -10,6 +9,7 @@ import * as fromApp from "../../../store/app.reducer";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CDN_ADDRESS} from "../../../shared/config/api.constants";
 import {PostsService} from "../../posts.service";
+import {QueryPost} from "../../../shared/model/query/query-post.model";
 
 @Component({
     selector: 'app-post-details',
@@ -18,7 +18,7 @@ import {PostsService} from "../../posts.service";
 })
 export class PostDetailsComponent implements OnInit {
 
-    @Input() post!: Post;
+    @Input() post!: QueryPost;
 
     @ViewChild('mediaView', {read: ElementRef}) mediaViewRef!: ElementRef;
     @ViewChild('mediaSpinner', {read: ElementRef}) mediaSpinnerRef!: ElementRef;

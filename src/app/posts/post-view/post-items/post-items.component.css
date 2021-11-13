@@ -36,6 +36,7 @@
 
 .post-artists .artists .artist {
     display: inline-block;
+    font-weight: bold;
 }
 
 .post-artists .artists .avatar {

@@ -47,7 +47,6 @@ import {
     startSearch,
     successSearch,
 } from './posts.actions';
-import {Post} from '../../shared/model/post.model';
 import {Store} from '@ngrx/store';
 import * as fromApp from '../../store/app.reducer';
 import {HypermediaResultList} from "../../shared/model/hypermedia-result-list.model";
@@ -57,6 +56,7 @@ import {RETRY_HANDLER} from "../../shared/store/shared.effects";
 import {PostCreateService} from "../post-create/post-create.service";
 import {Artist} from "../../shared/model/artist.model";
 import {PostsService} from "../posts.service";
+import {QueryPost} from "../../shared/model/query/query-post.model";
 
 @Injectable()
 export class PostsEffects {
@@ -64,7 +64,7 @@ export class PostsEffects {
     searchStart = createEffect(() => this.actions$.pipe(
         ofType(startSearch),
         switchMap((action) => {
-            return this.httpClient.get<HypermediaResultList<Post>>(
+            return this.httpClient.get<HypermediaResultList<QueryPost>>(
                 GET_POSTS_BY_QUERY.replace(":userId", action.userId), {
                     headers: new HttpHeaders()
                         .append("Accept", RESPONSE_TYPE),
@@ -76,7 +76,7 @@ export class PostsEffects {
                         .append('query', action.query)
                 }).pipe(
                 map(response => {
-                    let posts: Post[] = [];
+                    let posts: QueryPost[] = [];
 
                     if (!!response._embedded) {
                         posts = response._embedded.List;
@@ -102,7 +102,7 @@ export class PostsEffects {
     getPostStart = createEffect(() => this.actions$.pipe(
         ofType(getPostStart),
         switchMap((action) => {
-            return this.httpClient.get<Post>(
+            return this.httpClient.get<QueryPost>(
                 GET_POST
                     .replace(":userId", action.userId)
                     .replace(":postId", action.postId), {

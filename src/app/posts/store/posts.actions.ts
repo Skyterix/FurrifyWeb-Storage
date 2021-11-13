@@ -1,10 +1,10 @@
 import {createAction, props} from '@ngrx/store';
-import {Post} from '../../shared/model/post.model';
 import {PageInfo} from '../../shared/model/page-info.model';
 import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper} from "./posts.reducer";
 import {Tag} from "../../shared/model/tag.model";
 import {Artist} from "../../shared/model/artist.model";
 import {CreatePost} from "../../shared/model/request/create-post.model";
+import {QueryPost} from "../../shared/model/query/query-post.model";
 
 export const updateSearchParams = createAction(
     '[Posts] Update search params',
@@ -39,7 +39,7 @@ export const getPostStart = createAction(
 export const getPostSuccess = createAction(
     '[Posts] Get post success',
     props<{
-        post: Post
+        post: QueryPost
     }>()
 );
 
@@ -55,13 +55,12 @@ export const failSearch = createAction(
 
 export const successSearch = createAction(
     '[Posts] Search success',
-    props<{ posts: Post[], pageInfo: PageInfo }>()
+    props<{ posts: QueryPost[], pageInfo: PageInfo }>()
 );
-
 
 export const selectPost = createAction(
     '[Posts] Select post',
-    props<{ post: Post | null }>()
+    props<{ post: QueryPost | null }>()
 );
 
 export const updatePostSavedTitle = createAction(

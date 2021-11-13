@@ -1,4 +1,3 @@
-import {Post} from '../../shared/model/post.model';
 import {PageInfo} from '../../shared/model/page-info.model';
 import {
     DEFAULT_SEARCH_ORDER,
@@ -51,6 +50,7 @@ import {Tag} from "../../shared/model/tag.model";
 import {Artist} from "../../shared/model/artist.model";
 import {CreateMedia} from "../../shared/model/request/create-media.model";
 import {CreateAttachment} from "../../shared/model/request/create-attachment.model";
+import {QueryPost} from "../../shared/model/query/query-post.model";
 
 export class ArtistWrapper {
     constructor(public artist: Artist,
@@ -85,9 +85,9 @@ export interface State {
     page: number;
     searchErrorMessage: string | null;
     fetchErrorMessage: string | null;
-    posts: Post[];
+    posts: QueryPost[];
     pageInfo: PageInfo | null;
-    selectedPost: Post | null;
+    selectedPost: QueryPost | null;
     // Create Post
     selectedTags: TagWrapper[];
     selectedArtists: ArtistWrapper[];

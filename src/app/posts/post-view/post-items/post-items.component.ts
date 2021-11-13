@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Media} from "../../../shared/model/media.model";
 import {MediaUtils} from "../../../shared/util/media.utils";
-import {Post} from "../../../shared/model/post.model";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CDN_ADDRESS} from "../../../shared/config/api.constants";
+import {QueryPost} from "../../../shared/model/query/query-post.model";
 
 @Component({
     selector: 'app-post-items',
@@ -13,7 +13,7 @@ import {CDN_ADDRESS} from "../../../shared/config/api.constants";
     styleUrls: ['./post-items.component.css']
 })
 export class PostItemsComponent implements OnInit {
-    @Input() post!: Post;
+    @Input() post!: QueryPost;
 
     sortedMedia!: Media[];
 

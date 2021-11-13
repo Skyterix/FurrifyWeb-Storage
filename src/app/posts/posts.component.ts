@@ -14,10 +14,10 @@ import {PostCreateComponent} from "./post-create/post-create.component";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../store/app.reducer";
-import {Post} from "../shared/model/post.model";
 import {MediaUtils} from "../shared/util/media.utils";
 import {PostsService} from "./posts.service";
 import {CDN_ADDRESS} from "../shared/config/api.constants";
+import {QueryPost} from "../shared/model/query/query-post.model";
 
 @Component({
     selector: 'app-posts',
@@ -29,7 +29,7 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('createPost', {read: ViewContainerRef}) createPostRef!: ViewContainerRef;
     @ViewChild('background', {read: ElementRef}) backgroundRef!: ElementRef;
 
-    private selectedPost!: Post | null;
+    private selectedPost!: QueryPost | null;
 
     private postCreateOpenSubscription!: Subscription;
     private postCreateCloseSubscription!: Subscription;

@@ -2,10 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../store/app.reducer";
-import {Post} from "../../shared/model/post.model";
 import {getPostStart} from "../store/posts.actions";
 import {KeycloakProfile} from "keycloak-js";
 import {Subscription} from "rxjs";
+import {QueryPost} from "../../shared/model/query/query-post.model";
 
 @Component({
     selector: 'app-post-view',
@@ -15,7 +15,7 @@ import {Subscription} from "rxjs";
 export class PostViewComponent implements OnInit, OnDestroy {
 
     isFetching!: boolean;
-    selectedPost!: Post | null;
+    selectedPost!: QueryPost | null;
     currentUser!: KeycloakProfile | null;
 
     private storeSubscription!: Subscription;

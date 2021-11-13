@@ -35,7 +35,7 @@
         <ul class="artists p-0">
             <li *ngFor="let artist of post.artists" class="artist rounded me-3 mt-2">
                 <a [routerLink]="['/artists', artist.artistId]" class="text-decoration-none text-center d-inline-block">
-                    <img *ngIf="!!artist.avatar" [src]="cdnAddress + artist.avatar.thumbnailUri"
+                    <img *ngIf="!!artist.thumbnailUri" [src]="cdnAddress + artist.thumbnailUri"
                          alt="artist avatar cover" class="avatar rounded-circle"/>
                     <p class="mb-0 mt-1 text-white font-weight-bolder">{{ artist.preferredNickname }}</p>
                 </a>

@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Post} from "../../../shared/model/post.model";
 import {PostUtils} from "../../../shared/util/post.utils";
 import {Tag} from "../../../shared/model/tag.model";
 import {TagUtils} from "../../../shared/util/tag.utils";
@@ -13,6 +12,7 @@ import * as fromApp from "../../../store/app.reducer";
 import {selectPost} from "../../store/posts.actions";
 import {faFilm} from "@fortawesome/free-solid-svg-icons/faFilm";
 import {faMusic} from "@fortawesome/free-solid-svg-icons/faMusic";
+import {QueryPost} from "../../../shared/model/query/query-post.model";
 
 @Component({
     selector: 'app-post-item',
@@ -21,7 +21,7 @@ import {faMusic} from "@fortawesome/free-solid-svg-icons/faMusic";
 })
 export class PostItemComponent implements OnInit {
 
-    @Input() post!: Post;
+    @Input() post!: QueryPost;
 
     thumbnailUri!: string;
 
@@ -59,7 +59,7 @@ export class PostItemComponent implements OnInit {
         });
     }
 
-    selectPost(post: Post): void {
+    selectPost(post: QueryPost): void {
         this.store.dispatch(
             selectPost({
                 post: post
