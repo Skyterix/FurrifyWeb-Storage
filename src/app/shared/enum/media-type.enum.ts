@@ -1,3 +1,3 @@
 export enum MediaType {
-    IMAGE
+    IMAGE, VIDEO, ANIMATION, AUDIO
 }

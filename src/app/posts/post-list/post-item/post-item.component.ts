@@ -4,7 +4,6 @@ import {PostUtils} from "../../../shared/util/post.utils";
 import {Tag} from "../../../shared/model/tag.model";
 import {TagUtils} from "../../../shared/util/tag.utils";
 import {faVideo} from "@fortawesome/free-solid-svg-icons/faVideo";
-import {faBook} from "@fortawesome/free-solid-svg-icons/faBook";
 import {faImage} from "@fortawesome/free-solid-svg-icons/faImage";
 import {MediaUtils} from "../../../shared/util/media.utils";
 import {MediaType} from "../../../shared/enum/media-type.enum";
@@ -12,6 +11,8 @@ import {PostsService} from "../../posts.service";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {selectPost} from "../../store/posts.actions";
+import {faFilm} from "@fortawesome/free-solid-svg-icons/faFilm";
+import {faMusic} from "@fortawesome/free-solid-svg-icons/faMusic";
 
 @Component({
     selector: 'app-post-item',
@@ -29,9 +30,13 @@ export class PostItemComponent implements OnInit {
 
     imageIcon = faImage;
     videoIcon = faVideo;
-    bookIcon = faBook;
+    animationIcon = faFilm;
+    audioIcon = faMusic;
 
     imageType = MediaType.IMAGE;
+    videoType = MediaType.VIDEO;
+    animationType = MediaType.ANIMATION;
+    audioType = MediaType.AUDIO;
 
     constructor(private postsService: PostsService, private store: Store<fromApp.AppState>) {
     }
