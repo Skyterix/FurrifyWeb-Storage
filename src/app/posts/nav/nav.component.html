@@ -3,25 +3,27 @@
         <img alt="furrify logo banner" class="banner" src="./assets/banner-small.png">
     </a>
     <button (click)="onMenuToggle()" class="navbar-toggler" type="button">
-        <fa-icon [fixedWidth]="true" [icon]="caretDownIcon"
+        <fa-icon [fixedWidth]="true" [icon]="menuToggleIcon"
                  class="ps-2 text-white-50" size="lg"></fa-icon>
     </button>
 
     <div #menuRef class="collapse navbar-collapse ps-3">
-        <ul class="navbar-nav">
-            <li class="nav-item ps-1">
-                <a [routerLink]="['/posts']" class="ms-2 me-1 nav-link float-left"
-                   routerLinkActive="active">Posts</a>
-            </li>
-            <li class="nav-item ps-1">
-                <a [routerLink]="['/sets']" class="ms-2 me-1 nav-link float-left"
-                   routerLinkActive="active">Sets</a>
-            </li>
-            <li class="nav-item ps-1">
-                <a [routerLink]="['/collections']" class="ms-2 me-2 nav-link float-left"
-                   routerLinkActive="active">Collections</a>
-            </li>
-        </ul>
+        <div>
+            <ul class="navbar-nav">
+                <li class="nav-item ps-1">
+                    <a [routerLink]="['/posts']" class="ms-2 me-1 nav-link float-left"
+                       routerLinkActive="active">Posts</a>
+                </li>
+                <li class="nav-item ps-1">
+                    <a [routerLink]="['/sets']" class="ms-2 me-1 nav-link float-left"
+                       routerLinkActive="active">Sets</a>
+                </li>
+                <li class="nav-item ps-1">
+                    <a [routerLink]="['/collections']" class="ms-2 me-2 nav-link float-left"
+                       routerLinkActive="active">Collections</a>
+                </li>
+            </ul>
+        </div>
 
         <ul class="navbar-nav">
             <li class="nav-item">
@@ -29,21 +31,23 @@
             </li>
         </ul>
 
-        <ul class="navbar-nav ms-auto me-1">
-            <li appDropdown class="user nav-item dropdown">
-                <div (click)="toggleMenu()" class="content">
-                    <img alt="user avatar" src="./assets/user-default.jpg"/>
-                    <fa-icon [class.active]="isMenuOpened" [icon]="caretDownIcon"></fa-icon>
-                </div>
+        <div class="user-container ms-auto d-flex justify-content-center align-items-center">
+            <ul class="navbar-nav d-inline-block me-1">
+                <li class="user nav-item dropdown">
+                    <div (click)="toggleUserDropdown()" class="content">
+                        <img alt="user avatar" src="./assets/user-default.jpg"/>
+                        <fa-icon [class.active]="isUserDropdownOpened" [icon]="caretDownIcon"></fa-icon>
+                    </div>
 
-                <div [class.active]="isMenuOpened"
-                     class="dropdown-menu shadow border-0 animate__animated animate__fadeIn">
-                    <p class="dropdown-item">{{ username }}</p>
-                    <a class="dropdown-item">Profile</a>
-                    <a class="dropdown-item">Settings</a>
-                    <a (click)="logout()" class="dropdown-item">Logout</a>
-                </div>
-            </li>
-        </ul>
+                    <div [class.active]="isUserDropdownOpened"
+                         class="dropdown-menu shadow border-0 animate__animated animate__fadeIn">
+                        <p class="dropdown-item">{{ username }}</p>
+                        <a class="dropdown-item">Profile</a>
+                        <a class="dropdown-item">Settings</a>
+                        <a (click)="logout()" class="dropdown-item">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>

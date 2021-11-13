@@ -15,7 +15,8 @@ export class NavComponent implements OnInit {
     menuToggleIcon = faBars;
     caretDownIcon = faCaretDown;
 
-    isMenuOpened = false;
+    isUserDropdownOpened = false;
+    isMenuOpen = false;
     username!: string;
 
     @ViewChild('menuRef')
@@ -33,14 +34,14 @@ export class NavComponent implements OnInit {
 
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: Event) {
-        if (this.isMenuOpened && !this.menuRef.nativeElement.contains(event.target)) {
-            this.toggleMenu();
+        if (this.isUserDropdownOpened && !this.menuRef.nativeElement.contains(event.target)) {
+            this.toggleUserDropdown();
         }
 
     }
 
-    toggleMenu(): void {
-        this.isMenuOpened = !this.isMenuOpened;
+    toggleUserDropdown(): void {
+        this.isUserDropdownOpened = !this.isUserDropdownOpened;
     }
 
     logout(): void {
@@ -48,7 +49,7 @@ export class NavComponent implements OnInit {
     }
 
     onMenuToggle(): void {
-        if (this.isMenuOpened) {
+        if (!this.isMenuOpen) {
             this.menuToggleIcon = faTimes;
             this.renderer.setStyle(this.menuRef.nativeElement, 'display', 'block');
         } else {
@@ -56,7 +57,7 @@ export class NavComponent implements OnInit {
             this.renderer.setStyle(this.menuRef.nativeElement, 'display', 'none');
         }
 
-        this.isMenuOpened = !this.isMenuOpened;
+        this.isMenuOpen = !this.isMenuOpen;
     }
 
     triggerSearch(): void {

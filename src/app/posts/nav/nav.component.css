@@ -1,20 +1,50 @@
 nav {
     background: rgba(255, 255, 255, 0.05);
-    height: 62px;
+    min-height: 62px;
     z-index: 10;
+    padding: 0;
+}
+
+@media (max-width: 991.98px) {
+    /* Menu */
+    nav {
+        text-align: center;
+    }
+
+    nav .collapse {
+        background: rgba(72, 72, 72, 1);
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+        padding: 0 !important;
+        margin: 0;
+    }
+
+    nav .collapse ul {
+        padding-top: 20px;
+        display: inline-block;
+    }
+
+    nav .user-container {
+        height: 50px;
+        padding-bottom: 10px;
+    }
+
+    nav .user-container ul {
+        padding: 0;
+        margin: 0;
+    }
+
+    nav .user-container li {
+        margin: 0;
+    }
 }
 
 .navbar-brand {
     display: inline-flex;
-    line-height: 80px;
+    line-height: 62px;
     height: 62px;
     padding: 0 10px 0 10px;
     justify-content: center;
     align-items: center;
-}
-
-.navbar-brand {
-    height: 32px;
 }
 
 .navbar-brand .banner {
