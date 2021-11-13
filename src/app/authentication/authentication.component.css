@@ -1,5 +1,5 @@
 .background {
-    position: absolute;
+    position: fixed;
     background: url("../../assets/auth-bg.jpg") center;
     background-size: cover;
     height: 100%;
@@ -7,41 +7,25 @@
     z-index: -1;
 }
 
-@media only screen and (max-width: 1000px) {
-    section.auth {
-        width: 100vw !important;
-    }
-
-    section.auth .banner {
-        background-position: center !important;
-    }
-}
-
-@media only screen and (min-height: 700px) and (min-width: 1000px) {
-    section.auth {
-        height: 700px !important;
-    }
-}
-
-.content {
+.container-fluid {
     display: flex;
+    padding: 0;
+    margin: 0;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
+}
+
+.row {
     height: 100vh;
 }
 
-section.auth {
-    display: inline-grid;
-    margin-right: auto;
-    margin-left: auto;
-    height: 100vh;
-    width: 60vw;
-    background: white;
-    grid-template-columns: repeat(auto-fit, minmax(300px, auto));
-    box-shadow: 1px 1px 25px 2px rgba(0, 0, 0, 1);
+.row div {
+    height: 650px;
 }
 
-section.auth .banner {
+.banner {
+    height: 100%;
     padding-top: 50px;
     text-align: center;
     background: url("../../assets/auth.jpg") top no-repeat;
@@ -49,18 +33,19 @@ section.auth .banner {
     user-select: none;
 }
 
-section.auth .banner .text {
+.banner .text {
     text-align: center;
     padding: 50px 50px;
+    height: auto;
 }
 
-section.auth .banner .text h1 {
+.banner .text h1 {
     font-weight: bolder;
     text-transform: uppercase;
     font-size: 2em;
     margin: 7px 0;
 }
 
-section.auth .banner .text p {
+.banner .text p {
     margin-top: 30px;
 }
