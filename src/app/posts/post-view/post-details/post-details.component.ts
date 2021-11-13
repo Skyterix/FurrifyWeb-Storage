@@ -9,6 +9,7 @@ import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CDN_ADDRESS} from "../../../shared/config/api.constants";
+import {PostsService} from "../../posts.service";
 
 @Component({
     selector: 'app-post-details',
@@ -30,6 +31,7 @@ export class PostDetailsComponent implements OnInit {
     sortedMedia!: Media[];
 
     constructor(private renderer: Renderer2,
+                private postsService: PostsService,
                 private store: Store<fromApp.AppState>,
                 private activatedRoute: ActivatedRoute,
                 private router: Router) {
@@ -57,6 +59,14 @@ export class PostDetailsComponent implements OnInit {
     onMediaLoaded(): void {
         this.renderer.removeStyle(this.mediaViewRef.nativeElement, 'display');
         this.renderer.removeStyle(this.mediaSpinnerRef.nativeElement, 'display');
+    }
+
+
+    searchPosts(): void {
+        // Let router navigate first so search can be updated
+        setTimeout(() => {
+            this.postsService.triggerSearch();
+        });
     }
 
     private loadMedia(media: Media): void {
