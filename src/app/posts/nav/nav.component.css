@@ -89,19 +89,6 @@ nav {
     object-fit: cover;
 }
 
-.search-icon {
-    background: rgba(32, 32, 32, 0.9);
-    border-top-left-radius: 22px;
-    border-bottom-left-radius: 22px;
-}
-
-input.search {
-    width: 350px;
-    background: rgba(32, 32, 32, 0.9);
-    border-top-right-radius: 22px;
-    border-bottom-right-radius: 22px;
-}
-
 .dropdown-menu {
     background: rgba(50, 50, 50, 0.9);
 }
