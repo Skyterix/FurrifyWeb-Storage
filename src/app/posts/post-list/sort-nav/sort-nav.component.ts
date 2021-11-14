@@ -20,6 +20,7 @@ export class SortNavComponent implements OnInit, OnDestroy {
     sortBy!: string;
     order!: string;
     size!: number;
+    page!: number;
 
     private storeSubscription!: Subscription;
 
@@ -39,7 +40,8 @@ export class SortNavComponent implements OnInit, OnDestroy {
         this.sortForm = new FormGroup({
             sortBy: new FormControl(this.sortBy, Validators.required),
             order: new FormControl(this.order, Validators.required),
-            size: new FormControl(this.size, Validators.required)
+            size: new FormControl(this.size, Validators.required),
+            page: new FormControl(this.size, Validators.required)
         });
     }
 
@@ -63,7 +65,8 @@ export class SortNavComponent implements OnInit, OnDestroy {
             updateSearchParams({
                 sortBy: this.sortForm.controls.sortBy.value,
                 order: this.sortForm.controls.order.value,
-                size: this.sortForm.controls.size.value
+                size: this.sortForm.controls.size.value,
+                page: this.page
             })
         );
 

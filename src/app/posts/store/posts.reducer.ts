@@ -170,7 +170,8 @@ export const postsReducer = createReducer(
                 ...state,
                 order: action.order,
                 sortBy: action.sortBy,
-                size: action.size
+                size: action.size,
+                page: action.page
             }
         }
     ),

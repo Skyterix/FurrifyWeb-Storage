@@ -33,7 +33,7 @@ export class PostsService {
 
         this.activatedRoute.queryParams.subscribe(params => {
             this.updateSearchQuery(params.query);
-            this.updateSearchParams(params.sortBy, params.order, params.size);
+            this.updateSearchParams(params.sortBy, params.order, params.size, params.page);
         });
     }
 
@@ -60,17 +60,20 @@ export class PostsService {
 
     private updateSearchParams(sortBy: string,
                                order: string,
-                               size: number): void {
+                               size: number,
+                               page: number): void {
         // Check if values are empty and if so use old values (default if never changed)
         sortBy = (!!sortBy) ? sortBy : this.sortBy;
         order = (!!order) ? order : this.order;
         size = (!!size) ? size : this.size;
+        page = (!!page) ? page : this.page;
 
 
         this.store.dispatch(updateSearchParams({
-            sortBy: sortBy,
-            order: order,
-            size: size
+            sortBy,
+            order,
+            size,
+            page
         }));
     }
 }

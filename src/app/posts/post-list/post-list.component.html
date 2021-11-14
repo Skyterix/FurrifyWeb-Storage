@@ -1,5 +1,11 @@
+<!--
 <app-sort-nav></app-sort-nav>
+-->
 
 <section class="post-list">
+    <app-paginator></app-paginator>
+
     <app-post-item *ngFor="let post of posts" [post]="post"></app-post-item>
+
+    <app-paginator></app-paginator>
 </section>

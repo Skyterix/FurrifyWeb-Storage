@@ -8,7 +8,7 @@ import {QueryPost} from "../../shared/model/query/query-post.model";
 
 export const updateSearchParams = createAction(
     '[Posts] Update search params',
-    props<{ sortBy: string, order: string, size: number }>()
+    props<{ sortBy: string, order: string, size: number, page: number }>()
 );
 
 export const updateSearchQuery = createAction(
