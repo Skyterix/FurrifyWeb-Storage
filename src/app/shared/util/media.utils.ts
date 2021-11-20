@@ -4,6 +4,10 @@ import {MediaType} from "../enum/media-type.enum";
 
 export class MediaUtils {
     static getHighestPriorityMedia(mediaSet: Media[]): Media | null {
+        if (!mediaSet) {
+            return null;
+        }
+
         const highestPriority = Math.max.apply(Math, mediaSet.map(o => o.priority));
 
         const media: Media | undefined = mediaSet.find(o => o.priority === highestPriority);

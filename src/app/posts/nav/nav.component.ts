@@ -1,7 +1,9 @@
-import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {faCaretDown} from "@fortawesome/free-solid-svg-icons/faCaretDown";
 import {KeycloakService} from "keycloak-angular";
 import {PostsService} from "../posts.service";
+import {faTimes} from "@fortawesome/free-solid-svg-icons/faTimes";
+import {faBars} from "@fortawesome/free-solid-svg-icons/faBars";
 
 @Component({
     selector: 'app-nav',
@@ -10,16 +12,19 @@ import {PostsService} from "../posts.service";
 })
 export class NavComponent implements OnInit {
 
+    menuToggleIcon = faBars;
     caretDownIcon = faCaretDown;
 
-    isMenuOpened = false;
+    isUserDropdownOpened = false;
+    isMenuOpen = false;
     username!: string;
 
-    @ViewChild('menu')
+    @ViewChild('menuRef')
     menuRef!: ElementRef;
 
     constructor(private keycloakService: KeycloakService,
-                private postsService: PostsService) {
+                private postsService: PostsService,
+                private renderer: Renderer2) {
     }
 
     ngOnInit() {
@@ -28,14 +33,14 @@ export class NavComponent implements OnInit {
 
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: Event) {
-        if (this.isMenuOpened && !this.menuRef.nativeElement.contains(event.target)) {
-            this.toggleMenu();
+        if (this.isUserDropdownOpened && !this.menuRef.nativeElement.contains(event.target)) {
+            this.toggleUserDropdown();
         }
 
     }
 
-    toggleMenu(): void {
-        this.isMenuOpened = !this.isMenuOpened;
+    toggleUserDropdown(): void {
+        this.isUserDropdownOpened = !this.isUserDropdownOpened;
     }
 
     logout(): void {
@@ -43,7 +48,15 @@ export class NavComponent implements OnInit {
     }
 
     onMenuToggle(): void {
-        alert("Not implemented.");
+        if (!this.isMenuOpen) {
+            this.menuToggleIcon = faTimes;
+            this.renderer.setStyle(this.menuRef.nativeElement, 'display', 'block');
+        } else {
+            this.menuToggleIcon = faBars;
+            this.renderer.setStyle(this.menuRef.nativeElement, 'display', 'none');
+        }
+
+        this.isMenuOpen = !this.isMenuOpen;
     }
 
     triggerSearch(): void {
@@ -51,5 +64,12 @@ export class NavComponent implements OnInit {
         setTimeout(() => {
             this.postsService.triggerSearch();
         });
+    }
+
+    onNavigate(): void {
+        // If menu is open, close it
+        if (this.isMenuOpen) {
+            this.onMenuToggle();
+        }
     }
 }

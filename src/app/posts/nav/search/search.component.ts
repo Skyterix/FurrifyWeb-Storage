@@ -67,7 +67,8 @@ export class SearchComponent implements OnInit, OnDestroy {
             ['/'],
             {
                 queryParams: {
-                    query: this.searchForm.controls.query.value
+                    query: this.searchForm.controls.query.value,
+                    page: 1
                 },
                 queryParamsHandling: "merge"
             }

@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from "@ngrx/store";
 import * as fromApp from '../../store/app.reducer';
-import {Post} from "../../shared/model/post.model";
-import {PostsService} from "../posts.service";
 import {Subscription} from "rxjs";
+import {selectPost} from "../store/posts.actions";
+import {QueryPost} from "../../shared/model/query/query-post.model";
 
 @Component({
     selector: 'app-post-list',
@@ -12,11 +12,11 @@ import {Subscription} from "rxjs";
 })
 export class PostListComponent implements OnInit, OnDestroy {
 
-    posts!: Post[];
+    posts!: QueryPost[];
 
     private storeSubscription!: Subscription;
 
-    constructor(private store: Store<fromApp.AppState>, private postService: PostsService) {
+    constructor(private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit(): void {
@@ -24,7 +24,9 @@ export class PostListComponent implements OnInit, OnDestroy {
             this.posts = state.posts;
         });
 
-        this.postService.triggerSearch();
+        this.store.dispatch(selectPost({
+            post: null
+        }))
     }
 
     ngOnDestroy(): void {

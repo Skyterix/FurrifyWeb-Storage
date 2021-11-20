@@ -1,0 +1,39 @@
+<nav *ngIf="!!pageInfo" class="paginator">
+    <ul>
+        <li (click)="triggerSearch()" *ngIf="pageInfo.number !== 1" [queryParams]="{ page: 1 }"
+            [routerLink]="['/posts']" queryParamsHandling="merge">
+            <fa-icon [icon]="doubleChevronLeft"></fa-icon>
+        </li>
+
+        <!-- Prev - 1 -->
+        <li (click)="triggerSearch()" *ngIf="+pageInfo.number - 2 > 0" [queryParams]="{ page: +pageInfo.number - 2 }"
+            [routerLink]="['/posts']" queryParamsHandling="merge">
+            {{ +pageInfo.number - 2 }}
+        </li>
+
+        <!-- Prev -->
+        <li (click)="triggerSearch()" *ngIf="+pageInfo.number - 1 >= 1" [queryParams]="{ page: +pageInfo.number - 1 }"
+            [routerLink]="['/posts']" queryParamsHandling="merge">
+            {{ +pageInfo.number - 1 }}
+        </li>
+
+        <!-- Current -->
+        <li class="active">{{ pageInfo.number }}</li>
+
+        <!-- Next -->
+        <li (click)="triggerSearch()" *ngIf="+pageInfo.number + 1 <= pageInfo.totalPages"
+            [queryParams]="{ page: +pageInfo.number + 1 }"
+            [routerLink]="['/posts']" queryParamsHandling="merge">{{ +pageInfo.number + 1 }}</li>
+
+        <!-- Next + 1 -->
+        <li (click)="triggerSearch()" *ngIf="+pageInfo.number + 2 <= pageInfo.totalPages"
+            [queryParams]="{ page: +pageInfo.number + 2 }"
+            [routerLink]="['/posts']" queryParamsHandling="merge">{{ +pageInfo.number + 2 }}</li>
+
+        <li (click)="triggerSearch()" *ngIf="pageInfo.number !== pageInfo.totalPages"
+            [queryParams]="{ page: pageInfo.totalPages }" [routerLink]="['/posts']"
+            queryParamsHandling="merge">
+            <fa-icon [icon]="doubleChevronRight"></fa-icon>
+        </li>
+    </ul>
+</nav>

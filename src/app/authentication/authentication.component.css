@@ -1,65 +1,51 @@
 .background {
-  position: absolute;
-  background: url("../../assets/auth-bg.jpg") center;
-  background-size: cover;
-  height: 100%;
-  width: 100%;
-  z-index: -1;
+    position: fixed;
+    background: url("../../assets/auth-bg.jpg") center;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
 }
 
-@media only screen and (max-width: 1000px) {
-  section.auth {
-    width: 100vw !important;
-  }
-
-  section.auth .banner {
-    background-position: center !important;
-  }
+.container-fluid {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-@media only screen and (min-height: 700px) and (min-width: 1000px) {
-  section.auth {
-    height: 700px !important;
-  }
+.row {
+    height: 100vh;
 }
 
-.content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+.row div {
+    height: 650px;
 }
 
-section.auth {
-  display: inline-grid;
-  margin-right: auto;
-  margin-left: auto;
-  height: 100vh;
-  width: 60vw;
-  background: white;
-  grid-template-columns: repeat(auto-fit, minmax(300px, auto));
+.banner {
+    height: 100%;
+    padding-top: 50px;
+    text-align: center;
+    background: url("../../assets/auth.jpg") top no-repeat;
+    color: white;
+    user-select: none;
 }
 
-section.auth .banner {
-  padding-top: 50px;
-  text-align: center;
-  background: url("../../assets/auth.jpg") top no-repeat;
-  color: white;
-  user-select: none;
+.banner .text {
+    text-align: center;
+    padding: 50px 50px;
+    height: auto;
 }
 
-section.auth .banner .text {
-  text-align: center;
-  padding: 50px 50px;
+.banner .text h1 {
+    font-weight: bolder;
+    text-transform: uppercase;
+    font-size: 2em;
+    margin: 7px 0;
 }
 
-section.auth .banner .text h1 {
-  font-weight: bolder;
-  text-transform: uppercase;
-  font-size: 2em;
-  margin: 7px 0;
-}
-
-section.auth .banner .text p {
-  margin-top: 30px;
+.banner .text p {
+    margin-top: 30px;
 }

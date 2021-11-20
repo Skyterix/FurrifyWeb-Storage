@@ -16,11 +16,17 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.keycloak.loadUserProfile().then(profile => {
-            this.store.dispatch(updateCurrentUser({
-                currentUser: profile
-            }));
+        this.keycloak.isLoggedIn().then(isLoggedIn => {
+            if (isLoggedIn) {
+                this.keycloak.loadUserProfile().then(profile => {
+                    this.store.dispatch(updateCurrentUser({
+                        currentUser: profile
+                    }));
+                });
+            }
         });
+
+
     }
 
 }

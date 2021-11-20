@@ -1,5 +1,6 @@
 import {Media} from "../model/media.model";
 import {MediaUtils} from "./media.utils";
+import {CDN_ADDRESS} from "../config/api.constants";
 
 export class PostUtils {
     static getPostThumbnailUrlFromMediaSet(mediaSet: Media[]): string | null {
@@ -8,7 +9,7 @@ export class PostUtils {
         if (!media) {
             return 'assets/no-thumbnail.jpg';
         } else {
-            return media.thumbnailUrl;
+            return CDN_ADDRESS + media.thumbnailUri;
         }
     }
 }

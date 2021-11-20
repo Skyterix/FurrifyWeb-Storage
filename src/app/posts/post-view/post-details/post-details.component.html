@@ -2,7 +2,8 @@
     <div class="tags p-1 pb-2 ps-2 pe-2">
         <!-- Tags -->
         <span *ngFor="let tag of sortedTags" [appColoredTag]="tag.type" class="badge badge-dark tag ms-1">
-            <a [queryParams]="{ query: '#' + tag.value }" [routerLink]="['/posts']" class="text-white"
+            <a (click)="searchPosts()" [queryParams]="{ query: '#' + tag.value }" [routerLink]="['/posts']"
+               class="text-white"
                queryParamsHandling="merge">{{ tag.value }}</a>
           </span>
     </div>

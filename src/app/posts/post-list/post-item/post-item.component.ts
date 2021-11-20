@@ -1,10 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Post} from "../../../shared/model/post.model";
 import {PostUtils} from "../../../shared/util/post.utils";
 import {Tag} from "../../../shared/model/tag.model";
 import {TagUtils} from "../../../shared/util/tag.utils";
 import {faVideo} from "@fortawesome/free-solid-svg-icons/faVideo";
-import {faBook} from "@fortawesome/free-solid-svg-icons/faBook";
 import {faImage} from "@fortawesome/free-solid-svg-icons/faImage";
 import {MediaUtils} from "../../../shared/util/media.utils";
 import {MediaType} from "../../../shared/enum/media-type.enum";
@@ -12,6 +10,9 @@ import {PostsService} from "../../posts.service";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {selectPost} from "../../store/posts.actions";
+import {faFilm} from "@fortawesome/free-solid-svg-icons/faFilm";
+import {faMusic} from "@fortawesome/free-solid-svg-icons/faMusic";
+import {QueryPost} from "../../../shared/model/query/query-post.model";
 
 @Component({
     selector: 'app-post-item',
@@ -20,24 +21,28 @@ import {selectPost} from "../../store/posts.actions";
 })
 export class PostItemComponent implements OnInit {
 
-    @Input() post!: Post;
+    @Input() post!: QueryPost;
 
-    thumbnailUrl!: string;
+    thumbnailUri!: string;
 
     movieTags!: Tag[];
     characterTags!: Tag[];
 
     imageIcon = faImage;
     videoIcon = faVideo;
-    bookIcon = faBook;
+    animationIcon = faFilm;
+    audioIcon = faMusic;
 
     imageType = MediaType.IMAGE;
+    videoType = MediaType.VIDEO;
+    animationType = MediaType.ANIMATION;
+    audioType = MediaType.AUDIO;
 
     constructor(private postsService: PostsService, private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit(): void {
-        this.thumbnailUrl = PostUtils.getPostThumbnailUrlFromMediaSet(this.post.mediaSet)!;
+        this.thumbnailUri = PostUtils.getPostThumbnailUrlFromMediaSet(this.post.mediaSet)!;
 
         this.movieTags = TagUtils.filterTagsByType("MOVIE", this.post.tags);
         this.characterTags = TagUtils.filterTagsByType("CHARACTER", this.post.tags);
@@ -54,7 +59,7 @@ export class PostItemComponent implements OnInit {
         });
     }
 
-    selectPost(post: Post): void {
+    selectPost(post: QueryPost): void {
         this.store.dispatch(
             selectPost({
                 post: post

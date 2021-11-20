@@ -1,4 +1,4 @@
-<div class="post">
+<div class="post shadow-lg animate__animated animate__fadeIn">
     <div class="badges">
         <span *ngFor="let tag of movieTags" [appColoredTag]="tag.type" class="badge">
             <a (click)="searchPosts()" [queryParams]="{ query: '#' + tag.value }" [routerLink]="['/posts']">
@@ -14,15 +14,19 @@
     </div>
     <a (click)="selectPost(post)" [routerLink]="['/posts', post.postId, 'media', 0]" queryParamsHandling="merge">
         <span class="icons">
-          <fa-icon *ngIf="mediaContains(imageType)" [fixedWidth]="true" [icon]="imageIcon" class="text-white pb-1 pt-1"
-                   size="sm"></fa-icon>
-
-            <!-- //TODO Implement when backend is updated
-            <fa-icon *ngIf="mediaContains()" [fixedWidth]="true" [icon]="videoIcon" class="text-white pb-1 pt-1"
-                   size="sm"></fa-icon>
-          <fa-icon *ngIf="mediaContains()" [fixedWidth]="true" [icon]="bookIcon" class="text-white pb-1 pt-1"
-                   size="sm"></fa-icon>-->
+            <fa-icon *ngIf="mediaContains(imageType)" [fixedWidth]="true" [icon]="imageIcon"
+                     class="text-white pb-1 pt-1"
+                     size="sm"></fa-icon>
+            <fa-icon *ngIf="mediaContains(videoType)" [fixedWidth]="true" [icon]="videoIcon"
+                     class="text-white pb-1 pt-1"
+                     size="sm"></fa-icon>
+            <fa-icon *ngIf="mediaContains(animationType)" [fixedWidth]="true" [icon]="animationIcon"
+                     class="text-white pb-1 pt-1"
+                     size="sm"></fa-icon>
+            <fa-icon *ngIf="mediaContains(audioType)" [fixedWidth]="true" [icon]="audioIcon"
+                     class="text-white pb-1 pt-1"
+                     size="sm"></fa-icon>
         </span>
-        <img [src]="thumbnailUrl" alt="post thumbnail" class="thumbnail img-fluid"/>
+        <img [src]="thumbnailUri" alt="post thumbnail" class="thumbnail img-fluid"/>
     </a>
 </div>

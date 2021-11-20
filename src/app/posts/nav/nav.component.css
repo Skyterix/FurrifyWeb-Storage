@@ -1,12 +1,39 @@
 nav {
-    height: 62px;
-    background-color: #151515;
+    background: rgba(66, 66, 66, 0.7);
+    min-height: 62px;
     z-index: 10;
+    padding: 0;
+}
+
+@media (max-width: 992px) {
+    /* Menu */
+    nav {
+        text-align: center;
+    }
+
+    nav .collapse ul {
+        padding-top: 20px;
+        display: inline-block;
+    }
+
+    nav .user-container {
+        height: 50px;
+        padding-bottom: 10px;
+    }
+
+    nav .user-container ul {
+        padding: 0;
+        margin: 0;
+    }
+
+    nav .user-container li {
+        margin: 0;
+    }
 }
 
 .navbar-brand {
     display: inline-flex;
-    line-height: 80px;
+    line-height: 62px;
     height: 62px;
     padding: 0 10px 0 10px;
     justify-content: center;
@@ -22,9 +49,23 @@ nav {
     user-select: none;
 }
 
-.navbar-toggler {
+.navbar-toggler,
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus {
     outline: none;
     border: none;
+    box-shadow: none;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.nav-link {
+    font-weight: 400;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.nav-link.active {
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
 }
 
 .dropdown-menu {
@@ -38,21 +79,8 @@ nav {
     object-fit: cover;
 }
 
-.search-icon {
-    background: rgba(32, 32, 32, 0.9);
-    border-top-left-radius: 22px;
-    border-bottom-left-radius: 22px;
-}
-
-input.search {
-    width: 350px;
-    background: rgba(32, 32, 32, 0.9);
-    border-top-right-radius: 22px;
-    border-bottom-right-radius: 22px;
-}
-
 .dropdown-menu {
-    background: rgba(20, 20, 20);
+    background: rgba(50, 50, 50, 0.9);
 }
 
 .dropdown-item {
@@ -104,7 +132,7 @@ input.search {
 .user .dropdown-menu {
     display: none;
     position: absolute;
-    margin-top: 20px;
+    margin-top: 25px;
     margin-left: -80px;
     border-radius: 16px;
     padding: 10px;
@@ -130,6 +158,7 @@ input.search {
 .user .dropdown-menu p {
     font-size: 0.9em;
     font-weight: bold;
-    color: #494949;
+    color: #6b6b6b;
     padding: 10px 0 0 10px;
+    cursor: auto;
 }

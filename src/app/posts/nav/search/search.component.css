@@ -1,5 +1,11 @@
 /* Search */
 
+@media (max-width: 992px) {
+    .search {
+        margin: 0 !important;
+    }
+}
+
 .search {
     display: inline-block;
     margin: 0 30px 0 30px;
@@ -17,7 +23,7 @@
 
 .search .input input[type=text] {
     outline: 0;
-    background: rgba(32, 32, 32, 0.9);
+    background: rgba(50, 50, 50, 0.9);
     color: rgba(255, 255, 255, 0.9);
     padding-right: 15px;
     font-size: 15px;
@@ -40,7 +46,7 @@
     border-radius: 22px 0 0 22px;
     border-color: transparent !important;
     color: rgba(255, 255, 255, 0.9);
-    background: rgba(32, 32, 32, 0.9);
+    background: rgba(50, 50, 50, 0.9);
     align-items: center;
     justify-content: center;
     transition: .2s all ease;

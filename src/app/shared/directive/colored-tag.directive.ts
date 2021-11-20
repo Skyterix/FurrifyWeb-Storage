@@ -16,6 +16,9 @@ export class ColoredTagDirective implements OnInit {
     }
 
     addBackgroundToBadge(): void {
-        this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', TagColorsConfig.getTagColorByStrategy(this.type));
+        const tagColor = TagColorsConfig.getTagColorByType(this.type);
+
+        this.renderer.setStyle(this.elementRef.nativeElement, 'background-color', tagColor.background);
+        this.renderer.setStyle(this.elementRef.nativeElement, 'color', tagColor.color);
     }
 }

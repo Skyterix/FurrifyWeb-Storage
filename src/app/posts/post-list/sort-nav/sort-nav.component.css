@@ -1,49 +1,107 @@
 nav {
-    position: relative;
-    border-top: 1px solid #202020;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    background-color: #151515;
-    line-height: 50px;
-    height: 50px;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    position: fixed;
+    left: 0;
+    display: inline-block;
+    width: 300px;
+    height: 100vh;
+    background: rgba(66, 66, 66, 0.7);
+}
+
+nav ul {
+    list-style: none;
+    padding: 20px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    nav {
+        position: relative;
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    nav button {
+        float: right;
+        margin-top: 0 !important;
+    }
+
+    nav .collapse {
+        padding-bottom: 10px;
+    }
+
+}
+
+nav ul li {
+    display: block;
     text-align: left;
+    margin-top: 30px;
 }
 
-select {
+nav ul li:first-of-type {
+    margin-top: 0;
+}
+
+nav ul li label {
+    display: block;
+    color: #fff;
+    font-weight: bold;
+}
+
+nav ul li select, nav ul li input {
     outline: 0;
-    cursor: pointer;
-    border-radius: 22px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    font-weight: 300;
-}
-
-nav .sort {
-    display: inline-flex;
-}
-
-nav .sort .nav-item {
-    flex-wrap: nowrap;
-    margin-right: 1.5rem;
-}
-
-nav .create-post {
-    display: inline-flex;
-    float: right;
-}
-
-nav .create-post .content button {
-    outline: 0;
+    background: rgba(50, 50, 50, 0.9);
     color: rgba(255, 255, 255, 0.9);
-    background: rgba(0, 0, 0, 0.5);
-    padding: 7px;
-    border: 1px solid transparent;
+    font-size: 17px;
+    height: 36px;
+    width: 100%;
+    border: 0;
     border-radius: 8px;
-    cursor: pointer;
-    transition: .2s all ease;
+    user-select: none;
 }
 
-nav .create-post .content button:hover {
-    border: 1px solid rgba(255, 255, 255, 0.9);
+nav ul li select {
+    padding: 0 5px;
+}
+
+nav ul li input {
+    padding: 0 10px;
+}
+
+input[type="number"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+nav button.create-post {
+    margin-top: 100%;
+    outline: 0;
+    background: rgba(50, 50, 50, 0.9);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 7px 15px;
+    font-size: 15px;
+    border: 0;
+    border-radius: 8px;
+    user-select: none;
+    transition: .1s all ease;
+}
+
+nav button.create-post:hover {
+    background: rgba(53, 53, 53, 0.9);
+}
+
+.navbar-toggler,
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus {
+    font-size: 1.45em;
+    outline: none;
+    border: none;
+    box-shadow: none;
+    color: rgba(255, 255, 255, 0.9);
 }

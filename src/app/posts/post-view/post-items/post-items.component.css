@@ -1,5 +1,5 @@
 .post-items-list {
-    background: #202020;
+    background: rgba(50, 50, 50, 0.9);
 }
 
 .post-items-list {
@@ -36,10 +36,11 @@
 
 .post-artists .artists .artist {
     display: inline-block;
+    font-weight: bold;
 }
 
 .post-artists .artists .avatar {
-    display: block;
+    display: inline-block;
     object-fit: cover;
     object-position: center;
     width: 64px;

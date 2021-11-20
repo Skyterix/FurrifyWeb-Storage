@@ -1,6 +1,5 @@
 import {Component, ElementRef, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {Tag} from "../../../shared/model/tag.model";
-import {Post} from "../../../shared/model/post.model";
 import {TagUtils} from "../../../shared/util/tag.utils";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import {Media} from "../../../shared/model/media.model";
@@ -8,6 +7,9 @@ import {MediaUtils} from "../../../shared/util/media.utils";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {ActivatedRoute, Router} from "@angular/router";
+import {CDN_ADDRESS} from "../../../shared/config/api.constants";
+import {PostsService} from "../../posts.service";
+import {QueryPost} from "../../../shared/model/query/query-post.model";
 
 @Component({
     selector: 'app-post-details',
@@ -16,7 +18,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class PostDetailsComponent implements OnInit {
 
-    @Input() post!: Post;
+    @Input() post!: QueryPost;
 
     @ViewChild('mediaView', {read: ElementRef}) mediaViewRef!: ElementRef;
     @ViewChild('mediaSpinner', {read: ElementRef}) mediaSpinnerRef!: ElementRef;
@@ -29,6 +31,7 @@ export class PostDetailsComponent implements OnInit {
     sortedMedia!: Media[];
 
     constructor(private renderer: Renderer2,
+                private postsService: PostsService,
                 private store: Store<fromApp.AppState>,
                 private activatedRoute: ActivatedRoute,
                 private router: Router) {
@@ -58,10 +61,18 @@ export class PostDetailsComponent implements OnInit {
         this.renderer.removeStyle(this.mediaSpinnerRef.nativeElement, 'display');
     }
 
+
+    searchPosts(): void {
+        // Let router navigate first so search can be updated
+        setTimeout(() => {
+            this.postsService.triggerSearch();
+        });
+    }
+
     private loadMedia(media: Media): void {
         this.renderer.setStyle(this.mediaViewRef.nativeElement, 'display', 'none');
         this.renderer.setStyle(this.mediaSpinnerRef.nativeElement, 'display', 'inline-block');
 
-        this.renderer.setAttribute(this.mediaViewRef.nativeElement, 'src', media.fileUrl);
+        this.renderer.setAttribute(this.mediaViewRef.nativeElement, 'src', CDN_ADDRESS + media.fileUri);
     }
 }

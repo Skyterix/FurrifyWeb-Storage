@@ -1,4 +1,13 @@
 .post-list {
-    width: 100vw;
+    display: inline-block;
+    padding-top: 5px;
+    width: calc(100vw - 310px);
     height: 100%;
+    float: right;
+}
+
+@media (max-width: 768px) {
+    .post-list {
+        width: 100vw;
+    }
 }

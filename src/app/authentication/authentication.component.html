@@ -1,22 +1,16 @@
 <div class="background"></div>
 
-<div class="content">
-
-  <section class="auth">
-    <!-- Left -->
-    <div class="banner">
-      <img alt="furrify banner" src="../../assets/auth-logo.png"/>
-      <div class="text">
-        <h1>STORE,</h1>
-        <h1>MANAGE,</h1>
-        <h1>SEARCH.</h1>
-        <p>Grow your own collection.</p>
-      </div>
+<div class="container-fluid row">
+    <div class="col-lg-4 banner shadow-lg">
+        <img alt="furrify banner" src="../../assets/auth-logo.png"/>
+        <div class="text">
+            <h1>STORE,</h1>
+            <h1>MANAGE,</h1>
+            <h1>SEARCH.</h1>
+            <p>Grow your own collection.</p>
+        </div>
     </div>
-    <!-- Right -->
-    <div>
-      <router-outlet></router-outlet>
+    <div class="col-lg-5 bg-white shadow-lg">
+        <router-outlet></router-outlet>
     </div>
-  </section>
-
 </div>
