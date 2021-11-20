@@ -28,6 +28,7 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChild('createPost', {read: ViewContainerRef}) createPostRef!: ViewContainerRef;
     @ViewChild('background', {read: ElementRef}) backgroundRef!: ElementRef;
+    @ViewChild('defaultBackground', {read: ElementRef}) defaultBackgroundRef!: ElementRef;
 
     private selectedPost!: QueryPost | null;
 
@@ -106,9 +107,13 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
                 return;
             }
 
+            this.renderer.setStyle(this.defaultBackgroundRef.nativeElement, "display", "none")
+
             this.renderer.setStyle(this.backgroundRef.nativeElement, "background-image", "url(" + CDN_ADDRESS + media.thumbnailUri + ")")
             this.renderer.setStyle(this.backgroundRef.nativeElement, "opacity", "1")
         } else {
+            this.renderer.setStyle(this.defaultBackgroundRef.nativeElement, "display", "block")
+
             this.renderer.setStyle(this.backgroundRef.nativeElement, "opacity", "0")
         }
     }

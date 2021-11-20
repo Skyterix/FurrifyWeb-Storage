@@ -1,6 +1,4 @@
 section {
-    background: rgba(24, 24, 24, 0.89);
-    background: linear-gradient(315deg, rgba(50, 50, 50, 0.89) 0%, rgba(38, 38, 38, 0.89) 60%, rgba(30, 30, 30, 0.89) 100%);
     z-index: -1;
     padding-top: 62px;
     min-height: 100vh;
@@ -8,7 +6,7 @@ section {
     clear: both;
 }
 
-.bg {
+.bg, .default-bg {
     position: fixed;
     z-index: -10;
     height: 100vh;
@@ -18,4 +16,17 @@ section {
     background-size: 100% 100%;
     opacity: 0;
     transition: opacity .25s ease;
+}
+
+.default-bg {
+    background-image: url("../../assets/posts-bg.jpg");
+    opacity: 1;
+}
+
+.backdrop {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    z-index: -11;
+    background: rgba(24, 24, 24, 1);
 }
