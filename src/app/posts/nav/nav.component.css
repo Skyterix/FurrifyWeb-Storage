@@ -12,13 +12,6 @@ nav {
         text-align: center;
     }
 
-    nav .collapse {
-        background: rgba(66, 66, 66, 0.7);
-        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
-        padding: 0 !important;
-        margin: 0;
-    }
-
     nav .collapse ul {
         padding-top: 20px;
         display: inline-block;

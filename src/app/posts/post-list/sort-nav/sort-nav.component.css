@@ -32,9 +32,9 @@ nav ul {
     }
 
     nav .collapse {
-        background: rgba(56, 56, 56, 0.7);
-        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+        padding-bottom: 10px;
     }
+
 }
 
 nav ul li {
@@ -105,6 +105,7 @@ nav button.create-post:hover {
 .navbar-toggler:focus,
 .navbar-toggler:active,
 .navbar-toggler-icon:focus {
+    font-size: 1.45em;
     outline: none;
     border: none;
     box-shadow: none;
