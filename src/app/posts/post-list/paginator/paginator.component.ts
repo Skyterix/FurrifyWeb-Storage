@@ -32,12 +32,12 @@ export class PaginatorComponent implements OnInit {
     }
 
     triggerSearch(): void {
-        if (this.currentPage === this.pageInfo?.number) {
-            return;
-        }
-
         // Let router params be updated first
         setTimeout(() => {
+            if (this.currentPage === this.pageInfo?.number) {
+                return;
+            }
+
             this.postsService.triggerSearch();
         });
     }
