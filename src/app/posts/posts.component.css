@@ -1,6 +1,6 @@
 section {
     background: rgba(24, 24, 24, 0.89);
-    background: linear-gradient(315deg, rgba(32, 32, 32, 0.89) 0%, rgba(41, 41, 41, 0.89) 60%, rgba(47, 47, 47, 0.89) 100%);
+    background: linear-gradient(315deg, rgba(50, 50, 50, 0.89) 0%, rgba(38, 38, 38, 0.89) 60%, rgba(30, 30, 30, 0.89) 100%);
     z-index: -1;
     padding-top: 62px;
     min-height: 100vh;
