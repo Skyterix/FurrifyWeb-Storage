@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    <a (click)="triggerSearch()" [routerLink]="['/']" class="navbar-brand">
+    <a (click)="triggerSearch()" [queryParams]="{page: 1}" [routerLink]="['/']" class="navbar-brand">
         <img alt="furrify logo banner" class="banner" src="./assets/banner-small.png">
     </a>
     <button (click)="onMenuToggle()" class="navbar-toggler" type="button">
