@@ -1,6 +1,6 @@
 .post-list {
     display: inline-block;
-    padding-top: 10px;
+    padding-top: 5px;
     width: calc(100vw - 310px);
     height: 100%;
     float: right;
@@ -9,6 +9,5 @@
 @media (max-width: 768px) {
     .post-list {
         width: 100vw;
-        padding-top: 60px;
     }
 }
