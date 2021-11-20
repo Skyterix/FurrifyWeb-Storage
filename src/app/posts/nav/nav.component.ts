@@ -65,4 +65,11 @@ export class NavComponent implements OnInit {
             this.postsService.triggerSearch();
         });
     }
+
+    onNavigate(): void {
+        // If menu is open, close it
+        if (this.isMenuOpen) {
+            this.onMenuToggle();
+        }
+    }
 }
