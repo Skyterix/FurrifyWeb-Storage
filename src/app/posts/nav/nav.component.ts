@@ -22,7 +22,6 @@ export class NavComponent implements OnInit {
     @ViewChild('menuRef')
     menuRef!: ElementRef;
 
-
     constructor(private keycloakService: KeycloakService,
                 private postsService: PostsService,
                 private renderer: Renderer2) {

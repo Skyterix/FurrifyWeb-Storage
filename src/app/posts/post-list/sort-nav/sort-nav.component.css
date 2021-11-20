@@ -10,6 +10,31 @@ nav {
 nav ul {
     list-style: none;
     padding: 20px;
+    width: 100%;
+}
+
+@media (max-width: 992px) {
+    nav {
+        background: rgba(66, 66, 66, 0.7);
+    }
+}
+
+@media (max-width: 768px) {
+    nav {
+        position: relative;
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    nav button {
+        float: right;
+        margin-top: 0 !important;
+    }
+
+    nav .collapse {
+        background: rgba(56, 56, 56, 0.7);
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+    }
 }
 
 nav ul li {
@@ -59,7 +84,7 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
 
-nav button {
+nav button.create-post {
     margin-top: 100%;
     outline: 0;
     background: rgba(50, 50, 50, 0.9);
@@ -72,6 +97,16 @@ nav button {
     transition: .1s all ease;
 }
 
-nav button:hover {
+nav button.create-post:hover {
     background: rgba(53, 53, 53, 0.9);
+}
+
+.navbar-toggler,
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+    color: rgba(255, 255, 255, 0.9);
 }

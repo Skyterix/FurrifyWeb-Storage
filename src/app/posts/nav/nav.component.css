@@ -5,14 +5,15 @@ nav {
     padding: 0;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 992px) {
     /* Menu */
     nav {
+        background: rgba(66, 66, 66, 0.7);
         text-align: center;
     }
 
     nav .collapse {
-        background: rgba(72, 72, 72, 1);
+        background: rgba(66, 66, 66, 0.7);
         box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
         padding: 0 !important;
         margin: 0;
@@ -56,10 +57,6 @@ nav {
     user-select: none;
 }
 
-.navbar-toggler {
-    color: rgba(255, 255, 255, 0.9);
-}
-
 .navbar-toggler,
 .navbar-toggler:focus,
 .navbar-toggler:active,
@@ -67,6 +64,7 @@ nav {
     outline: none;
     border: none;
     box-shadow: none;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .nav-link {

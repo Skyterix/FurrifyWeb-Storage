@@ -5,3 +5,10 @@
     height: 100%;
     float: right;
 }
+
+@media (max-width: 768px) {
+    .post-list {
+        width: 100vw;
+        padding-top: 60px;
+    }
+}

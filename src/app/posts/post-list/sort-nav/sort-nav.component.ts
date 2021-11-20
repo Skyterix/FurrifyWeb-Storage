@@ -7,6 +7,8 @@ import {PostsService} from "../../posts.service";
 import {Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {PostCreateService} from "../../post-create/post-create.service";
+import {faTimes} from "@fortawesome/free-solid-svg-icons/faTimes";
+import {faBars} from "@fortawesome/free-solid-svg-icons/faBars";
 
 @Component({
     selector: 'app-sort-nav',
@@ -16,6 +18,10 @@ import {PostCreateService} from "../../post-create/post-create.service";
 export class SortNavComponent implements OnInit, OnDestroy {
 
     sortForm!: FormGroup;
+
+    menuToggleIcon = faBars;
+
+    isMenuOpen = false;
 
     sortBy!: string;
     order!: string;
@@ -87,5 +93,17 @@ export class SortNavComponent implements OnInit, OnDestroy {
 
     onCreatePost(): void {
         this.postCreateService.postCreateOpenEvent.emit();
+    }
+
+    onMenuToggle(): void {
+        if (!this.isMenuOpen) {
+            this.menuToggleIcon = faTimes;
+            //this.renderer.setStyle(this.menuRef.nativeElement, 'display', 'block');
+        } else {
+            this.menuToggleIcon = faBars;
+            //this.renderer.setStyle(this.menuRef.nativeElement, 'display', 'none');
+        }
+
+        this.isMenuOpen = !this.isMenuOpen;
     }
 }
