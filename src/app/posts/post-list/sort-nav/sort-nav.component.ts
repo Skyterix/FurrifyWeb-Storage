@@ -35,6 +35,7 @@ export class SortNavComponent implements OnInit, OnDestroy {
             this.sortBy = state.sortBy;
             this.order = state.order;
             this.size = state.size;
+            this.page = state.page;
         });
 
         this.sortForm = new FormGroup({
@@ -50,22 +51,33 @@ export class SortNavComponent implements OnInit, OnDestroy {
     }
 
     onChanges(): void {
+        const sortBy = this.sortForm.controls.sortBy.value;
+        const order = this.sortForm.controls.order.value;
+        const size = this.sortForm.controls.size.value;
+
+        // If values didn't change
+        if (this.sortBy == sortBy &&
+            this.order == order &&
+            this.size == size) {
+            return;
+        }
+
         this.router.navigate(
             ['/'],
             {
                 queryParams: {
-                    sortBy: this.sortForm.controls.sortBy.value,
-                    order: this.sortForm.controls.order.value,
-                    size: this.sortForm.controls.size.value
+                    sortBy,
+                    order,
+                    size
                 },
                 queryParamsHandling: "merge"
             });
 
         this.store.dispatch(
             updateSearchParams({
-                sortBy: this.sortForm.controls.sortBy.value,
-                order: this.sortForm.controls.order.value,
-                size: this.sortForm.controls.size.value,
+                sortBy,
+                order,
+                size,
                 page: this.page
             })
         );
