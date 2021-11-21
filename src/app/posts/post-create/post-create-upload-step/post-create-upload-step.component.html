@@ -2,16 +2,18 @@
     <div class="p-3 text-start">
         <p *ngIf="!!errorMessage" class="alert-danger p-3 mb-4">{{ errorMessage }}</p>
         <p class="p-3">Your post is almost ready. Click the button below to start uploading your content.</p>
+        <!-- Media upload progress -->
         <p *ngIf="!!isFetching && currentMediaUploadIndex !== -1" class="p-3">Currently uploading
             media: {{ currentMediaUploadIndex + 1 }}
             / {{ mediaSet.length }}</p>
+        <!-- Attachment upload progress -->
         <p *ngIf="!!isFetching && currentAttachmentUploadIndex !== -1" class="p-3">Currently uploading
             attachment: {{ currentAttachmentUploadIndex + 1 }}
             / {{ attachments.length }}</p>
         <!-- Submit -->
         <div class="mt-4 text-center">
             <button (click)="onSubmit()" [disabled]="isFetching || isFormValid"
-                    class="btn btn-accent p-3 pt-2 pb-2"
+                    class="btn btn-accent"
                     type="button">
                 <fa-icon *ngIf="isFetching" [fixedWidth]="true" [icon]="spinnerIcon" [spin]="true" class="text-white"
                          size="sm"></fa-icon>
