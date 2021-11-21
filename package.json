@@ -29,6 +29,7 @@
       "bootstrap": "^5.1.1",
       "keycloak-angular": "^8.4.0",
       "keycloak-js": "^15.0.2",
+      "photoswipe": "github:dimsemenov/photoswipe",
       "rxjs": "~6.6.0"
   },
   "devDependencies": {
@@ -38,6 +39,7 @@
       "@ngrx/schematics": "^12.4.0",
       "@types/jasmine": "~3.6.0",
       "@types/node": "^12.11.1",
+      "@types/photoswipe": "^4.1.2",
       "jasmine-core": "~3.7.0",
       "karma": "~6.3.0",
       "karma-chrome-launcher": "~3.1.0",
