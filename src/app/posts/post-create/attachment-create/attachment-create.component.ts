@@ -6,6 +6,7 @@ import * as fromApp from "../../../store/app.reducer";
 import {AttachmentWrapper} from "../../store/posts.reducer";
 import {addAttachment} from "../../store/posts.actions";
 import {CreateAttachment} from "../../../shared/model/request/create-attachment.model";
+import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
 
 @Component({
     selector: 'app-attachment-create',
@@ -13,6 +14,8 @@ import {CreateAttachment} from "../../../shared/model/request/create-attachment.
     styleUrls: ['./attachment-create.component.css']
 })
 export class AttachmentCreateComponent implements OnInit {
+
+    uploadIcon = faUpload;
 
     addFileForm: FormGroup;
     selectedFile!: File;

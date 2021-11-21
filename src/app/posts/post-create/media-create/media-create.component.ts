@@ -6,6 +6,7 @@ import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {addMedia} from "../../store/posts.actions";
 import {CreateMedia} from "../../../shared/model/request/create-media.model";
+import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
 
 @Component({
     selector: 'app-media-create',
@@ -13,6 +14,8 @@ import {CreateMedia} from "../../../shared/model/request/create-media.model";
     styleUrls: ['./media-create.component.css']
 })
 export class MediaCreateComponent implements OnInit {
+
+    uploadIcon = faUpload;
 
     addFileForm: FormGroup;
     selectedFile!: File;

@@ -1,4 +1,4 @@
-<article class="bg-white p-4 h-100 border-right">
+<article class="p-4 h-100 border-right">
     <div>
         <button (click)="onClose()" class="btn close p-1" type="button">
             <span aria-hidden="true">&times;</span>
@@ -8,11 +8,17 @@
     <form [formGroup]="addFileForm" class="p-3">
         <div>
             <div class="mb-3">
-                <input (change)="onFileSelected($event)" class="form-control" formControlName="attachmentFile"
+                <!-- Workaround for styling input[type=file] -->
+                <label class="form-input file" for="file">
+                    <fa-icon [icon]="uploadIcon" class="me-1"></fa-icon>
+                    <span [innerText]="(!!this.selectedFile) ? selectedFile.name : 'Select file'"></span>
+                </label>
+
+                <input (change)="onFileSelected($event)" formControlName="attachmentFile" id="file"
                        type="file">
             </div>
             <button (click)="onSubmit()" [disabled]="!addFileForm.valid"
-                    class="btn btn-block btn-primary p-3 pt-2 pb-2">
+                    class="btn btn-accent">
                 <span>Create</span>
             </button>
         </div>

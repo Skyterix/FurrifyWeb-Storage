@@ -1,13 +1,25 @@
+article {
+    background: #272727;
+}
+
 .close {
     position: absolute;
     top: 16px;
     right: 18px;
     outline: none;
-    color: #000;
+    color: #fff;
     font-size: 1.5em;
 }
 
 h1 {
-    color: black;
+    color: #fff;
     font-size: 3em;
+}
+
+.file {
+    cursor: pointer;
+}
+
+input[type=file] {
+    display: none;
 }
