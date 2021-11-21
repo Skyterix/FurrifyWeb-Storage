@@ -7,6 +7,9 @@ import * as fromApp from "../../../store/app.reducer";
 import {addMedia} from "../../store/posts.actions";
 import {CreateMedia} from "../../../shared/model/request/create-media.model";
 import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
+import {FILENAME_REGEX} from "../../../shared/config/api.constants";
+import {EXTENSION_EXTRACT_REGEX} from "../../../shared/config/common.constats";
+import {MediaExtensionsConfig} from "../../../shared/config/media-extensions.config";
 
 @Component({
     selector: 'app-media-create',
@@ -21,6 +24,7 @@ export class MediaCreateComponent implements OnInit {
 
     addFileForm: FormGroup;
     selectedFile!: File;
+    errorMessage!: string;
 
     constructor(private postCreateService: PostCreateService,
                 private store: Store<fromApp.AppState>,
@@ -44,9 +48,31 @@ export class MediaCreateComponent implements OnInit {
     }
 
     onFileSelected(event: any): void {
-        if (event.target.files.length > 0) {
-            this.selectedFile = event.target.files[0];
+        this.errorMessage = "";
+
+        // If file is not selected
+        if (event.target.files.length === 0) {
+            return;
         }
+
+        // Is filename is invalid
+        if (!FILENAME_REGEX.test(event.target.files[0].name)) {
+            this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
+
+            this.addFileForm.reset();
+        }
+
+        const extension = EXTENSION_EXTRACT_REGEX.exec(event.target.files[0].name);
+
+        /* Check extension against accepted extensions list.
+           The check for null is not required, regex check above ensures that extension must be present. */
+        if (!MediaExtensionsConfig.EXTENSIONS.includes(extension![1])) {
+            this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as media."
+
+            this.addFileForm.reset();
+        }
+
+        this.selectedFile = event.target.files[0];
     }
 
     onSubmit(): void {
