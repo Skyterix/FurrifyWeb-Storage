@@ -27,7 +27,6 @@ export class SortNavComponent implements OnInit, OnDestroy {
     sortBy!: string;
     order!: string;
     size!: number;
-    page!: number;
 
     @ViewChild('menuRef')
     menuRef!: ElementRef;
@@ -46,7 +45,6 @@ export class SortNavComponent implements OnInit, OnDestroy {
             this.sortBy = state.sortBy;
             this.order = state.order;
             this.size = state.size;
-            this.page = state.page;
         });
 
         this.sortForm = new FormGroup({
@@ -86,17 +84,19 @@ export class SortNavComponent implements OnInit, OnDestroy {
                 queryParams: {
                     sortBy,
                     order,
-                    size
+                    size,
+                    page: 1
                 },
                 queryParamsHandling: "merge"
             });
+
 
         this.store.dispatch(
             updateSearchParams({
                 sortBy,
                 order,
                 size,
-                page: this.page
+                page: 1
             })
         );
 
