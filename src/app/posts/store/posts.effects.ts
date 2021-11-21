@@ -431,6 +431,11 @@ export class PostsEffects {
     createPostUploadAttachmentStart = createEffect(() => this.actions$.pipe(
         ofType(createPostUploadAttachmentStart),
         switchMap((action) => {
+            // If no attachments to upload
+            if (action.attachments.length === 0) {
+                return of(createPostSuccess());
+            }
+
             const data = new FormData();
             const attachmentWrapper = action.attachments[action.currentIndex];
 
@@ -476,7 +481,10 @@ export class PostsEffects {
         tap(() => {
             this.postCreateService.postCreateCloseEvent.emit();
 
-            this.postsService.triggerSearch();
+            // Add some timout for higher chance of it being processed on time
+            setTimeout(() => {
+                this.postsService.triggerSearch();
+            }, 50);
         })
     ), {dispatch: false});
 
