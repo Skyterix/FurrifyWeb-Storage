@@ -56,7 +56,7 @@ export class PostDetailsComponent implements OnInit {
         // On index change
         this.activatedRoute.params.subscribe(params => {
             // Get selected media index from url
-            this.index = params.index;
+            this.index = +params.index;
 
             // If there is no media
             if (this.sortedMedia.length === 0) {
@@ -90,7 +90,7 @@ export class PostDetailsComponent implements OnInit {
 
         const options = {
             history: false,
-            index: 0,
+            index: this.index,
             clickToCloseNonZoomable: false
         };
 
