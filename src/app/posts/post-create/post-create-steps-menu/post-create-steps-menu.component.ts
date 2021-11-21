@@ -1,6 +1,8 @@
 import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {Subscription} from "rxjs";
 import {PostCreateService} from "../post-create.service";
+import {Store} from "@ngrx/store";
+import * as fromApp from "../../../store/app.reducer";
 
 @Component({
     selector: 'app-post-create-steps-menu',
@@ -13,14 +15,22 @@ export class PostCreateStepsMenuComponent implements OnInit {
     @ViewChild('secondStepCircle') secondStepCircle!: ElementRef;
     @ViewChild('thirdStepCircle') thirdStepCircle!: ElementRef;
 
+    private isFetching: boolean;
+
     private postInfoOpenEventSubscription!: Subscription;
     private postContentOpenEventSubscription!: Subscription;
     private postContentUploadOpenEventSubscription!: Subscription;
 
-    constructor(private renderer: Renderer2, private postCreateService: PostCreateService) {
+    constructor(private renderer: Renderer2,
+                private postCreateService: PostCreateService,
+                private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit(): void {
+        this.store.select('posts').subscribe(state => {
+            this.isFetching = state.isFetching;
+        });
+
         this.postInfoOpenEventSubscription = this.postCreateService.postInfoStepOpenEvent.subscribe(() => {
             this.renderer.addClass(this.firstStepCircle.nativeElement, 'active');
             this.renderer.removeClass(this.secondStepCircle.nativeElement, 'active');
@@ -39,14 +49,26 @@ export class PostCreateStepsMenuComponent implements OnInit {
     }
 
     onPostInfoStepClicked(): void {
+        if (this.isFetching) {
+            return;
+        }
+
         this.postCreateService.postInfoStepOpenEvent.emit();
     }
 
     onPostContentStepClicked(): void {
+        if (this.isFetching) {
+            return;
+        }
+
         this.postCreateService.postContentStepOpenEvent.emit();
     }
 
     onPostContentUploadStepClicked(): void {
+        if (this.isFetching) {
+            return;
+        }
+
         this.postCreateService.postUploadStepOpenEvent.emit();
     }
 }
