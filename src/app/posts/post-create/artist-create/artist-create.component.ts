@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {KeycloakProfile} from "keycloak-js";
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
@@ -21,6 +21,8 @@ export class ArtistCreateComponent implements OnInit {
 
     @Input() preferredNickname!: string;
 
+    @ViewChild('article', {read: ElementRef}) articleRef!: ElementRef;
+
     errorMessage!: string;
     isFetching!: boolean;
 
@@ -36,7 +38,8 @@ export class ArtistCreateComponent implements OnInit {
     private authenticationStoreSubscription!: Subscription;
 
     constructor(private store: Store<fromApp.AppState>,
-                private postCreateService: PostCreateService) {
+                private postCreateService: PostCreateService,
+                private renderer: Renderer2) {
     }
 
     ngOnInit(): void {
@@ -52,7 +55,7 @@ export class ArtistCreateComponent implements OnInit {
             preferredNickname: new FormControl({value: this.preferredNickname, disabled: true})
         });
         this.selectNicknameForm = new FormGroup({
-            nickname: new FormControl(null, [Validators.required])
+            nickname: new FormControl(null)
         });
     }
 
@@ -82,7 +85,12 @@ export class ArtistCreateComponent implements OnInit {
 
 
     onClose(): void {
-        this.postCreateService.artistCreateCloseEvent.emit();
+        this.renderer.addClass(this.articleRef.nativeElement, "animate__fadeOut");
+
+        // Let the animation finish
+        setTimeout(() => {
+            this.postCreateService.artistCreateCloseEvent.emit();
+        }, 100);
     }
 
     onArtistNicknameSelect(): void {

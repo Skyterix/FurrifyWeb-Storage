@@ -1,6 +1,6 @@
-<div class="modal-backdrop position-fixed"></div>
+<div #backdrop class="modal-backdrop position-fixed animate__animated animate__fadeIn"></div>
 
-<section>
+<section #section class="animate__animated animate__fadeIn">
     <div class="row justify-content-center">
         <!-- Left -->
         <div class="col-lg-5 col-md-4 left h-auto p-5 text-white">
@@ -18,7 +18,7 @@
             </div>
         </div>
         <!-- Right -->
-        <div class="col-lg-5 col-md-4 right h-auto p-3 position-relative bg-white">
+        <div class="col-lg-5 col-md-4 right h-auto p-3 position-relative">
             <div>
                 <button (click)="onClose()" [disabled]="isFetching" class="btn close" type="button">
                     <span aria-hidden="true">&times;</span>

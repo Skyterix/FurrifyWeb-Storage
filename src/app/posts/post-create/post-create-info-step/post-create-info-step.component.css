@@ -14,3 +14,11 @@
 .artist {
     background: #37115a;
 }
+
+textarea {
+    min-height: 85px;
+}
+
+.animate__animated {
+    animation-duration: .1s;
+}

@@ -1,4 +1,14 @@
-import {Component, ComponentRef, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+    Component,
+    ComponentRef,
+    ElementRef,
+    OnDestroy,
+    OnInit,
+    Renderer2,
+    Type,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {PostCreateService} from "./post-create.service";
 import {PostCreateInfoStepComponent} from "./post-create-info-step/post-create-info-step.component";
 import {PostCreateContentStepComponent} from "./post-create-content-step/post-create-content-step.component";
@@ -19,6 +29,9 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     @ViewChild('currentStep', {read: ViewContainerRef}) currentStepRef!: ViewContainerRef;
     @ViewChild('currentSideStep', {read: ViewContainerRef}) currentSideStepRef!: ViewContainerRef;
 
+    @ViewChild('backdrop', {read: ElementRef}) backdropRef!: ElementRef;
+    @ViewChild('section', {read: ElementRef}) sectionRef!: ElementRef;
+
     isFetching = false;
     errorMessage: string | null = null;
 
@@ -34,7 +47,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     private attachmentCreateOpenEventSubscription!: Subscription;
     private attachmentCreateCloseEventSubscription!: Subscription;
 
-    constructor(private postCreateService: PostCreateService) {
+    constructor(private postCreateService: PostCreateService, private renderer: Renderer2) {
     }
 
     ngOnInit(): void {
@@ -100,7 +113,14 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     }
 
     onClose(): void {
-        this.postCreateService.postCreateCloseEvent.emit();
+        console.log("ds");
+        this.renderer.addClass(this.backdropRef.nativeElement, "animate__fadeOut");
+        this.renderer.addClass(this.sectionRef.nativeElement, "animate__fadeOut");
+
+        // Let the animations finish
+        setTimeout(() => {
+            this.postCreateService.postCreateCloseEvent.emit();
+        }, 100);
     }
 
     private loadStep<T>(component: Type<T>): void {

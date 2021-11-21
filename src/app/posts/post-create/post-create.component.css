@@ -13,8 +13,9 @@ section {
     top: .75rem;
     right: .75rem;
     outline: none;
-    color: #000;
+    color: #fff;
     font-size: 1.5em;
+    z-index: 11;
 }
 
 .row {
@@ -24,7 +25,10 @@ section {
 }
 
 .row .right {
+    border-bottom-right-radius: 8px;
+    border-top-right-radius: 8px;
     z-index: 11;
+    background: #272727;
 }
 
 .row .left {
@@ -33,6 +37,8 @@ section {
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100% 100%;
+    border-bottom-left-radius: 8px;
+    border-top-left-radius: 8px;
     z-index: 11;
 }
 
@@ -47,4 +53,8 @@ section {
 
 .row .left .back {
     z-index: 11;
+}
+
+.animate__animated {
+    animation-duration: .1s;
 }
