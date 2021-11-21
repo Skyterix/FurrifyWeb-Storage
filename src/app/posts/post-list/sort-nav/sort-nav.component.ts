@@ -66,6 +66,12 @@ export class SortNavComponent implements OnInit, OnDestroy {
                 size: MAX_SIZE
             });
         }
+        // If size is negative
+        if (this.sortForm.controls.size.value <= 0) {
+            this.sortForm.patchValue({
+                size: 1
+            });
+        }
 
         const sortBy = this.sortForm.controls.sortBy.value;
         const order = this.sortForm.controls.order.value;
