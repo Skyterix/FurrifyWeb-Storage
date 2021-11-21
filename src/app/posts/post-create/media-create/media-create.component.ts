@@ -7,8 +7,7 @@ import * as fromApp from "../../../store/app.reducer";
 import {addMedia} from "../../store/posts.actions";
 import {CreateMedia} from "../../../shared/model/request/create-media.model";
 import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
-import {FILENAME_REGEX} from "../../../shared/config/api.constants";
-import {EXTENSION_EXTRACT_REGEX} from "../../../shared/config/common.constats";
+import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../shared/config/common.constats";
 import {MediaExtensionsConfig} from "../../../shared/config/media-extensions.config";
 
 @Component({

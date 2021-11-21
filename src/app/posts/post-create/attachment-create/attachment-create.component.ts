@@ -7,8 +7,7 @@ import {AttachmentWrapper} from "../../store/posts.reducer";
 import {addAttachment} from "../../store/posts.actions";
 import {CreateAttachment} from "../../../shared/model/request/create-attachment.model";
 import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
-import {FILENAME_REGEX} from "../../../shared/config/api.constants";
-import {EXTENSION_EXTRACT_REGEX} from "../../../shared/config/common.constats";
+import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../shared/config/common.constats";
 import {AttachmentExtensionsConfig} from "../../../shared/config/attachment-extensions.config";
 
 @Component({

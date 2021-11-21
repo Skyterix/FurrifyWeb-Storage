@@ -18,5 +18,3 @@ export const CREATE_ATTACHMENT = SERVER_ADDRESS + '/users/:userId/posts/:postId/
 
 // Fixes not getting hal+json from response
 export const RESPONSE_TYPE = "*";
-
-export const FILENAME_REGEX = /^[a-zA-Z0-9](?:[a-zA-Z0-9 ._-]*[a-zA-Z0-9])?\.[a-zA-Z0-9_-]+$/;
