@@ -86,7 +86,7 @@ export class PostDetailsComponent implements OnInit {
     }
 
     openImageGallery(): void {
-        const pswpElement: HTMLElement = document.querySelector('.pswp')!;
+        const galleryElement: HTMLElement = document.querySelector('.pswp')!;
 
         const options = {
             history: false,
@@ -94,7 +94,7 @@ export class PostDetailsComponent implements OnInit {
             clickToCloseNonZoomable: false
         };
 
-        const gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, this.galleryItems, options);
+        const gallery = new PhotoSwipe(galleryElement, PhotoSwipeUI_Default, this.galleryItems, options);
         gallery.listen('gettingData', (index, item) => {
             if (item.w! < 1 || item.h! < 1) {
                 const img = new Image();
