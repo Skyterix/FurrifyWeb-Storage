@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
@@ -17,6 +17,8 @@ import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 })
 export class TagCreateComponent implements OnInit, OnDestroy {
 
+    @ViewChild('article', {read: ElementRef}) articleRef!: ElementRef;
+
     spinnerIcon = faCircleNotch;
 
     @Input() value!: string;
@@ -34,7 +36,8 @@ export class TagCreateComponent implements OnInit, OnDestroy {
     private authenticationStoreSubscription!: Subscription;
 
     constructor(private store: Store<fromApp.AppState>,
-                private postCreateService: PostCreateService) {
+                private postCreateService: PostCreateService,
+                private renderer: Renderer2) {
     }
 
     ngOnInit(): void {
@@ -77,7 +80,12 @@ export class TagCreateComponent implements OnInit, OnDestroy {
 
 
     onClose(): void {
-        this.postCreateService.tagCreateCloseEvent.emit();
+        this.renderer.addClass(this.articleRef.nativeElement, "animate__fadeOut");
+
+        // Let the animation finish
+        setTimeout(() => {
+            this.postCreateService.tagCreateCloseEvent.emit();
+        }, 100);
     }
 
 }

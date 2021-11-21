@@ -46,3 +46,7 @@ ul li .badge {
     background: dodgerblue;
     user-select: none;
 }
+
+.animate__animated {
+    animation-duration: .1s;
+}

@@ -28,3 +28,7 @@ ul li .badge, .cdk-drag-preview .badge {
 h6 {
     color: #fff;
 }
+
+.animate__animated {
+    animation-duration: .1s;
+}

@@ -23,3 +23,11 @@ h1 {
 input[type=file] {
     display: none;
 }
+
+label span {
+    word-wrap: break-word;
+}
+
+.animate__animated {
+    animation-duration: .1s;
+}

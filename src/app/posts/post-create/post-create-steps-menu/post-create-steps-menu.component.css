@@ -49,3 +49,7 @@
     position: absolute;
     margin-top: -10px;
 }
+
+.animate__animated {
+    animation-duration: .1s;
+}

@@ -19,3 +19,7 @@ h1 {
 textarea {
     min-height: 85px;
 }
+
+.animate__animated {
+    animation-duration: .1s;
+}

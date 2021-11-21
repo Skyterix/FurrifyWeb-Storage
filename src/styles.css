@@ -143,3 +143,11 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
 
+.alert-danger {
+    border-radius: 8px;
+    word-wrap: break-word;
+}
+
+.short-animation {
+    animation-duration: .2s !important;
+}

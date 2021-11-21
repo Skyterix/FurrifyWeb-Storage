@@ -1,3 +1,7 @@
 article {
     color: #fff;
 }
+
+.animate__animated {
+    animation-duration: .1s;
+}
