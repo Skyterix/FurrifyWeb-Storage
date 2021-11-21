@@ -65,7 +65,7 @@ export class AttachmentCreateComponent implements OnInit {
 
         /* Check extension against accepted extensions list.
            The check for null is not required, regex check above ensures that extension must be present. */
-        if (!AttachmentExtensionsConfig.EXTENSIONS.includes(extension![1])) {
+        if (!AttachmentExtensionsConfig.EXTENSIONS.includes(extension![1].toLowerCase())) {
             this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as attachment."
 
             this.addFileForm.reset();
