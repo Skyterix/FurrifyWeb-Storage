@@ -47,6 +47,11 @@ export class PostDetailsComponent implements OnInit {
             // Get selected media index from url
             this.index = params.index;
 
+            // If there is no media
+            if (this.sortedMedia.length === 0) {
+                return;
+            }
+
             // If media exists in post and index is valid
             if (this.sortedMedia[this.index] !== undefined) {
                 setTimeout(() => this.loadMedia(this.sortedMedia[this.index]));
