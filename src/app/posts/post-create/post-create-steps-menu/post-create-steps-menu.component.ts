@@ -15,7 +15,7 @@ export class PostCreateStepsMenuComponent implements OnInit {
     @ViewChild('secondStepCircle') secondStepCircle!: ElementRef;
     @ViewChild('thirdStepCircle') thirdStepCircle!: ElementRef;
 
-    private isFetching: boolean;
+    private isFetching!: boolean;
 
     private postInfoOpenEventSubscription!: Subscription;
     private postContentOpenEventSubscription!: Subscription;
