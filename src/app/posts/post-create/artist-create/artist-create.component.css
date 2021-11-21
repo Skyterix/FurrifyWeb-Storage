@@ -1,14 +1,18 @@
+article {
+    background: #272727;
+}
+
 .close {
     position: absolute;
     top: 16px;
     right: 18px;
     outline: none;
-    color: #000;
+    color: #fff;
     font-size: 1.5em;
 }
 
 h1 {
-    color: black;
+    color: #fff;
     font-size: 3em;
 }
 
@@ -26,13 +30,14 @@ ul {
 }
 
 ul li:first-of-type {
-    color: #000;
     font-size: 1em;
     font-weight: 400;
 }
 
 ul li {
-    border-top: 0;
+    background: rgba(50, 50, 50, 0.9);
+    color: #fff;
+    border: none;
     user-select: none;
 }
 

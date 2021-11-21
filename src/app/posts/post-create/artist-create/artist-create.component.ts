@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {KeycloakProfile} from "keycloak-js";
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
@@ -52,7 +52,7 @@ export class ArtistCreateComponent implements OnInit {
             preferredNickname: new FormControl({value: this.preferredNickname, disabled: true})
         });
         this.selectNicknameForm = new FormGroup({
-            nickname: new FormControl(null, [Validators.required])
+            nickname: new FormControl(null)
         });
     }
 

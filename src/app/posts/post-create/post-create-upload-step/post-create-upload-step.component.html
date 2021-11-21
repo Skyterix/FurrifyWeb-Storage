@@ -11,7 +11,7 @@
         <!-- Submit -->
         <div class="mt-4 text-center">
             <button (click)="onSubmit()" [disabled]="isFetching || isFormValid"
-                    class="btn btn-block btn-primary p-3 pt-2 pb-2"
+                    class="btn btn-accent p-3 pt-2 pb-2"
                     type="button">
                 <fa-icon *ngIf="isFetching" [fixedWidth]="true" [icon]="spinnerIcon" [spin]="true" class="text-white"
                          size="sm"></fa-icon>
