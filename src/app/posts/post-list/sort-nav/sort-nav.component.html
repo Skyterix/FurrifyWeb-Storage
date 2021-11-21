@@ -11,23 +11,23 @@
             <li class="nav-item">
                 <label class="h4" for="size">Page size</label>
                 <input (change)="onChanges()" (focusout)="onChanges()" [value]="size" formControlName="size" id="size"
-                       placeholder="Size" type="number"/>
+                       class="form-input" placeholder="Size" type="number"/>
             </li>
             <li class="nav-item">
                 <label class="h4" for="sortBy">Sort by</label>
-                <select (change)="onChanges()" formControlName="sortBy" id="sortBy">
+                <select (change)="onChanges()" class="form-input" formControlName="sortBy" id="sortBy">
                     <option value="createDate">Create date</option>
                 </select>
             </li>
             <li class="nav-item">
                 <label class="h4" for="order">Sort direction</label>
-                <select (change)="onChanges()" formControlName="order" id="order">
+                <select (change)="onChanges()" class="form-input" formControlName="order" id="order">
                     <option value="desc">Descending</option>
                     <option value="asc">Ascending</option>
                 </select>
             </li>
             <li class="text-center">
-                <button (click)="onCreatePost()" class="create-post">Create post</button>
+                <button (click)="onCreatePost()" class="btn btn-accent">Create post</button>
             </li>
         </ul>
 

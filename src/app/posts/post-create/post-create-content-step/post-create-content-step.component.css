@@ -1,12 +1,30 @@
-ul li {
+ul li, .cdk-drag-preview {
     user-select: none;
+    background: rgba(50, 50, 50, 0.9);
+    color: rgba(255, 255, 255, 0.9);
+    border: none;
 }
 
-ul li .badge {
+.filename {
+    word-wrap: break-word;
+    max-width: calc(100% - 40px);
+    padding-right: 5px;
+}
+
+ul li .badge, .cdk-drag-preview .badge {
     background: dodgerblue;
+    min-width: 16px;
+}
+
+.badges {
+    width: 40px;
 }
 
 .remove {
     cursor: pointer;
     background: red !important;
+}
+
+h6 {
+    color: #fff;
 }

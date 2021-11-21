@@ -2,17 +2,17 @@
     <form [formGroup]="postInfoForm" class="p-3">
         <!-- Title -->
         <div class="mt-2">
-            <input (change)="onTitleValueChange()" class="form-control" formControlName="title" placeholder="Title"
+            <input (change)="onTitleValueChange()" class="form-input" formControlName="title" placeholder="Title"
                    type="text"/>
         </div>
         <!-- Description -->
         <div class="mt-3">
-            <textarea (change)="onDescriptionValueChange()" class="form-control" formControlName="description"
+            <textarea (change)="onDescriptionValueChange()" class="form-input" formControlName="description"
                       placeholder="Description"></textarea>
         </div>
         <!-- Tags -->
         <form [formGroup]="tagSelectForm" class="mt-3">
-            <div class="form-control text-start h-auto">
+            <div class="form-input text-start h-auto">
 
                 <span (click)="loadCreateTagForm(tagWrapper)" *ngFor="let tagWrapper of selectedTags"
                       [appColoredTag]="tagWrapper.tag.type"
@@ -29,7 +29,7 @@
                     </span>
 
                 <input (keyup.enter)="onTagSelectSubmit()"
-                       class="form-control border-0 d-inline-block m-0 p-0"
+                       class="form-input border-0 d-inline-block m-0 p-0"
                        formControlName="tag"
                        placeholder="Tag value" type="text"/>
 
@@ -37,7 +37,7 @@
         </form>
         <!-- Artists -->
         <form [formGroup]="artistSelectForm" class="mt-3">
-            <div class="form-control text-start h-auto">
+            <div class="form-input text-start h-auto">
 
                 <!-- TODO Show box displaying info on hover -->
                 <span (click)="loadCreateArtistForm(artistWrapper)" *ngFor="let artistWrapper of selectedArtists"
@@ -54,7 +54,7 @@
                     </span>
 
                 <input (keyup.enter)="onArtistSelectSubmit()"
-                       class="form-control border-0 d-inline-block m-0 p-0"
+                       class="form-input border-0 d-inline-block m-0 p-0"
                        formControlName="artist"
                        placeholder="Artist value" type="text"/>
 
@@ -64,7 +64,7 @@
         <div class="mt-4">
             <button (click)="onNextStep()"
                     [disabled]="!postInfoForm.valid || selectedTags.length == 0"
-                    class="btn btn-block btn-primary p-3 pt-2 pb-2">Next
+                    class="btn btn-accent">Next
             </button>
         </div>
     </form>

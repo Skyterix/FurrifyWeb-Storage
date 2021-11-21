@@ -101,3 +101,45 @@ a:focus {
     cursor: inherit;
     display: block;
 }
+
+.form-input {
+    outline: 0;
+    background: rgba(50, 50, 50, 0.9);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 17px;
+    height: 36px;
+    width: 100%;
+    border: 0;
+    border-radius: 8px;
+    user-select: none;
+    padding: 5px 10px;
+}
+
+.btn-accent {
+    outline: 0;
+    background: rgba(50, 50, 50, 0.9);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 7px 15px;
+    font-size: 15px;
+    border: 0;
+    border-radius: 8px;
+    user-select: none;
+    transition: .1s all ease;
+}
+
+.btn-accent:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(53, 53, 53, 0.9);
+}
+
+input[type="number"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
