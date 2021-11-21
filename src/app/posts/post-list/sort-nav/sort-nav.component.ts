@@ -9,6 +9,7 @@ import {Subscription} from "rxjs";
 import {PostCreateService} from "../../post-create/post-create.service";
 import {faTimes} from "@fortawesome/free-solid-svg-icons/faTimes";
 import {faFilter} from "@fortawesome/free-solid-svg-icons/faFilter";
+import {MAX_SIZE} from "../../../shared/config/limit.constants";
 
 @Component({
     selector: 'app-sort-nav',
@@ -61,6 +62,13 @@ export class SortNavComponent implements OnInit, OnDestroy {
     }
 
     onChanges(): void {
+        // If size is exceeded
+        if (this.sortForm.controls.size.value > MAX_SIZE) {
+            this.sortForm.patchValue({
+                size: MAX_SIZE
+            });
+        }
+
         const sortBy = this.sortForm.controls.sortBy.value;
         const order = this.sortForm.controls.order.value;
         const size = this.sortForm.controls.size.value;
