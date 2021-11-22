@@ -11,6 +11,7 @@
     </div>
     <!-- Media -->
     <div class="text-center">
+        <!-- TODO Support video and audio -->
         <img #mediaView (click)="openImageGallery()" (load)="onMediaLoaded()" *ngIf="this.post.mediaSet.length != 0"
              alt="post media" class="img-fluid media" style="cursor: zoom-in "/>
         <fa-icon #mediaSpinner [icon]="circleNotchIcon" [spin]="true" class="spinner" size="3x"></fa-icon>
