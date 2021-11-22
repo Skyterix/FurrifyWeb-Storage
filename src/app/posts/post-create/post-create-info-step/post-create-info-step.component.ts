@@ -178,6 +178,10 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             return;
         }
 
+        if (!artistNickname.match("^[a-zA-Z0-9_-]*$")) {
+            return;
+        }
+
         // Check if artist already exists
         const isDuplicate = this.selectedArtists.find((artistWrapper) => {
             return artistWrapper.artist.preferredNickname === artistNickname;
