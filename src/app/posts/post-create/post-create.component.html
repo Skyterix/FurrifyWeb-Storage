@@ -25,8 +25,12 @@
                 </button>
             </div>
             <app-post-create-steps-menu></app-post-create-steps-menu>
-
-            <p *ngIf="!!errorMessage" class="alert-danger p-3 mt-3">{{ errorMessage }}</p>
+            <!-- Error message -->
+            <div *ngIf="!!errorMessage" class="text-center mt-4">
+                <p class="alert-danger d-inline-block p-3 m-0">
+                    <span>{{ errorMessage }}</span>
+                </p>
+            </div>
 
             <ng-template #currentStep></ng-template>
         </div>

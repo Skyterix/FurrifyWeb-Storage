@@ -7,6 +7,8 @@ import {AttachmentWrapper} from "../../store/posts.reducer";
 import {addAttachment} from "../../store/posts.actions";
 import {CreateAttachment} from "../../../shared/model/request/create-attachment.model";
 import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
+import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../shared/config/common.constats";
+import {AttachmentExtensionsConfig} from "../../../shared/config/attachment-extensions.config";
 
 @Component({
     selector: 'app-attachment-create',
@@ -21,6 +23,7 @@ export class AttachmentCreateComponent implements OnInit {
 
     addFileForm: FormGroup;
     selectedFile!: File;
+    errorMessage!: string;
 
     constructor(private postCreateService: PostCreateService,
                 private store: Store<fromApp.AppState>,
@@ -44,9 +47,31 @@ export class AttachmentCreateComponent implements OnInit {
     }
 
     onFileSelected(event: any): void {
-        if (event.target.files.length > 0) {
-            this.selectedFile = event.target.files[0];
+        this.errorMessage = "";
+
+        // If file is not selected
+        if (event.target.files.length === 0) {
+            return;
         }
+
+        // Is filename is invalid
+        if (!FILENAME_REGEX.test(event.target.files[0].name)) {
+            this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
+
+            this.addFileForm.reset();
+        }
+
+        const extension = EXTENSION_EXTRACT_REGEX.exec(event.target.files[0].name);
+
+        /* Check extension against accepted extensions list.
+           The check for null is not required, regex check above ensures that extension must be present. */
+        if (!AttachmentExtensionsConfig.EXTENSIONS.includes(extension![1].toLowerCase())) {
+            this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as attachment."
+
+            this.addFileForm.reset();
+        }
+
+        this.selectedFile = event.target.files[0];
     }
 
     onSubmit(): void {

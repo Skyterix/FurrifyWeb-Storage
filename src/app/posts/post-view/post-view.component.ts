@@ -18,6 +18,8 @@ export class PostViewComponent implements OnInit, OnDestroy {
     selectedPost!: QueryPost | null;
     currentUser!: KeycloakProfile | null;
 
+    errorMessage!: string | null;
+
     private storeSubscription!: Subscription;
 
     constructor(private activatedRoute: ActivatedRoute,
@@ -28,6 +30,7 @@ export class PostViewComponent implements OnInit, OnDestroy {
         this.storeSubscription = this.store.select('posts').subscribe(state => {
             this.isFetching = state.isFetching;
             this.selectedPost = state.selectedPost;
+            this.errorMessage = state.fetchErrorMessage;
         });
         this.storeSubscription = this.store.select('authentication').subscribe(state => {
             this.currentUser = state.currentUser;

@@ -18,6 +18,8 @@ import {TagCreateComponent} from "./tag-create/tag-create.component";
 import {ArtistCreateComponent} from "./artist-create/artist-create.component";
 import {MediaCreateComponent} from "./media-create/media-create.component";
 import {AttachmentCreateComponent} from "./attachment-create/attachment-create.component";
+import {Store} from "@ngrx/store";
+import * as fromApp from "../../store/app.reducer";
 
 @Component({
     selector: 'app-post-create',
@@ -46,8 +48,11 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     private mediaCreateCloseEventSubscription!: Subscription;
     private attachmentCreateOpenEventSubscription!: Subscription;
     private attachmentCreateCloseEventSubscription!: Subscription;
+    private storeSubscription!: Subscription;
 
-    constructor(private postCreateService: PostCreateService, private renderer: Renderer2) {
+    constructor(private postCreateService: PostCreateService,
+                private renderer: Renderer2,
+                private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit(): void {
@@ -94,6 +99,10 @@ export class PostCreateComponent implements OnInit, OnDestroy {
             setTimeout(() => this.clearSideView());
         });
 
+        this.storeSubscription = this.store.select('posts').subscribe(state => {
+            this.errorMessage = state.postCreateErrorMessage;
+        });
+
         // Load default step
         setTimeout(() => this.postCreateService.postInfoStepOpenEvent.emit());
     }
@@ -113,7 +122,6 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     }
 
     onClose(): void {
-        console.log("ds");
         this.renderer.addClass(this.backdropRef.nativeElement, "animate__fadeOut");
         this.renderer.addClass(this.sectionRef.nativeElement, "animate__fadeOut");
 

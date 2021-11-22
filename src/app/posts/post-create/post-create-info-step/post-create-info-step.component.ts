@@ -141,7 +141,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (!tagValue.match("^[a-z_-]*$")) {
+        if (!tagValue.match("^[a-zA-Z0-9_-]*$")) {
             return;
         }
 
@@ -175,6 +175,10 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             .trim();
 
         if (!artistNickname) {
+            return;
+        }
+
+        if (!artistNickname.match("^[a-zA-Z0-9_-]*$")) {
             return;
         }
 

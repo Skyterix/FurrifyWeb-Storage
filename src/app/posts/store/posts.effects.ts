@@ -89,6 +89,14 @@ export class PostsEffects {
                 }),
                 catchError(error => {
                     switch (error.status) {
+                        case 503:
+                            return of(failSearch({
+                                searchErrorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(failSearch({
+                                searchErrorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
                         default:
                             return of(failSearch({
                                 searchErrorMessage: 'Something went wrong. Try again later.'
@@ -116,6 +124,14 @@ export class PostsEffects {
                 }),
                 catchError(error => {
                     switch (error.status) {
+                        case 503:
+                            return of(getPostFail({
+                                postFetchErrorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(getPostFail({
+                                postFetchErrorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
                         default:
                             return of(getPostFail({
                                 postFetchErrorMessage: 'Something went wrong. Try again later.'
@@ -157,7 +173,16 @@ export class PostsEffects {
                             return of(addTagToSelectedSetSuccess({
                                 tagWrapper: new TagWrapper(tag, false)
                             }));
-
+                        case 503:
+                            return of(addTagToSelectedSetFail({
+                                value: action.value,
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(addTagToSelectedSetFail({
+                                value: action.value,
+                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
                         default:
                             return of(addTagToSelectedSetFail({
                                 value: action.value,
@@ -185,6 +210,14 @@ export class PostsEffects {
                 }),
                 catchError(error => {
                     switch (error.status) {
+                        case 503:
+                            return of(createTagFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(createTagFail({
+                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
                         default:
                             return of(createTagFail({
                                 errorMessage: 'Something went wrong. Try again later.'
@@ -212,8 +245,14 @@ export class PostsEffects {
                     let errorMessage;
 
                     switch (error.status) {
+                        case 503:
+                            errorMessage = 'No servers available to handle your request. Try again later.';
+                            break;
                         case 404:
                             errorMessage = 'Tag creation was not handled yet by servers. Try again in a moment.';
+                            break;
+                        case 400:
+                            errorMessage = error.message + ' If you think this is a bug, please contact the administrator.';
                             break;
                         default:
                             errorMessage = 'Something went wrong. Try again later.';
@@ -275,6 +314,16 @@ export class PostsEffects {
                 }),
                 catchError(error => {
                     switch (error.status) {
+                        case 503:
+                            return of(addArtistToSelectedSetFail({
+                                preferredNickname: action.preferredNickname,
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(addArtistToSelectedSetFail({
+                                preferredNickname: action.preferredNickname,
+                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
                         default:
                             return of(addArtistToSelectedSetFail({
                                 preferredNickname: action.preferredNickname,
@@ -302,6 +351,14 @@ export class PostsEffects {
                 }),
                 catchError(error => {
                     switch (error.status) {
+                        case 503:
+                            return of(createArtistFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(createArtistFail({
+                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
                         default:
                             return of(createArtistFail({
                                 errorMessage: 'Something went wrong. Try again later.'
@@ -329,6 +386,12 @@ export class PostsEffects {
                         let errorMessage;
 
                         switch (error.status) {
+                            case 503:
+                                errorMessage = 'No servers available to handle your request. Try again later.'
+                                break;
+                            case 400:
+                                errorMessage = error.message + ' If you think this is a bug, please contact the administrator.';
+                                break;
                             case 404:
                                 errorMessage = 'Artist creation was not handled yet by servers. Try again in a moment.';
                                 break;
@@ -365,6 +428,14 @@ export class PostsEffects {
                 }),
                 catchError(error => {
                     switch (error.status) {
+                        case 503:
+                            return of(createPostFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(createPostFail({
+                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
                         default:
                             return of(createPostFail({
                                 errorMessage: 'Something went wrong. Try again later.'
@@ -416,6 +487,14 @@ export class PostsEffects {
                 retryWhen(RETRY_HANDLER),
                 catchError(error => {
                     switch (error.status) {
+                        case 503:
+                            return of(createPostFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(createPostFail({
+                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
                         default:
                             return of(createPostFail({
                                 errorMessage: 'Something went wrong while uploading "' +
@@ -431,6 +510,11 @@ export class PostsEffects {
     createPostUploadAttachmentStart = createEffect(() => this.actions$.pipe(
         ofType(createPostUploadAttachmentStart),
         switchMap((action) => {
+            // If no attachments to upload
+            if (action.attachments.length === 0) {
+                return of(createPostSuccess());
+            }
+
             const data = new FormData();
             const attachmentWrapper = action.attachments[action.currentIndex];
 
@@ -459,6 +543,14 @@ export class PostsEffects {
                 retryWhen(RETRY_HANDLER),
                 catchError(error => {
                     switch (error.status) {
+                        case 503:
+                            return of(createPostFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(createPostFail({
+                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
                         default:
                             return of(createPostFail({
                                 errorMessage: 'Something went wrong while uploading "' +
@@ -476,7 +568,10 @@ export class PostsEffects {
         tap(() => {
             this.postCreateService.postCreateCloseEvent.emit();
 
-            this.postsService.triggerSearch();
+            // Add some timout for higher chance of it being processed on time
+            setTimeout(() => {
+                this.postsService.triggerSearch();
+            }, 50);
         })
     ), {dispatch: false});
 

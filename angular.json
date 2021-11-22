@@ -27,11 +27,16 @@
                             "src/assets"
                         ],
                         "styles": [
+                            "node_modules/photoswipe/dist/photoswipe.css",
+                            "node_modules/photoswipe/dist/default-skin/default-skin.css",
                             "node_modules/bootstrap/dist/css/bootstrap.min.css",
                             "node_modules/animate.css/animate.min.css",
                             "src/styles.css"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "node_modules/photoswipe/dist/photoswipe.js",
+                            "node_modules/photoswipe/dist/photoswipe-ui-default.js"
+                        ]
                     },
                     "configurations": {
                         "production": {

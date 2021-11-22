@@ -99,7 +99,7 @@ export interface State {
     attachments: AttachmentWrapper[];
     currentMediaUploadIndex: number;
     currentAttachmentUploadIndex: number;
-    postCreateErrorMessage: string;
+    postCreateErrorMessage: string | null;
 }
 
 const initialState: State = {
@@ -234,7 +234,7 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
-                postErrorMessage: null,
+                postCreateErrorMessage: null,
                 // Set temporarily isExisting value to null to show loading spinner
                 selectedTags: [...state.selectedTags, new TagWrapper(tag, null)]
             };
@@ -262,7 +262,7 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 isFetching: false,
-                postErrorMessage: action.errorMessage,
+                postCreateErrorMessage: action.errorMessage,
                 selectedTags: state.selectedTags.slice().filter(item => item.tag.value !== action.value)
             };
         }
@@ -338,7 +338,7 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
-                postErrorMessage: null,
+                postCreateErrorMessage: null,
                 // Set temporarily isExisting value to null to show loading spinner
                 selectedArtists: [...state.selectedArtists, new ArtistWrapper(artist, null)]
             };
@@ -366,7 +366,7 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 isFetching: false,
-                postErrorMessage: action.errorMessage,
+                postCreateErrorMessage: action.errorMessage,
                 selectedArtists: state.selectedArtists.slice().filter(item => item.artist.preferredNickname !== action.preferredNickname)
             };
         }
