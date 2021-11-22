@@ -31,6 +31,8 @@
     background: url("../../assets/auth.jpg") top no-repeat;
     color: white;
     user-select: none;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
 }
 
 .banner .text {
@@ -48,4 +50,10 @@
 
 .banner .text p {
     margin-top: 30px;
+}
+
+.content {
+    background: #272727;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
