@@ -7,7 +7,9 @@
     <h1 class="display-4 mb-4 mt-4">Media Create</h1>
 
     <!-- Error message -->
-    <p *ngIf="!!errorMessage" class="alert-danger p-3 mb-4">{{ errorMessage }}</p>
+    <p *ngIf="!!errorMessage" class="mt-2">
+        <span class="alert-danger p-3">{{ errorMessage }}</span>
+    </p>
 
     <form [formGroup]="addFileForm" class="p-3">
         <div>
