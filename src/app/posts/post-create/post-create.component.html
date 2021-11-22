@@ -26,9 +26,11 @@
             </div>
             <app-post-create-steps-menu></app-post-create-steps-menu>
             <!-- Error message -->
-            <p *ngIf="!!errorMessage" class="mt-5 mb-0">
-                <span class="alert-danger p-3">{{ errorMessage }}</span>
-            </p>
+            <div *ngIf="!!errorMessage" class="text-center mt-4">
+                <p class="alert-danger d-inline-block p-3 m-0">
+                    <span>{{ errorMessage }}</span>
+                </p>
+            </div>
 
             <ng-template #currentStep></ng-template>
         </div>

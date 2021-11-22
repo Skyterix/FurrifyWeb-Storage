@@ -1,7 +1,10 @@
 <section class="container-fluid">
-    <p *ngIf="!!errorMessage" class="mt-5 text-center">
-        <span class="alert-danger p-3">{{ errorMessage }}</span>
-    </p>
+    <!-- Error message -->
+    <div *ngIf="!!errorMessage" class="text-center">
+        <p class="alert-danger mt-5 d-inline-block p-3">
+            <span>{{ errorMessage }}</span>
+        </p>
+    </div>
 
     <div *ngIf="!!this.selectedPost && !this.isFetching" class="row row-cols-1 row-cols-lg-2">
         <!-- Left -->

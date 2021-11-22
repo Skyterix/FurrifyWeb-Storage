@@ -7,9 +7,11 @@
     <h1 class="display-4 mb-4 mt-4">Media Create</h1>
 
     <!-- Error message -->
-    <p *ngIf="!!errorMessage" class="mt-2">
-        <span class="alert-danger p-3">{{ errorMessage }}</span>
-    </p>
+    <div *ngIf="!!errorMessage" class="text-center">
+        <p class="alert-danger d-inline-block p-3">
+            <span>{{ errorMessage }}</span>
+        </p>
+    </div>
 
     <form [formGroup]="addFileForm" class="p-3">
         <div>

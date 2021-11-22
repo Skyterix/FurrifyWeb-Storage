@@ -1,9 +1,12 @@
 <app-sort-nav></app-sort-nav>
 
 <section class="post-list">
-    <p *ngIf="!!errorMessage" class="mt-5 text-center">
-        <span class="alert-danger p-3">{{ errorMessage }}</span>
-    </p>
+    <!-- Error message -->
+    <div *ngIf="!!errorMessage" class="text-center">
+        <p class="alert-danger d-inline-block p-3">
+            <span>{{ errorMessage }}</span>
+        </p>
+    </div>
 
     <app-paginator></app-paginator>
 
