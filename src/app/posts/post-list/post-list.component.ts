@@ -14,6 +14,8 @@ export class PostListComponent implements OnInit, OnDestroy {
 
     posts!: QueryPost[];
 
+    errorMessage!: string | null;
+
     private storeSubscription!: Subscription;
 
     constructor(private store: Store<fromApp.AppState>) {
@@ -22,6 +24,7 @@ export class PostListComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.storeSubscription = this.store.select('posts').subscribe(state => {
             this.posts = state.posts;
+            this.errorMessage = state.searchErrorMessage;
         });
 
         this.store.dispatch(selectPost({
