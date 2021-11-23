@@ -33,7 +33,10 @@ export class PostItemsComponent implements OnInit {
         this.activatedRoute.params.subscribe(params => {
             this.currentIndex = params.index;
 
-            this.fileUrl = CDN_ADDRESS + this.sortedMedia[params.index].fileUri;
+            // Null check
+            if (!!this.sortedMedia[params.index]) {
+                this.fileUrl = CDN_ADDRESS + this.sortedMedia[params.index].fileUri;
+            }
         });
     }
 
