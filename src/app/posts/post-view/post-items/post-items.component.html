@@ -45,8 +45,13 @@
         </ul>
     </div>
 
-    <div class="p-1 justify-content-start">
-        <button (click)="onEditPost()" class="btn btn-accent">Edit Post</button>
+    <div class="d-inline-block p-1 justify-content-start">
+        <a [href]="fileUrl">
+            <button class="btn btn-accent">Download</button>
+        </a>
     </div>
 
+    <div class="d-inline-block p-1 justify-content-start">
+        <button (click)="onEditPost()" class="btn btn-accent">Edit Post</button>
+    </div>
 </aside>
