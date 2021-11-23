@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AttachmentWrapper, MediaWrapper} from "../../store/posts.reducer";
 import {PostCreateService} from "../post-create.service";
 import {Store} from "@ngrx/store";
@@ -12,7 +12,7 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
     templateUrl: './post-create-content-step.component.html',
     styleUrls: ['./post-create-content-step.component.css']
 })
-export class PostCreateContentStepComponent implements OnInit {
+export class PostCreateContentStepComponent implements OnInit, OnDestroy {
 
     mediaSet: MediaWrapper[] = [];
     attachments: AttachmentWrapper[] = [];
@@ -28,6 +28,10 @@ export class PostCreateContentStepComponent implements OnInit {
             this.mediaSet = state.mediaSet;
             this.attachments = state.attachments;
         });
+    }
+
+    ngOnDestroy(): void {
+        this.postsStoreSubscription.unsubscribe();
     }
 
     loadCreateMediaForm(): void {

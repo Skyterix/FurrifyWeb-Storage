@@ -119,6 +119,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         this.mediaCreateCloseEventSubscription.unsubscribe();
         this.artistCreateOpenEventSubscription.unsubscribe();
         this.artistCreateCloseEventSubscription.unsubscribe();
+        this.storeSubscription.unsubscribe();
     }
 
     onClose(): void {
