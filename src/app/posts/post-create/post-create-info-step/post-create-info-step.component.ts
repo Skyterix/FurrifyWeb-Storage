@@ -60,7 +60,6 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         });
     }
 
-    // TODO Error message
     ngOnInit(): void {
         this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
             this.isFetching = state.isFetching;

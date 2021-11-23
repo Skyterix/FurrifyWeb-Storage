@@ -8,14 +8,6 @@
     cursor: zoom-in;
 }
 
-.watermark {
-/*    TODO Watermark
-    background: #202020 url("src/assets/img/watermark.png") no-repeat center;*/
-    background-size: 50% auto;
-    z-index: -1;
-    background-origin: content-box;
-}
-
 .spinner {
     display: none;
     width: 100%;
