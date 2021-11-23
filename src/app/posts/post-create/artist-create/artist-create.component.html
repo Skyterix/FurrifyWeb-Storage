@@ -33,8 +33,13 @@
             </form>
 
             <form [formGroup]="selectNicknameForm" class="mb-3 mt-2 text-start">
-                <input (keyup.enter)="onArtistNicknameSelect()" class="form-input nickname" formControlName="nickname"
-                       placeholder="Nickname" type="text"/>
+                <div>
+                    <input (keyup.enter)="onArtistNicknameSelect()" class="form-input nickname"
+                           formControlName="nickname"
+                           placeholder="Nickname" type="text"/>
+
+                    <fa-icon (click)="onArtistNicknameSelect()" [icon]="plusIcon" class="form-input add"></fa-icon>
+                </div>
 
                 <ul class="list-group">
                     <li *ngFor="let nickname of this.selectedNicknames"

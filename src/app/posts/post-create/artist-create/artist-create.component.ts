@@ -12,6 +12,7 @@ import {createArtistStart} from "../../store/posts.actions";
 import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
 import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../shared/config/common.constats";
 import {AvatarExtensionsConfig} from "../../../shared/config/avatar-extensions.config";
+import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 
 @Component({
     selector: 'app-artist-create',
@@ -22,6 +23,7 @@ export class ArtistCreateComponent implements OnInit {
 
     uploadIcon = faUpload;
     spinnerIcon = faCircleNotch;
+    plusIcon = faPlus;
 
     @Input() preferredNickname!: string;
 
