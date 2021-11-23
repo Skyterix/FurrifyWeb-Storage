@@ -36,7 +36,7 @@ export class MediaExtensionsConfig {
         'gif'
     ];
 
-    public static EXTENSIONS = [...this.IMAGES, ...this.VIDEOS, ...this.ANIMATIONS];
+    public static EXTENSIONS = [...this.IMAGES, ...this.VIDEOS, ...this.ANIMATIONS, ...this.AUDIO];
 
     public static getExtensionsByType(type: MediaType): string[] {
         switch (type) {
