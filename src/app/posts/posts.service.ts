@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Store} from "@ngrx/store";
 import * as fromApp from '../store/app.reducer';
 import {startSearch, updateSearchParams, updateSearchQuery} from "./store/posts.actions";
 import {KeycloakProfile} from "keycloak-js";
+import {MAX_SIZE} from "../shared/config/limit.constants";
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +19,7 @@ export class PostsService {
 
     currentUser!: KeycloakProfile | null;
 
-    constructor(private store: Store<fromApp.AppState>, private activatedRoute: ActivatedRoute) {
+    constructor(private store: Store<fromApp.AppState>, private activatedRoute: ActivatedRoute, private router: Router) {
         this.store.select('authentication').subscribe(state => {
             this.currentUser = state.currentUser;
         });
@@ -68,6 +69,34 @@ export class PostsService {
         size = (!!size) ? size : this.size;
         page = (!!page) ? page : this.page;
 
+        // Check limits
+
+        if (size > MAX_SIZE) {
+            this.router.navigate([], {
+                queryParams: {
+                    size: MAX_SIZE
+                },
+                queryParamsHandling: "merge"
+            });
+        }
+
+        if (size <= 0) {
+            this.router.navigate([], {
+                queryParams: {
+                    size: 1
+                },
+                queryParamsHandling: "merge"
+            });
+        }
+
+        if (page <= 0) {
+            this.router.navigate([], {
+                queryParams: {
+                    page: 1
+                },
+                queryParamsHandling: "merge"
+            });
+        }
 
         this.store.dispatch(updateSearchParams({
             sortBy,
