@@ -128,6 +128,9 @@ export class PostDetailsComponent implements OnInit {
 
         switch (type) {
             case MediaType.IMAGE:
+                this.renderer.setAttribute(this.imageViewRef.nativeElement, 'src', CDN_ADDRESS + media.fileUri);
+
+                break;
             case MediaType.ANIMATION:
                 if (media.extension === "GIF") {
                     this.renderer.setAttribute(this.imageViewRef.nativeElement, 'src', CDN_ADDRESS + media.fileUri);
