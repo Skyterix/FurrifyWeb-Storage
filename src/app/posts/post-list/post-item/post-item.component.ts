@@ -48,7 +48,7 @@ export class PostItemComponent implements OnInit {
         this.characterTags = TagUtils.filterTagsByType("CHARACTER", this.post.tags);
     }
 
-    mediaContains(type: MediaType): boolean {
+    mediaSetContains(type: MediaType): boolean {
         return MediaUtils.containsType(type, this.post.mediaSet);
     }
 

@@ -11,11 +11,12 @@
     </div>
     <!-- Media -->
     <div class="text-center">
-        <!-- TODO Support video and audio -->
-        <video #audioView *ngIf="this.post.mediaSet.length != 0" [poster]="posterUrl"
-               class="video-js vjs-default-skin vjs-16-9" controls id="audio-player"
-               preload="auto">
-        </video>
+        <div #videoView>
+            <video *ngIf="this.post.mediaSet.length != 0" [poster]="posterUrl"
+                   class="video-js vjs-default-skin vjs-16-9" controls id="audio-player"
+                   preload="auto">
+            </video>
+        </div>
 
         <img #imageView (click)="openImageGallery()" (load)="onImageLoaded()" *ngIf="this.post.mediaSet.length != 0"
              alt="post media" class="img-fluid media"/>

@@ -27,7 +27,7 @@ export class PostDetailsComponent implements OnInit {
     @Input() post!: QueryPost;
 
     @ViewChild('imageView', {read: ElementRef}) imageViewRef!: ElementRef;
-    @ViewChild('audioView', {read: ElementRef}) audioViewRef!: ElementRef;
+    @ViewChild('videoView', {read: ElementRef}) videoViewRef!: ElementRef;
     @ViewChild('mediaSpinner', {read: ElementRef}) mediaSpinnerRef!: ElementRef;
     player: any;
 
@@ -121,7 +121,7 @@ export class PostDetailsComponent implements OnInit {
 
     private loadMedia(media: Media): void {
         this.renderer.setStyle(this.imageViewRef.nativeElement, 'display', 'none');
-        this.renderer.setStyle(this.audioViewRef.nativeElement, 'display', 'none');
+        this.renderer.setStyle(this.videoViewRef.nativeElement, 'display', 'none');
         this.renderer.setStyle(this.mediaSpinnerRef.nativeElement, 'display', 'inline-block');
 
         const type = MediaExtensionsConfig.getTypeByExtension(media.extension);
@@ -139,7 +139,7 @@ export class PostDetailsComponent implements OnInit {
                 break;
             case MediaType.VIDEO:
             case MediaType.AUDIO:
-                this.renderer.removeStyle(this.audioViewRef.nativeElement, 'display');
+                this.renderer.removeStyle(this.videoViewRef.nativeElement, 'display');
 
                 this.posterUrl = (!media.thumbnailUri) ? "" : CDN_ADDRESS + media.thumbnailUri;
 

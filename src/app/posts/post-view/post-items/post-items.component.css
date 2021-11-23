@@ -46,3 +46,18 @@
     width: 64px;
     height: 64px;
 }
+
+.icons {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    margin: .25rem;
+    padding-left: .25rem;
+    padding-right: .25rem;
+    border-bottom-right-radius: 8px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.icons fa-icon {
+    padding-left: 2px;
+    padding-right: 2px;
+}

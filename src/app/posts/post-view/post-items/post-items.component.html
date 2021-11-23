@@ -2,9 +2,18 @@
     <!-- Media List -->
     <p class="h1 font-weight-light p-1">Media</p>
     <div class="post-media-list">
-        <img (click)="onLoadMediaRequest(index)" *ngFor="let media of sortedMedia; let index = index"
-             [src]="(!media.thumbnailUri) ? '../../assets/no-thumbnail.jpg' : cdnAddress + media.thumbnailUri"
-             alt="media thumbnail" class="media m-1"/>
+        <!-- Media -->
+        <div *ngFor="let media of sortedMedia; let index = index" class="d-inline-block">
+            <!-- Media type icon -->
+            <span class="icons">
+                <fa-icon [fixedWidth]="true" [icon]="getIconFromMedia(index)"
+                         class="text-white pb-1 pt-1" size="sm"></fa-icon>
+            </span>
+            <!-- Thumbnail -->
+            <img (click)="onLoadMediaRequest(index)"
+                 [src]="(!media.thumbnailUri) ? '../../assets/no-thumbnail.jpg' : cdnAddress + media.thumbnailUri"
+                 alt="media thumbnail" class="media m-1"/>
+        </div>
     </div>
     <!-- Attachments -->
     <p class="h1 font-weight-light p-1 mt-4">Attachment</p>
