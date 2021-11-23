@@ -348,6 +348,13 @@ export class PostsEffects {
                     observe: 'response'
                 }).pipe(
                 map(response => {
+                    if (!action.avatar) {
+                        return fetchArtistAfterCreationStart({
+                            userId: action.userId,
+                            artistId: response.headers.get('Id')!
+                        });
+                    }
+
                     return createArtistUploadAvatarStart({
                         userId: action.userId,
                         artistId: response.headers.get('Id')!,

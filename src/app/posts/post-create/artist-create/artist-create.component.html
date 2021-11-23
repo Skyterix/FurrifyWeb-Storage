@@ -44,7 +44,7 @@
                     </li>
                 </ul>
             </form>
-            <button (click)="onSubmit()" [disabled]="isFetching || !artistAvatarFileForm.valid" type="button"
+            <button (click)="onSubmit()" [disabled]="isFetching" type="button"
                     class="btn btn-accent">
                 <fa-icon *ngIf="isFetching" [fixedWidth]="true" [icon]="spinnerIcon" [spin]="true" class="text-white"
                          size="sm"></fa-icon>

@@ -76,10 +76,6 @@ export class ArtistCreateComponent implements OnInit {
     }
 
     onSubmit(): void {
-        if (!this.selectedFile) {
-            return;
-        }
-
         // Concat nicknames into one array
         let nicknames = [...this.selectedNicknames, this.preferredNickname];
 
