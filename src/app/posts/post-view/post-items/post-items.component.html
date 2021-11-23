@@ -3,7 +3,7 @@
     <p class="h1 font-weight-light p-1">Media</p>
     <div class="post-media-list">
         <img (click)="onLoadMediaRequest(index)" *ngFor="let media of sortedMedia; let index = index"
-             [src]="cdnAddress + media.thumbnailUri"
+             [src]="(!media.thumbnailUri) ? '../../assets/no-thumbnail.jpg' : cdnAddress + media.thumbnailUri"
              alt="media thumbnail" class="media m-1"/>
     </div>
     <!-- Attachments -->

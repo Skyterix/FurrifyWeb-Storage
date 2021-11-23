@@ -30,7 +30,8 @@
       "keycloak-angular": "^8.4.0",
       "keycloak-js": "^15.0.2",
       "photoswipe": "github:dimsemenov/photoswipe",
-      "rxjs": "~6.6.0"
+      "rxjs": "~6.6.0",
+      "video.js": "^7.17.0"
   },
   "devDependencies": {
       "@angular-devkit/build-angular": "^13.0.1",

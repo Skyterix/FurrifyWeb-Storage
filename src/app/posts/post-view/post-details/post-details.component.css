@@ -5,6 +5,7 @@
 .media {
     display: inline-block;
     max-height: 80vh;
+    cursor: zoom-in;
 }
 
 .watermark {

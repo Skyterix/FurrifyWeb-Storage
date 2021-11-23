@@ -12,6 +12,10 @@ import {PostsService} from "../../posts.service";
 import {QueryPost} from "../../../shared/model/query/query-post.model";
 import * as PhotoSwipe from "photoswipe";
 import * as PhotoSwipeUI_Default from "photoswipe/dist/photoswipe-ui-default";
+import {MediaExtensionsConfig} from "../../../shared/config/media-extensions.config";
+import {MediaType} from "../../../shared/enum/media-type.enum";
+
+declare var videojs: any;
 
 @Component({
     selector: 'app-post-details',
@@ -22,8 +26,10 @@ export class PostDetailsComponent implements OnInit {
 
     @Input() post!: QueryPost;
 
-    @ViewChild('mediaView', {read: ElementRef}) mediaViewRef!: ElementRef;
+    @ViewChild('imageView', {read: ElementRef}) imageViewRef!: ElementRef;
+    @ViewChild('audioView', {read: ElementRef}) audioViewRef!: ElementRef;
     @ViewChild('mediaSpinner', {read: ElementRef}) mediaSpinnerRef!: ElementRef;
+    player: any;
 
     circleNotchIcon = faCircleNotch;
 
@@ -33,6 +39,8 @@ export class PostDetailsComponent implements OnInit {
     sortedMedia!: Media[];
 
     galleryItems: { src: string, w: number, h: number }[] = [];
+
+    posterUrl!: string;
 
     constructor(private renderer: Renderer2,
                 private postsService: PostsService,
@@ -72,11 +80,10 @@ export class PostDetailsComponent implements OnInit {
         });
     }
 
-    onMediaLoaded(): void {
-        this.renderer.removeStyle(this.mediaViewRef.nativeElement, 'display');
+    onImageLoaded(): void {
+        this.renderer.removeStyle(this.imageViewRef.nativeElement, 'display');
         this.renderer.removeStyle(this.mediaSpinnerRef.nativeElement, 'display');
     }
-
 
     searchPosts(): void {
         // Let router navigate first so search can be updated
@@ -113,9 +120,34 @@ export class PostDetailsComponent implements OnInit {
     }
 
     private loadMedia(media: Media): void {
-        this.renderer.setStyle(this.mediaViewRef.nativeElement, 'display', 'none');
+        this.renderer.setStyle(this.imageViewRef.nativeElement, 'display', 'none');
+        this.renderer.setStyle(this.audioViewRef.nativeElement, 'display', 'none');
         this.renderer.setStyle(this.mediaSpinnerRef.nativeElement, 'display', 'inline-block');
 
-        this.renderer.setAttribute(this.mediaViewRef.nativeElement, 'src', CDN_ADDRESS + media.fileUri);
+        const type = MediaExtensionsConfig.getTypeByExtension(media.extension);
+
+        switch (type) {
+            case MediaType.IMAGE:
+            case MediaType.ANIMATION:
+                this.renderer.setAttribute(this.imageViewRef.nativeElement, 'src', CDN_ADDRESS + media.fileUri);
+                break;
+            case MediaType.VIDEO:
+            case MediaType.AUDIO:
+                this.renderer.removeStyle(this.audioViewRef.nativeElement, 'display');
+
+                this.posterUrl = (!media.thumbnailUri) ? "" : CDN_ADDRESS + media.thumbnailUri;
+
+                this.player = videojs(document.getElementById('audio-player'), {
+                    sources: {
+                        src: CDN_ADDRESS + media.fileUri,
+                        poster: this.posterUrl
+                    }
+                });
+
+                this.renderer.removeStyle(this.mediaSpinnerRef.nativeElement, 'display');
+
+                break;
+        }
+
     }
 }

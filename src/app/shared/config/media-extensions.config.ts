@@ -32,7 +32,7 @@ export class MediaExtensionsConfig {
         'mp4'
     ];
 
-    private static ANIMATIONS = [
+    public static ANIMATIONS = [
         'gif'
     ];
 
@@ -51,5 +51,21 @@ export class MediaExtensionsConfig {
             default:
                 return [];
         }
+    }
+
+    public static getTypeByExtension(extension: string): MediaType | null {
+        extension = extension.toLowerCase();
+
+        if (this.IMAGES.includes(extension)) {
+            return MediaType.IMAGE;
+        } else if (this.ANIMATIONS.includes(extension)) {
+            return MediaType.ANIMATION;
+        } else if (this.AUDIO.includes(extension)) {
+            return MediaType.AUDIO;
+        } else if (this.VIDEOS.includes(extension)) {
+            return MediaType.VIDEO;
+        }
+
+        return null;
     }
 }
