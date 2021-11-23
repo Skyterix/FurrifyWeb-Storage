@@ -19,6 +19,19 @@
                 <input class="form-input" formControlName="preferredNickname" placeholder="Preferred nickname"
                        type="text"/>
             </div>
+
+            <!-- Avatar upload -->
+            <form [formGroup]="artistAvatarFileForm" class="mb-3">
+                <!-- Workaround for styling input[type=file] -->
+                <label class="form-input file" for="file">
+                    <fa-icon [icon]="uploadIcon" class="me-1"></fa-icon>
+                    <span [innerText]="(!!this.selectedFile) ? selectedFile.name : 'Select avatar file'"></span>
+                </label>
+
+                <input (change)="onFileSelected($event)" class="d-none" formControlName="avatarFile"
+                       id="file" type="file">
+            </form>
+
             <form [formGroup]="selectNicknameForm" class="mb-3 mt-2 text-start">
                 <input (keyup.enter)="onArtistNicknameSelect()" class="form-input nickname" formControlName="nickname"
                        placeholder="Nickname" type="text"/>
@@ -31,7 +44,7 @@
                     </li>
                 </ul>
             </form>
-            <button (click)="onSubmit()" [disabled]="isFetching" type="button"
+            <button (click)="onSubmit()" [disabled]="isFetching || !artistAvatarFileForm.valid" type="button"
                     class="btn btn-accent">
                 <fa-icon *ngIf="isFetching" [fixedWidth]="true" [icon]="spinnerIcon" [spin]="true" class="text-white"
                          size="sm"></fa-icon>

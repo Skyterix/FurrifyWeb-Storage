@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {KeycloakProfile} from "keycloak-js";
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
@@ -9,6 +9,9 @@ import {PostCreateService} from "../post-create.service";
 import {Artist} from "../../../shared/model/artist.model";
 import {Source} from "../../../shared/model/source.model";
 import {createArtistStart} from "../../store/posts.actions";
+import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
+import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../shared/config/common.constats";
+import {AvatarExtensionsConfig} from "../../../shared/config/avatar-extensions.config";
 
 @Component({
     selector: 'app-artist-create',
@@ -17,6 +20,7 @@ import {createArtistStart} from "../../store/posts.actions";
 })
 export class ArtistCreateComponent implements OnInit {
 
+    uploadIcon = faUpload;
     spinnerIcon = faCircleNotch;
 
     @Input() preferredNickname!: string;
@@ -26,8 +30,11 @@ export class ArtistCreateComponent implements OnInit {
     errorMessage!: string;
     isFetching!: boolean;
 
+    selectedFile!: File;
+
     createArtistForm!: FormGroup;
     selectNicknameForm!: FormGroup;
+    artistAvatarFileForm!: FormGroup;
 
     currentUser!: KeycloakProfile | null;
 
@@ -57,6 +64,10 @@ export class ArtistCreateComponent implements OnInit {
         this.selectNicknameForm = new FormGroup({
             nickname: new FormControl(null)
         });
+        // Add file form
+        this.artistAvatarFileForm = new FormGroup({
+            avatarFile: new FormControl(null, [Validators.required])
+        });
     }
 
     ngOnDestroy(): void {
@@ -65,6 +76,11 @@ export class ArtistCreateComponent implements OnInit {
     }
 
     onSubmit(): void {
+        if (!this.selectedFile) {
+            return;
+        }
+
+        // Concat nicknames into one array
         let nicknames = [...this.selectedNicknames, this.preferredNickname];
 
         const newArtist: Artist = {
@@ -79,7 +95,8 @@ export class ArtistCreateComponent implements OnInit {
 
         this.store.dispatch(createArtistStart({
             userId: this.currentUser!.id!,
-            artist: newArtist
+            artist: newArtist,
+            avatar: this.selectedFile
         }));
     }
 
@@ -125,5 +142,33 @@ export class ArtistCreateComponent implements OnInit {
         this.selectedNicknames = this.selectedNicknames.filter(nickname => {
             return nickname !== nicknameToRemove;
         })
+    }
+
+    onFileSelected(event: any) {
+        this.errorMessage = "";
+
+        // If file is not selected
+        if (event.target.files.length === 0) {
+            return;
+        }
+
+        // Is filename is invalid
+        if (!FILENAME_REGEX.test(event.target.files[0].name)) {
+            this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
+
+            this.artistAvatarFileForm.reset();
+        }
+
+        const extension = EXTENSION_EXTRACT_REGEX.exec(event.target.files[0].name);
+
+        /* Check extension against accepted extensions list.
+           The check for null is not required, regex check above ensures that extension must be present. */
+        if (!AvatarExtensionsConfig.EXTENSIONS.includes(extension![1].toLowerCase())) {
+            this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as avatar."
+
+            this.artistAvatarFileForm.reset();
+        }
+
+        this.selectedFile = event.target.files[0];
     }
 }

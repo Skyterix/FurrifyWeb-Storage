@@ -178,7 +178,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (!artistNickname.match("^[a-zA-Z0-9_-]*$")) {
+        if (!artistNickname.match("^[A-Za-z0-9_-]*$")) {
             return;
         }
 

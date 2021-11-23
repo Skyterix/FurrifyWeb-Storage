@@ -16,6 +16,7 @@ import {
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
     createArtistFail,
+    createArtistStart,
     createPostFail,
     createPostStart,
     createPostSuccess,
@@ -386,6 +387,14 @@ export const postsReducer = createReducer(
             };
         }
     ),
+    on(createArtistStart, (state, action) => {
+            return {
+                ...state,
+                isFetching: true,
+                artistErrorMessage: ""
+            };
+        }
+    ),
     on(createArtistFail, (state, action) => {
             return {
                 ...state,
@@ -395,7 +404,7 @@ export const postsReducer = createReducer(
         }
     ),
     on(fetchArtistAfterCreationStart, (state, action) => {
-            return {
+        return {
                 ...state,
                 isFetching: true,
                 artistErrorMessage: ""
