@@ -12,7 +12,8 @@
     <!-- Media -->
     <div class="text-center">
         <!-- TODO Support video and audio -->
-        <video #audioView [poster]="posterUrl" class="video-js vjs-default-skin vjs-16-9" controls id="audio-player"
+        <video #audioView *ngIf="this.post.mediaSet.length != 0" [poster]="posterUrl"
+               class="video-js vjs-default-skin vjs-16-9" controls id="audio-player"
                preload="auto">
         </video>
 
