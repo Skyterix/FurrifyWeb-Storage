@@ -517,7 +517,11 @@ export class PostsEffects {
             data.append("media", new Blob([JSON.stringify(media)], {
                 type: "application/json"
             }));
-            data.append("file", mediaWrapper.file, mediaWrapper.file.name);
+            data.append("file", mediaWrapper.mediaFile, mediaWrapper.mediaFile.name);
+            // If thumbnail is present
+            if (!!mediaWrapper.thumbnailFile) {
+                data.append("thumbnail", mediaWrapper.thumbnailFile, mediaWrapper.thumbnailFile.name);
+            }
 
             return this.httpClient.post(CREATE_MEDIA
                     .replace(":userId", action.userId)
@@ -556,7 +560,7 @@ export class PostsEffects {
                         default:
                             return of(createPostFail({
                                 errorMessage: 'Something went wrong while uploading "' +
-                                    action.mediaSet[action.currentIndex].file.name +
+                                    action.mediaSet[action.currentIndex].mediaFile.name +
                                     '" file. The upload of other files has been canceled.'
                             }));
                     }

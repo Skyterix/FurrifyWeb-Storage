@@ -7,7 +7,7 @@ ul li, .cdk-drag-preview {
 
 .filename {
     word-wrap: break-word;
-    max-width: calc(100% - 40px);
+    max-width: calc(100% - 20px);
     padding-right: 5px;
 }
 

@@ -25,7 +25,7 @@
                 <!-- Workaround for styling input[type=file] -->
                 <label class="form-input file" for="file">
                     <fa-icon [icon]="uploadIcon" class="me-1"></fa-icon>
-                    <span [innerText]="(!!this.selectedFile) ? selectedFile.name : 'Select avatar file'"></span>
+                    <span [innerText]="(!!this.selectedFile) ? selectedFile.name : 'Select avatar'"></span>
                 </label>
 
                 <input (change)="onFileSelected($event)" class="d-none" formControlName="avatarFile"

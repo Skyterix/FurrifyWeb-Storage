@@ -67,7 +67,8 @@ export class TagWrapper {
 
 export class MediaWrapper {
     constructor(public media: CreateMedia,
-                public file: File) {
+                public mediaFile: File,
+                public thumbnailFile: File | undefined) {
     }
 }
 

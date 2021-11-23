@@ -13,18 +13,32 @@
         </p>
     </div>
 
-    <form [formGroup]="addFileForm" class="p-3">
+    <form [formGroup]="mediaFileForm" class="p-3">
         <div>
-            <div class="mb-3">
+
+            <!-- Thumbnail upload -->
+            <form [formGroup]="mediaThumbnailFileForm" class="mb-3">
                 <!-- Workaround for styling input[type=file] -->
-                <label class="form-input file" for="file">
+                <label class="form-input file" for="thumbnailFile">
                     <fa-icon [icon]="uploadIcon" class="me-1"></fa-icon>
-                    <span [innerText]="(!!this.selectedFile) ? selectedFile.name : 'Select file'"></span>
+                    <span
+                        [innerText]="(!!this.selectedThumbnailFile) ? selectedThumbnailFile.name : 'Select thumbnail (optional)'"></span>
                 </label>
 
-                <input (change)="onFileSelected($event)" formControlName="mediaFile" id="file" type="file">
+                <input (change)="onThumbnailFileSelected($event)" class="d-none" formControlName="thumbnailFile"
+                       id="thumbnailFile" type="file">
+            </form>
+
+            <div class="mb-3">
+                <!-- Workaround for styling input[type=file] -->
+                <label class="form-input file" for="mediaFile">
+                    <fa-icon [icon]="uploadIcon" class="me-1"></fa-icon>
+                    <span [innerText]="(!!this.selectedMediaFile) ? selectedMediaFile.name : 'Select media'"></span>
+                </label>
+
+                <input (change)="onMediaFileSelected($event)" formControlName="mediaFile" id="mediaFile" type="file">
             </div>
-            <button (click)="onSubmit()" [disabled]="!addFileForm.valid"
+            <button (click)="onSubmit()" [disabled]="!mediaFileForm.valid"
                     class="btn btn-accent">
                 <span>Create</span>
             </button>
