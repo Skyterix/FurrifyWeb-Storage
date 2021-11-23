@@ -145,9 +145,15 @@ input[type=number]::-webkit-outer-spin-button {
 
 .alert-danger {
     border-radius: 8px;
-    word-wrap: break-word;
+    word-wrap: anywhere;
 }
 
 .short-animation {
     animation-duration: .2s !important;
 }
+
+.file {
+    cursor: pointer;
+    word-wrap: anywhere;
+}
+

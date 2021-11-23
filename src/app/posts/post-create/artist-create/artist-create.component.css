@@ -50,7 +50,3 @@ ul li .badge {
 .animate__animated {
     animation-duration: .1s;
 }
-
-.file {
-    cursor: pointer;
-}
