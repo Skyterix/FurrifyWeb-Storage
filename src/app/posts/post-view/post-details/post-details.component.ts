@@ -54,11 +54,26 @@ export class PostDetailsComponent implements OnInit {
         this.sortedTags = TagUtils.sortTagsByPriority([...this.post.tags]);
         this.sortedMedia = MediaUtils.sortByPriority([...this.post.mediaSet]);
         this.sortedMedia.forEach(media => {
-            this.galleryItems.push({
-                src: CDN_ADDRESS + media.fileUri,
-                w: 0,
-                h: 0
-            });
+            switch (MediaExtensionsConfig.getTypeByExtension(media.extension)) {
+                case MediaType.ANIMATION:
+                    // Only gif is supported in gallery
+                    if (media.extension === "GIF") {
+                        this.galleryItems.push({
+                            src: CDN_ADDRESS + media.fileUri,
+                            w: 0,
+                            h: 0
+                        });
+                    }
+                    break;
+
+                case MediaType.IMAGE:
+                    this.galleryItems.push({
+                        src: CDN_ADDRESS + media.fileUri,
+                        w: 0,
+                        h: 0
+                    });
+                    break;
+            }
         });
 
         // On index change
