@@ -158,12 +158,20 @@ export class PostDetailsComponent implements OnInit {
 
                 this.posterUrl = (!media.thumbnailUri) ? "" : CDN_ADDRESS + media.thumbnailUri;
 
-                this.player = videojs(document.getElementById('audio-player'), {
-                    sources: {
-                        src: CDN_ADDRESS + media.fileUri,
-                        poster: this.posterUrl
-                    }
-                });
+                // Check if player already exists
+                if (!this.player) {
+                    this.player = videojs(document.getElementById('audio-player'), {
+                        sources: {
+                            src: CDN_ADDRESS + media.fileUri,
+                            poster: this.posterUrl
+                        }
+                    });
+                } else {
+                    this.player.src({
+                        src: CDN_ADDRESS + media.fileUri
+                    });
+                    this.player.poster(this.posterUrl);
+                }
 
                 this.renderer.removeStyle(this.mediaSpinnerRef.nativeElement, 'display');
 
