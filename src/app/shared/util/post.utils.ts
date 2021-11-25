@@ -6,7 +6,7 @@ export class PostUtils {
     static getPostThumbnailUrlFromMediaSet(mediaSet: Media[]): string | null {
         const media = MediaUtils.getHighestPriorityMedia(mediaSet);
 
-        if (!media) {
+        if (!media?.thumbnailUri) {
             return 'assets/no-thumbnail.jpg';
         } else {
             return CDN_ADDRESS + media.thumbnailUri;

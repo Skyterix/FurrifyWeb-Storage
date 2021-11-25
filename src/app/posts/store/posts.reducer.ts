@@ -16,6 +16,7 @@ import {
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
     createArtistFail,
+    createArtistStart,
     createPostFail,
     createPostStart,
     createPostSuccess,
@@ -66,7 +67,8 @@ export class TagWrapper {
 
 export class MediaWrapper {
     constructor(public media: CreateMedia,
-                public file: File) {
+                public mediaFile: File,
+                public thumbnailFile: File | undefined) {
     }
 }
 
@@ -386,6 +388,14 @@ export const postsReducer = createReducer(
             };
         }
     ),
+    on(createArtistStart, (state, action) => {
+            return {
+                ...state,
+                isFetching: true,
+                artistErrorMessage: ""
+            };
+        }
+    ),
     on(createArtistFail, (state, action) => {
             return {
                 ...state,
@@ -395,7 +405,7 @@ export const postsReducer = createReducer(
         }
     ),
     on(fetchArtistAfterCreationStart, (state, action) => {
-            return {
+        return {
                 ...state,
                 isFetching: true,
                 artistErrorMessage: ""

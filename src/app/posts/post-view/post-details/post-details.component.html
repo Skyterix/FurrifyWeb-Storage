@@ -11,12 +11,19 @@
     </div>
     <!-- Media -->
     <div class="text-center">
-        <img #mediaView (click)="openImageGallery()" (load)="onMediaLoaded()" *ngIf="this.post.mediaSet.length != 0"
-             alt="post media" class="img-fluid media" style="cursor: zoom-in "/>
+        <div #videoView>
+            <video *ngIf="this.post.mediaSet.length != 0" [poster]="posterUrl"
+                   class="video-js vjs-default-skin vjs-16-9" controls id="audio-player"
+                   preload="auto">
+            </video>
+        </div>
+
+        <img #imageView (click)="openImageGallery()" (load)="onImageLoaded()" *ngIf="this.post.mediaSet.length != 0"
+             alt="post media" class="img-fluid media"/>
         <fa-icon #mediaSpinner [icon]="circleNotchIcon" [spin]="true" class="spinner" size="3x"></fa-icon>
     </div>
     <div class="post-info p-3">
-        <div class="watermark">
+        <div>
             <p class="h1">{{ post.title }}</p>
             <p class="p-1">{{ post.description }}</p>
             <p class="h1 font-weight-light">Sources</p>

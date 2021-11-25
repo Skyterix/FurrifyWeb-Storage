@@ -3,12 +3,15 @@ import {MediaType} from "../enum/media-type.enum";
 export class MediaExtensionsConfig {
 
     private static IMAGES = [
+        'webp',
+        'ico',
+        'svg',
+        'bm',
+        'tif',
+        'tiff',
+        'wbmp',
         'bmp',
         'bm',
-        'wbmp',
-        'tiff',
-        'tif',
-        'svg',
         'png',
         'jpeg',
         'jpg'
@@ -17,8 +20,8 @@ export class MediaExtensionsConfig {
     private static AUDIO = [
         'ogg',
         'flac',
-        'wav',
-        'mp3'
+        'mp3',
+        'wav'
     ];
 
     private static VIDEOS = [
@@ -29,14 +32,15 @@ export class MediaExtensionsConfig {
         'wmv',
         'mkv',
         'webm',
-        'mp4'
+        'mp4',
+        'mpeg'
     ];
 
-    private static ANIMATIONS = [
+    public static ANIMATIONS = [
         'gif'
     ];
 
-    public static EXTENSIONS = [...this.IMAGES, ...this.VIDEOS, ...this.ANIMATIONS];
+    public static EXTENSIONS = [...this.IMAGES, ...this.VIDEOS, ...this.ANIMATIONS, ...this.AUDIO];
 
     public static getExtensionsByType(type: MediaType): string[] {
         switch (type) {
@@ -51,5 +55,21 @@ export class MediaExtensionsConfig {
             default:
                 return [];
         }
+    }
+
+    public static getTypeByExtension(extension: string): MediaType | null {
+        extension = extension.toLowerCase();
+
+        if (this.IMAGES.includes(extension)) {
+            return MediaType.IMAGE;
+        } else if (this.ANIMATIONS.includes(extension)) {
+            return MediaType.ANIMATION;
+        } else if (this.AUDIO.includes(extension)) {
+            return MediaType.AUDIO;
+        } else if (this.VIDEOS.includes(extension)) {
+            return MediaType.VIDEO;
+        }
+
+        return null;
     }
 }

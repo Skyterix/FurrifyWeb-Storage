@@ -6,7 +6,8 @@
         <ul (cdkDropListDropped)="dropMediaItem($event)" cdkDropList class="list-group mt-3">
             <li *ngFor="let media of this.mediaSet; let index = index" cdkDrag
                 class="list-group-item d-flex justify-content-between align-items-center">
-                <span class="filename">{{ media.file.name }}</span>
+
+                <span class="filename">{{ media.mediaFile.name }}</span>
                 <span class="badges">
                     <span class="badge badge-primary badge-pill">{{ index }}</span>
                     <span (click)="onMediaRemove(index)" class="badge badge-pill remove">x</span>

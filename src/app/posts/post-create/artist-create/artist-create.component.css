@@ -19,6 +19,17 @@ h1 {
 input.nickname {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    width: calc(100% - 32px);
+    display: inline-block;
+}
+
+.add {
+    width: 32px;
+    display: inline-block;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    cursor: pointer;
 }
 
 ul {
@@ -49,4 +60,9 @@ ul li .badge {
 
 .animate__animated {
     animation-duration: .1s;
+}
+
+.input-group-text {
+    border: none;
+    height: 100%;
 }

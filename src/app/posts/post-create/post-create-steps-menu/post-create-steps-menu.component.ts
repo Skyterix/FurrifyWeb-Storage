@@ -48,6 +48,12 @@ export class PostCreateStepsMenuComponent implements OnInit {
         });
     }
 
+    ngOnDestroy(): void {
+        this.postInfoOpenEventSubscription.unsubscribe();
+        this.postContentOpenEventSubscription.unsubscribe()
+        this.postContentUploadOpenEventSubscription.unsubscribe()
+    }
+
     onPostInfoStepClicked(): void {
         if (this.isFetching) {
             return;

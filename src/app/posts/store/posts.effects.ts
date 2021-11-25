@@ -5,6 +5,7 @@ import {catchError, map, retryWhen, switchMap, tap} from 'rxjs/operators';
 import {
     CREATE_ARTIST,
     CREATE_ATTACHMENT,
+    CREATE_AVATAR,
     CREATE_MEDIA,
     CREATE_POST,
     CREATE_TAG,
@@ -27,6 +28,7 @@ import {
     addTagToSelectedSetSuccess,
     createArtistFail,
     createArtistStart,
+    createArtistUploadAvatarStart,
     createPostFail,
     createPostStart,
     createPostSuccess,
@@ -57,6 +59,8 @@ import {PostCreateService} from "../post-create/post-create.service";
 import {Artist} from "../../shared/model/artist.model";
 import {PostsService} from "../posts.service";
 import {QueryPost} from "../../shared/model/query/query-post.model";
+import {CreateAvatar} from "../../shared/model/request/create-avatar.model";
+import {EXTENSION_EXTRACT_REGEX} from "../../shared/config/common.constats";
 
 @Injectable()
 export class PostsEffects {
@@ -95,7 +99,7 @@ export class PostsEffects {
                             }));
                         case 400:
                             return of(failSearch({
-                                searchErrorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                                searchErrorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         default:
                             return of(failSearch({
@@ -130,7 +134,7 @@ export class PostsEffects {
                             }));
                         case 400:
                             return of(getPostFail({
-                                postFetchErrorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                                postFetchErrorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         default:
                             return of(getPostFail({
@@ -181,7 +185,7 @@ export class PostsEffects {
                         case 400:
                             return of(addTagToSelectedSetFail({
                                 value: action.value,
-                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         default:
                             return of(addTagToSelectedSetFail({
@@ -216,7 +220,7 @@ export class PostsEffects {
                             }));
                         case 400:
                             return of(createTagFail({
-                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         default:
                             return of(createTagFail({
@@ -252,7 +256,7 @@ export class PostsEffects {
                             errorMessage = 'Tag creation was not handled yet by servers. Try again in a moment.';
                             break;
                         case 400:
-                            errorMessage = error.message + ' If you think this is a bug, please contact the administrator.';
+                            errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
                             break;
                         default:
                             errorMessage = 'Something went wrong. Try again later.';
@@ -322,7 +326,7 @@ export class PostsEffects {
                         case 400:
                             return of(addArtistToSelectedSetFail({
                                 preferredNickname: action.preferredNickname,
-                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         default:
                             return of(addArtistToSelectedSetFail({
@@ -344,9 +348,17 @@ export class PostsEffects {
                     observe: 'response'
                 }).pipe(
                 map(response => {
-                    return fetchArtistAfterCreationStart({
+                    if (!action.avatar) {
+                        return fetchArtistAfterCreationStart({
+                            userId: action.userId,
+                            artistId: response.headers.get('Id')!
+                        });
+                    }
+
+                    return createArtistUploadAvatarStart({
                         userId: action.userId,
-                        artistId: response.headers.get('Id')!
+                        artistId: response.headers.get('Id')!,
+                        avatar: action.avatar
                     });
                 }),
                 catchError(error => {
@@ -357,7 +369,7 @@ export class PostsEffects {
                             }));
                         case 400:
                             return of(createArtistFail({
-                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         default:
                             return of(createArtistFail({
@@ -369,15 +381,61 @@ export class PostsEffects {
         })
     ));
 
+    createArtistUploadAvatarStart = createEffect(() => this.actions$.pipe(
+        ofType(createArtistUploadAvatarStart),
+        switchMap((action) => {
+            const data = new FormData();
+            const avatarCreateCommand = new CreateAvatar(
+                EXTENSION_EXTRACT_REGEX.exec(action.avatar.name)![1].toUpperCase()
+            );
+
+            data.append("avatar", new Blob([JSON.stringify(avatarCreateCommand)], {
+                type: "application/json"
+            }));
+            data.append("file", action.avatar, action.avatar.name);
+
+            return this.httpClient.post(CREATE_AVATAR
+                    .replace(":userId", action.userId)
+                    .replace(":artistId", action.artistId),
+                data).pipe(
+                map(response => {
+                    return fetchArtistAfterCreationStart({
+                        userId: action.userId,
+                        artistId: action.artistId
+                    });
+                }),
+                retryWhen(RETRY_HANDLER),
+                catchError(error => {
+                    switch (error.status) {
+                        case 503:
+                            return of(createArtistFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(createArtistFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
+                        default:
+                            return of(createArtistFail({
+                                errorMessage: 'Something went wrong while uploading "' +
+                                    action.avatar.name +
+                                    '" file. The artist was created.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
     fetchArtistAfterCreationStart = createEffect(() => this.actions$.pipe(
         ofType(fetchArtistAfterCreationStart),
         switchMap((action) => {
-                return this.httpClient.get<Artist>(GET_ARTIST
-                    .replace(":userId", action.userId)
-                    .replace(":artistId", action.artistId),
-                ).pipe(
-                    map(artist => {
-                        return fetchArtistAfterCreationSuccess({
+            return this.httpClient.get<Artist>(GET_ARTIST
+                .replace(":userId", action.userId)
+                .replace(":artistId", action.artistId),
+            ).pipe(
+                map(artist => {
+                    return fetchArtistAfterCreationSuccess({
                             artist: artist
                         });
                     }),
@@ -390,7 +448,7 @@ export class PostsEffects {
                                 errorMessage = 'No servers available to handle your request. Try again later.'
                                 break;
                             case 400:
-                                errorMessage = error.message + ' If you think this is a bug, please contact the administrator.';
+                                errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
                                 break;
                             case 404:
                                 errorMessage = 'Artist creation was not handled yet by servers. Try again in a moment.';
@@ -434,7 +492,7 @@ export class PostsEffects {
                             }));
                         case 400:
                             return of(createPostFail({
-                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         default:
                             return of(createPostFail({
@@ -459,7 +517,11 @@ export class PostsEffects {
             data.append("media", new Blob([JSON.stringify(media)], {
                 type: "application/json"
             }));
-            data.append("file", mediaWrapper.file, mediaWrapper.file.name);
+            data.append("file", mediaWrapper.mediaFile, mediaWrapper.mediaFile.name);
+            // If thumbnail is present
+            if (!!mediaWrapper.thumbnailFile) {
+                data.append("thumbnail", mediaWrapper.thumbnailFile, mediaWrapper.thumbnailFile.name);
+            }
 
             return this.httpClient.post(CREATE_MEDIA
                     .replace(":userId", action.userId)
@@ -493,12 +555,12 @@ export class PostsEffects {
                             }));
                         case 400:
                             return of(createPostFail({
-                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         default:
                             return of(createPostFail({
                                 errorMessage: 'Something went wrong while uploading "' +
-                                    action.mediaSet[action.currentIndex].file.name +
+                                    action.mediaSet[action.currentIndex].mediaFile.name +
                                     '" file. The upload of other files has been canceled.'
                             }));
                     }
@@ -549,7 +611,7 @@ export class PostsEffects {
                             }));
                         case 400:
                             return of(createPostFail({
-                                errorMessage: error.message + ' If you think this is a bug, please contact the administrator.'
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         default:
                             return of(createPostFail({

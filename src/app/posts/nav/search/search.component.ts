@@ -84,5 +84,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searchForm.setValue({
             query: ''
         });
+
+        this.onSearchQuery();
     }
 }

@@ -60,7 +60,6 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         });
     }
 
-    // TODO Error message
     ngOnInit(): void {
         this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
             this.isFetching = state.isFetching;
@@ -178,7 +177,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (!artistNickname.match("^[a-zA-Z0-9_-]*$")) {
+        if (!artistNickname.match("^[A-Za-z0-9_-]*$")) {
             return;
         }
 

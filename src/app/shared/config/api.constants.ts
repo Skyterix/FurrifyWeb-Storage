@@ -15,6 +15,7 @@ export const CREATE_ARTIST = SERVER_ADDRESS + '/users/:userId/artists';
 export const CREATE_POST = SERVER_ADDRESS + '/users/:userId/posts';
 export const CREATE_MEDIA = SERVER_ADDRESS + '/users/:userId/posts/:postId/media';
 export const CREATE_ATTACHMENT = SERVER_ADDRESS + '/users/:userId/posts/:postId/attachments';
+export const CREATE_AVATAR = SERVER_ADDRESS + '/users/:userId/artists/:artistId/avatar';
 
 // Fixes not getting hal+json from response
 export const RESPONSE_TYPE = "*";

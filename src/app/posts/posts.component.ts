@@ -73,6 +73,7 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnDestroy(): void {
+        this.storeSubscription.unsubscribe();
         this.postCreateOpenSubscription.unsubscribe();
         this.postCreateCloseSubscription.unsubscribe();
     }

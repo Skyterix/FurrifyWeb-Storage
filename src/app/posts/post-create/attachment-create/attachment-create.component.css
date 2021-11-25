@@ -16,16 +16,12 @@ h1 {
     font-size: 3em;
 }
 
-.file {
-    cursor: pointer;
-}
-
 input[type=file] {
     display: none;
 }
 
 label span {
-    word-wrap: break-word;
+    word-wrap: anywhere;
 }
 
 .animate__animated {

@@ -140,7 +140,7 @@ export const removeArtistFromSelected = createAction(
 
 export const createArtistStart = createAction(
     '[Posts] Create artist start',
-    props<{ userId: string, artist: Artist }>()
+    props<{ userId: string, artist: Artist, avatar: File }>()
 );
 
 export const createArtistFail = createAction(
@@ -215,4 +215,9 @@ export const createPostUploadMediaStart = createAction(
 export const createPostUploadAttachmentStart = createAction(
     '[Posts] Create post upload attachment start',
     props<{ userId: string, postId: string, currentIndex: number, attachments: AttachmentWrapper[] }>()
+);
+
+export const createArtistUploadAvatarStart = createAction(
+    '[Posts] Create artist upload avatar start',
+    props<{ userId: string, artistId: string, avatar: File }>()
 );

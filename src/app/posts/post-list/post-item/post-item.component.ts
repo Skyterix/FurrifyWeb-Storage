@@ -11,8 +11,8 @@ import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {selectPost} from "../../store/posts.actions";
 import {faFilm} from "@fortawesome/free-solid-svg-icons/faFilm";
-import {faMusic} from "@fortawesome/free-solid-svg-icons/faMusic";
 import {QueryPost} from "../../../shared/model/query/query-post.model";
+import {faHeadphones} from "@fortawesome/free-solid-svg-icons/faHeadphones";
 
 @Component({
     selector: 'app-post-item',
@@ -31,7 +31,7 @@ export class PostItemComponent implements OnInit {
     imageIcon = faImage;
     videoIcon = faVideo;
     animationIcon = faFilm;
-    audioIcon = faMusic;
+    audioIcon = faHeadphones;
 
     imageType = MediaType.IMAGE;
     videoType = MediaType.VIDEO;
@@ -48,7 +48,7 @@ export class PostItemComponent implements OnInit {
         this.characterTags = TagUtils.filterTagsByType("CHARACTER", this.post.tags);
     }
 
-    mediaContains(type: MediaType): boolean {
+    mediaSetContains(type: MediaType): boolean {
         return MediaUtils.containsType(type, this.post.mediaSet);
     }
 

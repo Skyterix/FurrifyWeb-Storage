@@ -6,6 +6,10 @@ import * as fromApp from "../../../store/app.reducer";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CDN_ADDRESS} from "../../../shared/config/api.constants";
 import {QueryPost} from "../../../shared/model/query/query-post.model";
+import {MediaType} from "../../../shared/enum/media-type.enum";
+import {MediaExtensionsConfig} from "../../../shared/config/media-extensions.config";
+import {MediaIconsConfig} from "../../../shared/config/media-icons.config";
+import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 
 @Component({
     selector: 'app-post-items',
@@ -18,6 +22,7 @@ export class PostItemsComponent implements OnInit {
     sortedMedia!: Media[];
 
     cdnAddress = CDN_ADDRESS;
+    fileUrl!: string;
 
     currentIndex!: number;
 
@@ -31,6 +36,11 @@ export class PostItemsComponent implements OnInit {
 
         this.activatedRoute.params.subscribe(params => {
             this.currentIndex = params.index;
+
+            // Null check
+            if (!!this.sortedMedia[params.index]) {
+                this.fileUrl = CDN_ADDRESS + this.sortedMedia[params.index].fileUri;
+            }
         });
     }
 
@@ -42,6 +52,21 @@ export class PostItemsComponent implements OnInit {
         this.router.navigate(['/posts', this.post.postId, 'media', index], {
             queryParamsHandling: "merge"
         });
+    }
+
+    getIconFromMedia(index: number): IconDefinition {
+        switch (MediaExtensionsConfig.getTypeByExtension(this.sortedMedia[index].extension)) {
+            case MediaType.IMAGE:
+                return MediaIconsConfig.IMAGE_ICON;
+            case MediaType.VIDEO:
+                return MediaIconsConfig.VIDEO_ICON;
+            case MediaType.ANIMATION:
+                return MediaIconsConfig.ANIMATION_ICON;
+            case MediaType.AUDIO:
+                return MediaIconsConfig.AUDIO_ICON;
+            default:
+                throw new Error("Media type is undefined.");
+        }
     }
 
     // TODO Implement
