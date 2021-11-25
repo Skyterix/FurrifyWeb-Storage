@@ -160,18 +160,14 @@ export class PostDetailsComponent implements OnInit {
 
                 // Check if player already exists
                 if (!this.player) {
-                    this.player = videojs(document.getElementById('audio-player'), {
-                        sources: {
-                            src: CDN_ADDRESS + media.fileUri,
-                            poster: this.posterUrl
-                        }
-                    });
-                } else {
-                    this.player.src({
-                        src: CDN_ADDRESS + media.fileUri
-                    });
-                    this.player.poster(this.posterUrl);
+                    this.player = videojs(document.getElementById('audio-player'));
                 }
+
+                // Load video
+                this.player.src({
+                    src: CDN_ADDRESS + media.fileUri
+                });
+                this.player.poster(this.posterUrl);
 
                 this.renderer.removeStyle(this.mediaSpinnerRef.nativeElement, 'display');
 
