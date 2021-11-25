@@ -3,12 +3,15 @@ import {MediaType} from "../enum/media-type.enum";
 export class MediaExtensionsConfig {
 
     private static IMAGES = [
+        'webp',
+        'ico',
+        'svg',
+        'bm',
+        'tif',
+        'tiff',
+        'wbmp',
         'bmp',
         'bm',
-        'wbmp',
-        'tiff',
-        'tif',
-        'svg',
         'png',
         'jpeg',
         'jpg'
@@ -17,8 +20,8 @@ export class MediaExtensionsConfig {
     private static AUDIO = [
         'ogg',
         'flac',
-        'wav',
-        'mp3'
+        'mp3',
+        'wav'
     ];
 
     private static VIDEOS = [
@@ -29,7 +32,8 @@ export class MediaExtensionsConfig {
         'wmv',
         'mkv',
         'webm',
-        'mp4'
+        'mp4',
+        'mpeg'
     ];
 
     public static ANIMATIONS = [
