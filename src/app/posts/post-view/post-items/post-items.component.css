@@ -55,6 +55,7 @@
     padding-left: .25rem;
     padding-right: .25rem;
     border-bottom-right-radius: 8px;
+    border-top-left-radius: 8px;
     color: rgba(255, 255, 255, 0.9);
 }
 
