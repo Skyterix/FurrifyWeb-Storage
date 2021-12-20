@@ -42,8 +42,8 @@
                     <div [class.active]="isUserDropdownOpened"
                          class="dropdown-menu shadow border-0 animate__animated animate__fadeIn">
                         <p class="dropdown-item">{{ username }}</p>
-                        <a class="dropdown-item">Profile</a>
-                        <a class="dropdown-item">Settings</a>
+                        <a [routerLink]="['/settings', 'account']" class="dropdown-item">Profile</a>
+                        <a [routerLink]="['/settings', 'tweaks']" class="dropdown-item">Settings</a>
                         <a (click)="logout()" class="dropdown-item">Logout</a>
                     </div>
                 </li>
