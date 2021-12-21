@@ -5,6 +5,7 @@ import {AccountComponent} from './account/account.component';
 import {TweaksComponent} from './tweaks/tweaks.component';
 import {SettingsRoutingModule} from "./settings-routing.module";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {SharedModule} from "../shared/shared.module";
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
     imports: [
         CommonModule,
         SettingsRoutingModule,
-        FontAwesomeModule
+        FontAwesomeModule,
+        SharedModule
     ]
 })
 export class SettingsModule {

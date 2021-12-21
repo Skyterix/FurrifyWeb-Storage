@@ -1,6 +1,8 @@
 export const KEYCLOAK_AUTH_URL = "http://192.168.0.200:6565/auth";
 export const KEYCLOAK_REALM = "dev";
 export const KEYCLOAK_CLIENT_ID = "furrifyws-storage";
+export const KEYCLOAK_PROVIDER_LINK = "/realms/" + KEYCLOAK_REALM + "/broker/:provider/link";
+export const KEYCLOAK_PROVIDER_REDIRECT_URL = "/realms/" + KEYCLOAK_REALM + "/broker/:provider/endpoint";
 
 export const CDN_ADDRESS = 'http://localhost';
 export const SERVER_ADDRESS = 'http://localhost:8080';

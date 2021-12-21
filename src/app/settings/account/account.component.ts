@@ -11,18 +11,21 @@ export class AccountComponent implements OnInit {
     username!: string;
     providers: {
         name: string,
+        id: string,
         color: string,
         accent: string,
         logoUrl: string
     }[] = [
         {
             name: "DeviantArt",
+            id: 'deviantart',
             color: "#06070d",
             accent: "#fff",
             logoUrl: "./assets/providers/deviantart.png"
         },
         {
             name: "Patreon",
+            id: 'patreon',
             color: "#fff",
             accent: "#052d49",
             logoUrl: "./assets/providers/patreon.png"

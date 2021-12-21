@@ -41,6 +41,12 @@
     text-align: left;
     user-select: none;
     cursor: pointer;
+    filter: grayscale(1);
+    transition: .4s all ease;
+}
+
+.provider:hover {
+    filter: grayscale(0) !important;
 }
 
 .provider img {
