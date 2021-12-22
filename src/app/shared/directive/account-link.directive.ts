@@ -18,6 +18,22 @@ export class AccountLinkDirective {
                 private keycloakService: KeycloakService) {
     }
 
+
+    @HostListener('click', ['$event'])
+    onClick($event: any): void {
+        this.keycloakService.getToken().then(token => {
+            const tokenObj = KeycloakTokenUtils.parseToken(token);
+            if (tokenObj === null) {
+                return;
+            }
+
+            //console.log(token);
+
+            // Open provider connect site
+            window.location.href = AccountLinkDirective.generateUri(tokenObj, this.provider, KEYCLOAK_CLIENT_ID);
+        });
+    }
+
     private static generateUri(token: any, providerId: string, clientId: string): string {
         let uri: string = KEYCLOAK_AUTH_URL + KEYCLOAK_PROVIDER_LINK.replace(':provider', providerId);
         const nonce: string = this.randomString(32);
@@ -50,18 +66,5 @@ export class AccountLinkDirective {
         }
 
         return text;
-    }
-
-    @HostListener('click', ['$event'])
-    onClick($event: any): void {
-        this.keycloakService.getToken().then(token => {
-            const tokenObj = KeycloakTokenUtils.parseToken(token);
-            if (tokenObj === null) {
-                return;
-            }
-
-            // Open provider connect site
-            window.location.href = AccountLinkDirective.generateUri(tokenObj, this.provider, KEYCLOAK_CLIENT_ID);
-        });
     }
 }
