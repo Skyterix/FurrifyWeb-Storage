@@ -41,11 +41,14 @@
     text-align: left;
     user-select: none;
     cursor: pointer;
-    filter: grayscale(1);
     transition: .4s all ease;
 }
 
-.provider:hover {
+.provider.not-connected {
+    filter: grayscale(1);
+}
+
+.provider.not-connected:hover {
     filter: grayscale(0) !important;
 }
 

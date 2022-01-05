@@ -9,6 +9,10 @@ import {KeycloakService} from "keycloak-angular";
 export class AccountComponent implements OnInit {
 
     username!: string;
+    accountRoles!: string[];
+
+    readonly PROVIDER_PREFIX: string = 'provider_';
+
     providers: {
         name: string,
         id: string,
@@ -37,6 +41,7 @@ export class AccountComponent implements OnInit {
 
     ngOnInit(): void {
         this.username = this.keycloakService.getUsername();
+        this.accountRoles = this.keycloakService.getUserRoles();
     }
 
 }

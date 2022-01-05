@@ -27,8 +27,6 @@ export class AccountLinkDirective {
                 return;
             }
 
-            //console.log(token);
-
             // Open provider connect site
             window.location.href = AccountLinkDirective.generateUri(tokenObj, this.provider, KEYCLOAK_CLIENT_ID);
         });
