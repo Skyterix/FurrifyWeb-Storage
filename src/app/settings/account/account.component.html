@@ -1,0 +1,23 @@
+<div class="container p-3">
+
+    <div class="avatar">
+        <img alt="user avatar" src="./assets/user-default.jpg"/>
+        <p class="display-6 mt-2">{{ username }}</p>
+    </div>
+
+    <div class="providers p-4">
+        <p class="h4">Providers</p>
+        <ul>
+            <li *ngFor="let provider of providers" [style.background-color]="provider.color"
+                [appAccountLink]="provider.id"
+                [class.not-connected]="!accountRoles.includes(PROVIDER_PREFIX + provider.id)"
+                [style.color]="provider.accent" class="provider m-1">
+                <img [src]="provider.logoUrl" alt="provider logo" class="float-start"/>
+                <div class="float-start ms-3">
+                    <p class="connect">{{ (accountRoles.includes(PROVIDER_PREFIX + provider.id)) ? "Reconnect" : "Connect" }}</p>
+                    <p class="name">{{ provider.name }}</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

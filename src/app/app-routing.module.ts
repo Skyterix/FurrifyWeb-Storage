@@ -12,6 +12,10 @@ const appRoutes: Routes = [
         loadChildren: () => import('./posts/posts.module').then(m => m.PostsModule)
     },
     {
+        path: 'settings',
+        loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
+    },
+    {
         path: 'auth',
         loadChildren: () => import('./authentication/authentication.module').then(m => m.AuthenticationModule)
     }
