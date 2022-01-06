@@ -30,6 +30,10 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
 import {PaginatorComponent} from './post-list/paginator/paginator.component';
 import {GalleryViewComponent} from './post-view/post-details/gallery-view/gallery-view.component';
 import {SourceItemComponent} from './post-create/post-create-content-step/source-item/source-item.component';
+import {SourceCreateComponent} from './post-create/source-create/source-create.component';
+import {
+    MediaSourceDeviantArtComponent
+} from './post-create/source-create/media-source-deviantart/media-source-deviant-art.component';
 
 
 @NgModule({
@@ -56,7 +60,9 @@ import {SourceItemComponent} from './post-create/post-create-content-step/source
         AttachmentCreateComponent,
         PaginatorComponent,
         GalleryViewComponent,
-        SourceItemComponent
+        SourceItemComponent,
+        SourceCreateComponent,
+        MediaSourceDeviantArtComponent
     ],
     imports: [
         CommonModule,
@@ -74,7 +80,8 @@ import {SourceItemComponent} from './post-create/post-create-content-step/source
         ArtistCreateComponent,
         MediaCreateComponent,
         AttachmentCreateComponent,
-        TagCreateComponent
+        TagCreateComponent,
+        SourceCreateComponent
     ]
 })
 export class PostsModule {

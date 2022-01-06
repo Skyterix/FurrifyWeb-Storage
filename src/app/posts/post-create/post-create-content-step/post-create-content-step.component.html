@@ -12,12 +12,15 @@
                     <span class="filename">{{ media.mediaFile.name }}</span>
 
                     <span class="badges">
-                        <span class="badge bg-dark badge-pill">Add source</span>
+                        <span (click)="loadCreateSourceForm(media)" class="badge bg-dark badge-pill">Add source</span>
 
                         <span class="badge badge-primary badge-pill">{{ mediaIndex }}</span>
                         <span (click)="onMediaRemove(mediaIndex)" class="badge badge-pill remove">x</span>
                     </span>
                 </div>
+
+                <div class="clearfix"></div>
+
                 <!-- Sources -->
                 <div>
                     <app-source-item *ngFor="let source of media.sources; let sourceIndex = index"

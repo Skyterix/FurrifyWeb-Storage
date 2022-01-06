@@ -12,9 +12,11 @@ import {
     addArtistToSelectedSetSuccess,
     addAttachment,
     addMedia,
+    addMediaSource,
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
+    clearSourceData,
     createArtistFail,
     createArtistStart,
     createPostFail,
@@ -46,7 +48,8 @@ import {
     updatePostSavedDescription,
     updatePostSavedTitle,
     updateSearchParams,
-    updateSearchQuery
+    updateSearchQuery,
+    updateSourceData
 } from "./posts.actions";
 import {Tag} from "../../shared/model/tag.model";
 import {Artist} from "../../shared/model/artist.model";
@@ -105,6 +108,7 @@ export interface State {
     currentMediaUploadIndex: number;
     currentAttachmentUploadIndex: number;
     postCreateErrorMessage: string | null;
+    createSourceData: any;
 }
 
 const initialState: State = {
@@ -130,7 +134,8 @@ const initialState: State = {
     attachments: [],
     currentMediaUploadIndex: -1,
     currentAttachmentUploadIndex: -1,
-    postCreateErrorMessage: ""
+    postCreateErrorMessage: "",
+    createSourceData: {}
 };
 
 
@@ -408,11 +413,11 @@ export const postsReducer = createReducer(
         }
     ),
     on(fetchArtistAfterCreationStart, (state, action) => {
-        return {
-            ...state,
-            isFetching: true,
-            artistErrorMessage: ""
-        };
+            return {
+                ...state,
+                isFetching: true,
+                artistErrorMessage: ""
+            };
         }
     ),
     on(fetchArtistAfterCreationFail, (state, action) => {
@@ -542,6 +547,33 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 mediaSet: modifiedMediaSet
+            };
+        }
+    ),
+    on(clearSourceData, (state, action) => {
+            return {
+                ...state,
+                createSourceData: null
+            };
+        }
+    ),
+    on(updateSourceData, (state, action) => {
+            return {
+                ...state,
+                createSourceData: action.data
+            };
+        }
+    ),
+    on(addMediaSource, (state, action) => {
+            let newMedia = {...state.mediaSet[action.mediaIndex]}
+            newMedia.sources = [...newMedia.sources, action.source];
+
+            let newMediaSet = [...state.mediaSet]
+            newMediaSet[action.mediaIndex] = newMedia;
+
+            return {
+                ...state,
+                mediaSet: newMediaSet
             };
         }
     ),

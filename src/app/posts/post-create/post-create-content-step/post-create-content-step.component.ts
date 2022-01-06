@@ -48,6 +48,11 @@ export class PostCreateContentStepComponent implements OnInit, OnDestroy {
         }));
     }
 
+
+    loadCreateSourceForm(media: MediaWrapper) {
+        this.postCreateService.sourceCreateOpenEvent.emit(media);
+    }
+
     onAttachmentRemove(index: number): void {
         this.store.dispatch(removeAttachment({
             index
@@ -63,7 +68,6 @@ export class PostCreateContentStepComponent implements OnInit, OnDestroy {
             mediaSet: newMediaSet
         }));
     }
-
     onNextStep(): void {
         if (this.mediaSet.length == 0) {
             return;

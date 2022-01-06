@@ -1,0 +1,21 @@
+article {
+    background: #272727;
+}
+
+.close {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    outline: none;
+    color: #fff;
+    font-size: 1.5em;
+}
+
+h1 {
+    color: #fff;
+    font-size: 3em;
+}
+
+.animate__animated {
+    animation-duration: .1s;
+}

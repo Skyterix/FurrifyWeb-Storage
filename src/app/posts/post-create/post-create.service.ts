@@ -1,4 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
+import {MediaWrapper} from "../store/posts.reducer";
 
 @Injectable({
     providedIn: 'root'
@@ -23,6 +24,9 @@ export class PostCreateService {
 
     attachmentCreateOpenEvent: EventEmitter<void> = new EventEmitter<void>();
     attachmentCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
+
+    sourceCreateOpenEvent: EventEmitter<MediaWrapper> = new EventEmitter<MediaWrapper>();
+    sourceCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
 
     constructor() {
     }

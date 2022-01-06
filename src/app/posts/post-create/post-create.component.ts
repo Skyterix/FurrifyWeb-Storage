@@ -20,6 +20,7 @@ import {MediaCreateComponent} from "./media-create/media-create.component";
 import {AttachmentCreateComponent} from "./attachment-create/attachment-create.component";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../store/app.reducer";
+import {SourceCreateComponent} from "./source-create/source-create.component";
 
 @Component({
     selector: 'app-post-create',
@@ -40,14 +41,22 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     private postInfoStepOpenEventSubscription!: Subscription;
     private postContentStepOpenEventSubscription!: Subscription;
     private postUploadStepOpenEventSubscription!: Subscription;
+
     private tagCreateOpenEventSubscription!: Subscription;
     private tagCreateCloseEventSubscription!: Subscription;
+
     private artistCreateOpenEventSubscription!: Subscription;
     private artistCreateCloseEventSubscription!: Subscription;
+
+    private sourceCreateOpenEventSubscription!: Subscription;
+    private sourceCreateCloseEventSubscription!: Subscription;
+
     private mediaCreateOpenEventSubscription!: Subscription;
     private mediaCreateCloseEventSubscription!: Subscription;
+
     private attachmentCreateOpenEventSubscription!: Subscription;
     private attachmentCreateCloseEventSubscription!: Subscription;
+
     private storeSubscription!: Subscription;
 
     constructor(private postCreateService: PostCreateService,
@@ -85,6 +94,14 @@ export class PostCreateComponent implements OnInit, OnDestroy {
             setTimeout(() => this.clearSideView());
         });
 
+        this.sourceCreateOpenEventSubscription = this.postCreateService.sourceCreateOpenEvent.subscribe(media => {
+            const componentRef = this.loadSideStep<SourceCreateComponent>(SourceCreateComponent);
+            componentRef.instance.media = media;
+        });
+        this.sourceCreateCloseEventSubscription = this.postCreateService.sourceCreateCloseEvent.subscribe(() => {
+            setTimeout(() => this.clearSideView());
+        });
+
         this.mediaCreateOpenEventSubscription = this.postCreateService.mediaCreateOpenEvent.subscribe(() => {
             this.loadSideStep<MediaCreateComponent>(MediaCreateComponent);
         });
@@ -119,6 +136,8 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         this.mediaCreateCloseEventSubscription.unsubscribe();
         this.artistCreateOpenEventSubscription.unsubscribe();
         this.artistCreateCloseEventSubscription.unsubscribe();
+        this.sourceCreateOpenEventSubscription.unsubscribe();
+        this.sourceCreateCloseEventSubscription.unsubscribe();
         this.storeSubscription.unsubscribe();
     }
 

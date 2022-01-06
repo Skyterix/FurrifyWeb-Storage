@@ -5,6 +5,7 @@ import {Tag} from "../../shared/model/tag.model";
 import {Artist} from "../../shared/model/artist.model";
 import {CreatePost} from "../../shared/model/request/create-post.model";
 import {QueryPost} from "../../shared/model/query/query-post.model";
+import {CreateSource} from "../../shared/model/request/create-source.model";
 
 export const updateSearchParams = createAction(
     '[Posts] Update search params',
@@ -173,6 +174,11 @@ export const removeMedia = createAction(
     props<{ index: number }>()
 );
 
+export const addMediaSource = createAction(
+    '[Posts] Add media source',
+    props<{ mediaIndex: number, source: CreateSource }>()
+);
+
 export const updateMediaSet = createAction(
     '[Posts] Update media set',
     props<{ mediaSet: MediaWrapper[] }>()
@@ -225,4 +231,13 @@ export const createArtistUploadAvatarStart = createAction(
 export const removeSourceFromMedia = createAction(
     '[Posts] Remove source from media',
     props<{ mediaIndex: number, sourceIndex: number }>()
+);
+
+export const updateSourceData = createAction(
+    '[Posts] Update source data',
+    props<{ data: any }>()
+);
+
+export const clearSourceData = createAction(
+    '[Posts] Clear source data'
 );
