@@ -221,3 +221,8 @@ export const createArtistUploadAvatarStart = createAction(
     '[Posts] Create artist upload avatar start',
     props<{ userId: string, artistId: string, avatar: File }>()
 );
+
+export const removeSourceFromMedia = createAction(
+    '[Posts] Remove source from media',
+    props<{ mediaIndex: number, sourceIndex: number }>()
+);

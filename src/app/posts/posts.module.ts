@@ -29,6 +29,7 @@ import {AttachmentCreateComponent} from './post-create/attachment-create/attachm
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {PaginatorComponent} from './post-list/paginator/paginator.component';
 import {GalleryViewComponent} from './post-view/post-details/gallery-view/gallery-view.component';
+import {SourceItemComponent} from './post-create/post-create-content-step/source-item/source-item.component';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import {GalleryViewComponent} from './post-view/post-details/gallery-view/galler
         MediaCreateComponent,
         AttachmentCreateComponent,
         PaginatorComponent,
-        GalleryViewComponent
+        GalleryViewComponent,
+        SourceItemComponent
     ],
     imports: [
         CommonModule,

@@ -37,6 +37,7 @@ import {
     removeArtistFromSelected,
     removeAttachment,
     removeMedia,
+    removeSourceFromMedia,
     removeTagFromSelected,
     selectPost,
     startSearch,
@@ -52,6 +53,7 @@ import {Artist} from "../../shared/model/artist.model";
 import {CreateMedia} from "../../shared/model/request/create-media.model";
 import {CreateAttachment} from "../../shared/model/request/create-attachment.model";
 import {QueryPost} from "../../shared/model/query/query-post.model";
+import {CreateSource} from "../../shared/model/request/create-source.model";
 
 export class ArtistWrapper {
     constructor(public artist: Artist,
@@ -67,6 +69,7 @@ export class TagWrapper {
 
 export class MediaWrapper {
     constructor(public media: CreateMedia,
+                public sources: CreateSource[],
                 public mediaFile: File,
                 public thumbnailFile: File | undefined) {
     }
@@ -406,10 +409,10 @@ export const postsReducer = createReducer(
     ),
     on(fetchArtistAfterCreationStart, (state, action) => {
         return {
-                ...state,
-                isFetching: true,
-                artistErrorMessage: ""
-            };
+            ...state,
+            isFetching: true,
+            artistErrorMessage: ""
+        };
         }
     ),
     on(fetchArtistAfterCreationFail, (state, action) => {
@@ -518,6 +521,27 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 currentAttachmentUploadIndex: action.currentIndex
+            };
+        }
+    ),
+    on(removeSourceFromMedia, (state, action) => {
+            const modifiedMediaSet = state.mediaSet.slice().map((media, index) => {
+                if (index !== action.mediaIndex) {
+                    return media;
+                }
+
+                const newMedia = {...media};
+
+                newMedia.sources = media.sources.filter(
+                    (source, index) => index !== action.sourceIndex
+                );
+
+                return newMedia;
+            });
+
+            return {
+                ...state,
+                mediaSet: modifiedMediaSet
             };
         }
     ),

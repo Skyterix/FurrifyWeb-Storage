@@ -120,9 +120,9 @@ export class MediaCreateComponent implements OnInit {
             new CreateMedia(
                 // Index will later be set based on array index of item
                 0,
-                fileExtension,
-                []
+                fileExtension
             ),
+            [],
             this.selectedMediaFile,
             this.selectedThumbnailFile
         )
