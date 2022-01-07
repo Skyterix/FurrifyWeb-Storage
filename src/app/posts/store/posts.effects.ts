@@ -625,7 +625,7 @@ export class PostsEffects {
                         userId: action.userId,
                         postId: action.postId,
                         currentIndex: action.currentIndex + 1,
-                        attachments: attachments
+                        attachments
                     });
                 }),
                 retryWhen(RETRY_HANDLER),
