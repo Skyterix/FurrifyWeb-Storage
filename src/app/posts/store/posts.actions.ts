@@ -250,7 +250,10 @@ export const createMediaSetStart = createAction(
 );
 
 export const createMediaSetSuccess = createAction(
-    '[Posts] Create media set success'
+    '[Posts] Create media set success',
+    props<{
+        mediaSet: MediaWrapper[]
+    }>()
 );
 
 export const createAttachmentsStart = createAction(
@@ -266,6 +269,22 @@ export const createAttachmentsStart = createAction(
 export const createAttachmentsSuccess = createAction(
     '[Posts] Create attachments success'
 );
+
+export const createMediaSetSourcesStart = createAction(
+    '[Posts] Create media set sources start',
+    props<{
+        userId: string,
+        postId: string,
+        mediaSet: MediaWrapper[],
+        currentMediaIndex: number
+        currentSourceIndex: number
+    }>()
+);
+
+export const createMediaSetSourcesSuccess = createAction(
+    '[Posts] Create media set sources success'
+);
+
 
 export const updatePostCreateStatus = createAction(
     '[Posts] Update post create status',

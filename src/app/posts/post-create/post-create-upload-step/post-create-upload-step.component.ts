@@ -65,6 +65,9 @@ export class PostCreateUploadStepComponent implements OnInit, OnDestroy {
             case PostCreateStatusEnum.ATTACHMENTS_UPLOADED:
                 document.querySelector("#result")!.innerHTML = "ATTACHMENTS_UPLOADED";
                 break;
+            case PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED:
+                document.querySelector("#result")!.innerHTML = "MEDIA_SET_SOURCES_CREATED";
+                break;
         }
     }
 }

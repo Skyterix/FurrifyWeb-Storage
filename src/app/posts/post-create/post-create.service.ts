@@ -3,7 +3,12 @@ import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper} from "../sto
 import {PostCreateStatusEnum} from "../../shared/enum/post-create-status.enum";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../store/app.reducer";
-import {createAttachmentsStart, createMediaSetStart, createPostStart} from "../store/posts.actions";
+import {
+    createAttachmentsStart,
+    createMediaSetSourcesStart,
+    createMediaSetStart,
+    createPostStart
+} from "../store/posts.actions";
 import {KeycloakProfile} from "keycloak-js";
 
 @Injectable({
@@ -65,14 +70,15 @@ export class PostCreateService {
             switch (status) {
                 case PostCreateStatusEnum.POST_CREATED:
                     this.uploadMediaSet();
-
                     break;
                 case PostCreateStatusEnum.MEDIA_SET_UPLOADED:
                     this.uploadAttachments();
-
                     break;
                 case PostCreateStatusEnum.ATTACHMENTS_UPLOADED:
-
+                    this.createMediaSetSources();
+                    break;
+                case PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED:
+                    //this.createAttachmentsSources();
                     break;
             }
         });
@@ -142,6 +148,18 @@ export class PostCreateService {
                 postId: this.createdPostId,
                 attachments: this.attachments,
                 currentIndex: 0
+            }
+        ))
+    }
+
+    private createMediaSetSources(): void {
+        this.store.dispatch(createMediaSetSourcesStart(
+            {
+                userId: this.currentUser?.id!,
+                postId: this.createdPostId,
+                mediaSet: this.mediaSet,
+                currentMediaIndex: 0,
+                currentSourceIndex: 0
             }
         ))
     }

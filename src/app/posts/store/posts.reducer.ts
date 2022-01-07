@@ -20,6 +20,8 @@ import {
     createArtistFail,
     createArtistStart,
     createAttachmentsSuccess,
+    createMediaSetSourcesSuccess,
+    createMediaSetSuccess,
     createPostFail,
     createPostStart,
     createPostSuccess,
@@ -70,16 +72,22 @@ export class TagWrapper {
 }
 
 export class MediaWrapper {
+    mediaId: string;
+
     constructor(public media: CreateMedia,
                 public sources: CreateSource[],
                 public mediaFile: File,
                 public thumbnailFile: File | undefined) {
+        this.mediaId = "";
     }
 }
 
 export class AttachmentWrapper {
+    attachmentId: string;
+
     constructor(public attachment: CreateAttachment,
                 public file: File) {
+        this.attachmentId = "";
     }
 }
 
@@ -385,6 +393,13 @@ export const postsReducer = createReducer(
             };
         }
     ),
+    on(createMediaSetSuccess, (state, action) => {
+            return {
+                ...state,
+                mediaSet: action.mediaSet
+            };
+        }
+    ),
     on(createTagStart, (state, action) => {
             return {
                 ...state,
@@ -394,11 +409,11 @@ export const postsReducer = createReducer(
         }
     ),
     on(createArtistStart, (state, action) => {
-            return {
-                ...state,
-                isFetching: true,
-                artistErrorMessage: ""
-            };
+        return {
+            ...state,
+            isFetching: true,
+            artistErrorMessage: ""
+        };
         }
     ),
     on(createArtistFail, (state, action) => {
@@ -503,25 +518,31 @@ export const postsReducer = createReducer(
     ),
     on(createAttachmentsSuccess, (state, action) => {
             return {
+                ...state
+            };
+        }
+    ),
+    on(createMediaSetSourcesSuccess, (state, action) => {
+            return {
                 ...state,
                 isFetching: false
             };
         }
     ),
     on(removeSourceFromMedia, (state, action) => {
-            const modifiedMediaSet = state.mediaSet.slice().map((media, index) => {
-                if (index !== action.mediaIndex) {
-                    return media;
-                }
+        const modifiedMediaSet = state.mediaSet.slice().map((media, index) => {
+            if (index !== action.mediaIndex) {
+                return media;
+            }
 
-                const newMedia = {...media};
+            const newMedia = {...media};
 
-                newMedia.sources = media.sources.filter(
-                    (source, index) => index !== action.sourceIndex
-                );
+            newMedia.sources = media.sources.filter(
+                (source, index) => index !== action.sourceIndex
+            );
 
-                return newMedia;
-            });
+            return newMedia;
+        });
 
             return {
                 ...state,
