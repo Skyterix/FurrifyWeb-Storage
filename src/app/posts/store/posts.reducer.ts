@@ -11,6 +11,7 @@ import {
     addArtistToSelectedSetStart,
     addArtistToSelectedSetSuccess,
     addAttachment,
+    addAttachmentSource,
     addMedia,
     addMediaSource,
     addTagToSelectedSetFail,
@@ -19,8 +20,8 @@ import {
     clearSourceData,
     createArtistFail,
     createArtistStart,
+    createAttachmentsSourcesSuccess,
     createAttachmentsSuccess,
-    createMediaSetSourcesSuccess,
     createMediaSetSuccess,
     createPostFail,
     createPostStart,
@@ -40,6 +41,7 @@ import {
     removeArtistFromSelected,
     removeAttachment,
     removeMedia,
+    removeSourceFromAttachment,
     removeSourceFromMedia,
     removeTagFromSelected,
     selectPost,
@@ -86,6 +88,7 @@ export class AttachmentWrapper {
     attachmentId: string;
 
     constructor(public attachment: CreateAttachment,
+                public sources: CreateSource[],
                 public file: File) {
         this.attachmentId = "";
     }
@@ -409,11 +412,11 @@ export const postsReducer = createReducer(
         }
     ),
     on(createArtistStart, (state, action) => {
-        return {
-            ...state,
-            isFetching: true,
-            artistErrorMessage: ""
-        };
+            return {
+                ...state,
+                isFetching: true,
+                artistErrorMessage: ""
+            };
         }
     ),
     on(createArtistFail, (state, action) => {
@@ -522,7 +525,7 @@ export const postsReducer = createReducer(
             };
         }
     ),
-    on(createMediaSetSourcesSuccess, (state, action) => {
+    on(createAttachmentsSourcesSuccess, (state, action) => {
             return {
                 ...state,
                 isFetching: false
@@ -530,23 +533,44 @@ export const postsReducer = createReducer(
         }
     ),
     on(removeSourceFromMedia, (state, action) => {
-        const modifiedMediaSet = state.mediaSet.slice().map((media, index) => {
-            if (index !== action.mediaIndex) {
-                return media;
-            }
+            const modifiedMediaSet = state.mediaSet.slice().map((media, index) => {
+                if (index !== action.mediaIndex) {
+                    return media;
+                }
 
-            const newMedia = {...media};
+                const newMedia = {...media};
 
-            newMedia.sources = media.sources.filter(
-                (source, index) => index !== action.sourceIndex
-            );
+                newMedia.sources = media.sources.filter(
+                    (source, index) => index !== action.sourceIndex
+                );
 
-            return newMedia;
-        });
+                return newMedia;
+            });
 
             return {
                 ...state,
                 mediaSet: modifiedMediaSet
+            };
+        }
+    ),
+    on(removeSourceFromAttachment, (state, action) => {
+            const modifiedAttachmentSet = state.attachments.slice().map((attachment, index) => {
+                if (index !== action.attachmentIndex) {
+                    return attachment;
+                }
+
+                const newAttachment = {...attachment};
+
+                newAttachment.sources = attachment.sources.filter(
+                    (source, index) => index !== action.sourceIndex
+                );
+
+                return newAttachment;
+            });
+
+            return {
+                ...state,
+                attachments: modifiedAttachmentSet
             };
         }
     ),
@@ -558,8 +582,8 @@ export const postsReducer = createReducer(
         }
     ),
     on(updateSourceData, (state, action) => {
-            return {
-                ...state,
+        return {
+            ...state,
                 createSourceData: action.data
             };
         }
@@ -574,6 +598,19 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 mediaSet: newMediaSet
+            };
+        }
+    ),
+    on(addAttachmentSource, (state, action) => {
+            let newAttachment = {...state.attachments[action.attachmentIndex]}
+            newAttachment.sources = [...newAttachment.sources, action.source];
+
+            let newAttachments = [...state.attachments]
+            newAttachments[action.attachmentIndex] = newAttachment;
+
+            return {
+                ...state,
+                attachments: newAttachments
             };
         }
     ),

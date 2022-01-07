@@ -1,6 +1,6 @@
 import {
     MediaSourceDeviantArtComponent
-} from "../../posts/post-create/source-create/media-source-deviantart/media-source-deviant-art.component";
+} from "../../posts/post-create/media-source-create/media-source-deviantart/media-source-deviant-art.component";
 
 export class MediaSourceStrategyConfig {
     static getTemplateComponent(strategy: string): any {

@@ -21,6 +21,7 @@ ul li .badge, .cdk-drag-preview .badge {
     float: right;
     word-break: keep-all;
     width: 120px;
+    text-align: right;
 }
 
 .remove {

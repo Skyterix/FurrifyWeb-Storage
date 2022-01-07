@@ -1,13 +1,4 @@
-import {
-    AfterViewInit,
-    Component,
-    ElementRef,
-    Input,
-    OnInit,
-    Renderer2,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subscription} from "rxjs";
@@ -15,17 +6,17 @@ import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {PostCreateService} from "../post-create.service";
 import {MediaWrapper} from "../../store/posts.reducer";
-import {SourceCreateService} from "./source-create.service";
 import {MediaSourceStrategyConfig} from "../../../shared/config/media-source-strategy.config";
 import {addMediaSource, clearSourceData} from "../../store/posts.actions";
 import {CreateSource} from "../../../shared/model/request/create-source.model";
+import {SourceCreateService} from "../source-create.service";
 
 @Component({
-    selector: 'app-source-create',
-    templateUrl: './source-create.component.html',
-    styleUrls: ['./source-create.component.css']
+    selector: 'app-media-source-create',
+    templateUrl: './media-source-create.component.html',
+    styleUrls: ['./media-source-create.component.css']
 })
-export class SourceCreateComponent implements OnInit, AfterViewInit {
+export class MediaSourceCreateComponent implements OnInit {
 
     spinnerIcon = faCircleNotch;
 
@@ -60,18 +51,18 @@ export class SourceCreateComponent implements OnInit, AfterViewInit {
 
         this.sourceCreateForm = new FormGroup({
             strategy: new FormControl(
-                this.sourceCreateService.lastSelectedSourceStrategy,
+                this.sourceCreateService.lastMediaSourceStrategy,
                 [Validators.required]
             )
         });
 
         // Clear data for strategy
         this.store.dispatch(clearSourceData());
-    }
 
-    ngAfterViewInit(): void {
-        // If strategy selected load template
-        this.loadDataTemplate();
+        setTimeout(() => {
+            // If strategy selected load template
+            this.loadDataTemplate();
+        })
     }
 
     ngOnDestroy(): void {
@@ -93,7 +84,7 @@ export class SourceCreateComponent implements OnInit, AfterViewInit {
             )
         }));
 
-        this.postCreateService.sourceCreateCloseEvent.emit();
+        this.postCreateService.mediaSourceCreateCloseEvent.emit();
     }
 
     onClose(): void {
@@ -101,7 +92,7 @@ export class SourceCreateComponent implements OnInit, AfterViewInit {
 
         // Let the animation finish
         setTimeout(() => {
-            this.postCreateService.sourceCreateCloseEvent.emit();
+            this.postCreateService.mediaSourceCreateCloseEvent.emit();
         }, 100);
     }
 
@@ -112,7 +103,7 @@ export class SourceCreateComponent implements OnInit, AfterViewInit {
             return;
         }
 
-        this.sourceCreateService.lastSelectedSourceStrategy = strategy;
+        this.sourceCreateService.lastMediaSourceStrategy = strategy;
         this.store.dispatch(clearSourceData());
 
         this.dataTemplateRef!.clear();

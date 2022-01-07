@@ -29,11 +29,22 @@ import {AttachmentCreateComponent} from './post-create/attachment-create/attachm
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {PaginatorComponent} from './post-list/paginator/paginator.component';
 import {GalleryViewComponent} from './post-view/post-details/gallery-view/gallery-view.component';
-import {SourceItemComponent} from './post-create/post-create-content-step/source-item/source-item.component';
-import {SourceCreateComponent} from './post-create/source-create/source-create.component';
+import {
+    MediaSourceItemComponent
+} from './post-create/post-create-content-step/media-source-item/media-source-item.component';
+import {MediaSourceCreateComponent} from './post-create/media-source-create/media-source-create.component';
 import {
     MediaSourceDeviantArtComponent
-} from './post-create/source-create/media-source-deviantart/media-source-deviant-art.component';
+} from './post-create/media-source-create/media-source-deviantart/media-source-deviant-art.component';
+import {
+    AttachmentSourceCreateComponent
+} from './post-create/attachment-source-create/attachment-source-create.component';
+import {
+    AttachmentSourceDeviantArtComponent
+} from './post-create/attachment-source-create/attachment-source-deviant-art/attachment-source-deviant-art.component';
+import {
+    AttachmentSourceItemComponent
+} from './post-create/post-create-content-step/attachment-source-item/attachment-source-item.component';
 
 
 @NgModule({
@@ -60,9 +71,12 @@ import {
         AttachmentCreateComponent,
         PaginatorComponent,
         GalleryViewComponent,
-        SourceItemComponent,
-        SourceCreateComponent,
-        MediaSourceDeviantArtComponent
+        MediaSourceItemComponent,
+        MediaSourceCreateComponent,
+        MediaSourceDeviantArtComponent,
+        AttachmentSourceCreateComponent,
+        AttachmentSourceDeviantArtComponent,
+        AttachmentSourceItemComponent
     ],
     imports: [
         CommonModule,
@@ -75,13 +89,8 @@ import {
     bootstrap: [
         PostCreateComponent,
         PostCreateInfoStepComponent,
-        PostCreateContentStepComponent,
-        PostCreateUploadStepComponent,
-        ArtistCreateComponent,
-        MediaCreateComponent,
-        AttachmentCreateComponent,
-        TagCreateComponent,
-        SourceCreateComponent
+        MediaSourceDeviantArtComponent,
+        AttachmentSourceDeviantArtComponent
     ]
 })
 export class PostsModule {

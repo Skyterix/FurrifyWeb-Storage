@@ -5,6 +5,7 @@ import {catchError, map, retryWhen, switchMap, tap} from 'rxjs/operators';
 import {
     CREATE_ARTIST,
     CREATE_ATTACHMENT,
+    CREATE_ATTACHMENT_SOURCE,
     CREATE_AVATAR,
     CREATE_MEDIA,
     CREATE_MEDIA_SOURCE,
@@ -30,6 +31,8 @@ import {
     createArtistFail,
     createArtistStart,
     createArtistUploadAvatarStart,
+    createAttachmentsSourcesStart,
+    createAttachmentsSourcesSuccess,
     createAttachmentsStart,
     createAttachmentsSuccess,
     createMediaSetSourcesStart,
@@ -554,7 +557,7 @@ export class PostsEffects {
                         userId: action.userId,
                         postId: action.postId,
                         currentIndex: action.currentIndex + 1,
-                        mediaSet: action.mediaSet
+                        mediaSet
                     });
                 }),
                 retryWhen(RETRY_HANDLER),
@@ -622,7 +625,7 @@ export class PostsEffects {
                         userId: action.userId,
                         postId: action.postId,
                         currentIndex: action.currentIndex + 1,
-                        attachments: action.attachments
+                        attachments: attachments
                     });
                 }),
                 retryWhen(RETRY_HANDLER),
@@ -741,12 +744,102 @@ export class PostsEffects {
         ofType(createMediaSetSourcesSuccess),
         tap(() => {
             this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED);
+        })
+    ), {dispatch: false});
+
+    createAttachmentsSourcesStart = createEffect(() => this.actions$.pipe(
+        ofType(createAttachmentsSourcesStart),
+        switchMap((action) => {
+            const attachment = action.attachments[action.currentAttachmentIndex];
+
+            // If no sources in attachment and it's last attachment in set
+            if (attachment.sources.length === 0) {
+                if (action.currentAttachmentIndex === action.attachments.length - 1) {
+                    return of(createAttachmentsSourcesSuccess());
+                } else {
+                    return of(createAttachmentsSourcesStart(
+                        {
+                            userId: action.userId,
+                            postId: action.postId,
+                            attachments: action.attachments,
+                            currentAttachmentIndex: action.currentAttachmentIndex + 1,
+                            currentSourceIndex: 0
+                        }
+                    ));
+                }
+            }
+
+            const attachmentWrapper = action.attachments[action.currentAttachmentIndex];
+            const source = attachmentWrapper.sources[action.currentSourceIndex];
+
+            return this.httpClient.post(CREATE_ATTACHMENT_SOURCE
+                    .replace(":userId", action.userId)
+                    .replace(":postId", action.postId)
+                    .replace(":attachmentId", attachmentWrapper.attachmentId),
+                source).pipe(
+                map(response => {
+                    // If all sources created
+                    if (action.currentSourceIndex === attachment.sources.length - 1) {
+                        // If all attachment cycled through
+                        if (action.currentAttachmentIndex === action.attachments.length - 1) {
+                            return createAttachmentsSourcesSuccess();
+                        } else {
+                            return createAttachmentsSourcesStart(
+                                {
+                                    userId: action.userId,
+                                    postId: action.postId,
+                                    attachments: action.attachments,
+                                    currentAttachmentIndex: action.currentAttachmentIndex + 1,
+                                    currentSourceIndex: 0
+                                }
+                            );
+                        }
+                    }
+
+                    return createAttachmentsSourcesStart(
+                        {
+                            userId: action.userId,
+                            postId: action.postId,
+                            attachments: action.attachments,
+                            currentAttachmentIndex: action.currentAttachmentIndex,
+                            currentSourceIndex: action.currentSourceIndex + 1
+                        }
+                    );
+                }),
+                retryWhen(RETRY_HANDLER),
+                catchError(error => {
+                    switch (error.status) {
+                        case 503:
+                            return of(createPostFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(createPostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
+                        default:
+                            return of(createPostFail({
+                                errorMessage: 'Something went wrong while creating source for "' +
+                                    action.attachments[action.currentAttachmentIndex].file.name +
+                                    '" file. The creation of other sources has been cancelled.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
+    createAttachmentsSourcesSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createAttachmentsSourcesSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_SOURCES_CREATED);
             setTimeout(() => {
                 this.postCreateService.postCreateCloseEvent.emit();
                 this.postsService.triggerSearch()
             }, 50)
         })
     ), {dispatch: false});
+
 
     artistFetchSuccess = createEffect(() => this.actions$.pipe(
         ofType(fetchArtistAfterCreationSuccess),

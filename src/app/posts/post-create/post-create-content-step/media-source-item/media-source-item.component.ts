@@ -6,11 +6,11 @@ import {removeSourceFromMedia} from "../../../store/posts.actions";
 import {CreateSource} from "../../../../shared/model/request/create-source.model";
 
 @Component({
-    selector: 'app-source-item',
-    templateUrl: './source-item.component.html',
-    styleUrls: ['./source-item.component.css']
+    selector: 'app-media-source-item',
+    templateUrl: './media-source-item.component.html',
+    styleUrls: ['./media-source-item.component.css']
 })
-export class SourceItemComponent implements OnInit {
+export class MediaSourceItemComponent implements OnInit {
 
     @Input() source!: CreateSource;
     @Input() sourceIndex!: number;

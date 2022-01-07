@@ -49,8 +49,12 @@ export class PostCreateContentStepComponent implements OnInit, OnDestroy {
     }
 
 
-    loadCreateSourceForm(media: MediaWrapper) {
-        this.postCreateService.sourceCreateOpenEvent.emit(media);
+    loadCreateMediaSourceForm(media: MediaWrapper) {
+        this.postCreateService.mediaSourceCreateOpenEvent.emit(media);
+    }
+
+    loadCreateAttachmentSourceForm(attachment: AttachmentWrapper) {
+        this.postCreateService.attachmentSourceCreateOpenEvent.emit(attachment);
     }
 
     onAttachmentRemove(index: number): void {

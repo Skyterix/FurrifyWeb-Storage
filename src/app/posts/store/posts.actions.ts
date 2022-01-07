@@ -189,6 +189,11 @@ export const addMediaSource = createAction(
     props<{ mediaIndex: number, source: CreateSource }>()
 );
 
+export const addAttachmentSource = createAction(
+    '[Posts] Add attachment source',
+    props<{ attachmentIndex: number, source: CreateSource }>()
+);
+
 export const updateMediaSet = createAction(
     '[Posts] Update media set',
     props<{ mediaSet: MediaWrapper[] }>()
@@ -207,6 +212,11 @@ export const removeAttachment = createAction(
 export const removeSourceFromMedia = createAction(
     '[Posts] Remove source from media',
     props<{ mediaIndex: number, sourceIndex: number }>()
+);
+
+export const removeSourceFromAttachment = createAction(
+    '[Posts] Remove source from attachment',
+    props<{ attachmentIndex: number, sourceIndex: number }>()
 );
 
 export const updateSourceData = createAction(
@@ -283,6 +293,21 @@ export const createMediaSetSourcesStart = createAction(
 
 export const createMediaSetSourcesSuccess = createAction(
     '[Posts] Create media set sources success'
+);
+
+export const createAttachmentsSourcesStart = createAction(
+    '[Posts] Create attachments sources start',
+    props<{
+        userId: string,
+        postId: string,
+        attachments: AttachmentWrapper[],
+        currentAttachmentIndex: number
+        currentSourceIndex: number
+    }>()
+);
+
+export const createAttachmentsSourcesSuccess = createAction(
+    '[Posts] Create attachments sources success'
 );
 
 

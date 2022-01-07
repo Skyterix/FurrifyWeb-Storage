@@ -83,9 +83,9 @@ export class AttachmentCreateComponent implements OnInit {
 
         const attachmentWrapper = new AttachmentWrapper(
             new CreateAttachment(
-                fileExtension,
-                []
+                fileExtension
             ),
+            [],
             this.selectedFile
         )
 

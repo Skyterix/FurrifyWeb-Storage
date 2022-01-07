@@ -5,7 +5,8 @@ import {Injectable} from '@angular/core';
 })
 export class SourceCreateService {
 
-    lastSelectedSourceStrategy: string | undefined;
+    lastMediaSourceStrategy: string | undefined;
+    lastAttachmentSourceStrategy: string | undefined;
 
     constructor() {
     }

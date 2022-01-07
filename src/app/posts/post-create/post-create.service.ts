@@ -4,6 +4,7 @@ import {PostCreateStatusEnum} from "../../shared/enum/post-create-status.enum";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../store/app.reducer";
 import {
+    createAttachmentsSourcesStart,
     createAttachmentsStart,
     createMediaSetSourcesStart,
     createMediaSetStart,
@@ -31,8 +32,11 @@ export class PostCreateService {
     attachmentCreateOpenEvent: EventEmitter<void> = new EventEmitter<void>();
     attachmentCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
 
-    sourceCreateOpenEvent: EventEmitter<MediaWrapper> = new EventEmitter<MediaWrapper>();
-    sourceCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
+    mediaSourceCreateOpenEvent: EventEmitter<MediaWrapper> = new EventEmitter<MediaWrapper>();
+    mediaSourceCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
+
+    attachmentSourceCreateOpenEvent: EventEmitter<AttachmentWrapper> = new EventEmitter<AttachmentWrapper>();
+    attachmentSourceCreateCloseEvent: EventEmitter<void> = new EventEmitter<void>();
 
     postInfoStepOpenEvent: EventEmitter<void> = new EventEmitter<void>();
     postContentStepOpenEvent: EventEmitter<void> = new EventEmitter<void>();
@@ -78,7 +82,7 @@ export class PostCreateService {
                     this.createMediaSetSources();
                     break;
                 case PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED:
-                    //this.createAttachmentsSources();
+                    this.createAttachmentsSources();
                     break;
             }
         });
@@ -159,6 +163,18 @@ export class PostCreateService {
                 postId: this.createdPostId,
                 mediaSet: this.mediaSet,
                 currentMediaIndex: 0,
+                currentSourceIndex: 0
+            }
+        ))
+    }
+
+    private createAttachmentsSources(): void {
+        this.store.dispatch(createAttachmentsSourcesStart(
+            {
+                userId: this.currentUser?.id!,
+                postId: this.createdPostId,
+                attachments: this.attachments,
+                currentAttachmentIndex: 0,
                 currentSourceIndex: 0
             }
         ))
