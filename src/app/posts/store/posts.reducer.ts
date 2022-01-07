@@ -19,11 +19,10 @@ import {
     clearSourceData,
     createArtistFail,
     createArtistStart,
+    createAttachmentsSuccess,
     createPostFail,
     createPostStart,
     createPostSuccess,
-    createPostUploadAttachmentStart,
-    createPostUploadMediaStart,
     createTagFail,
     createTagStart,
     failSearch,
@@ -105,10 +104,9 @@ export interface State {
     artistErrorMessage: string;
     mediaSet: MediaWrapper[];
     attachments: AttachmentWrapper[];
-    currentMediaUploadIndex: number;
-    currentAttachmentUploadIndex: number;
     postCreateErrorMessage: string | null;
     createSourceData: any;
+    createdPostId: string;
 }
 
 const initialState: State = {
@@ -132,10 +130,9 @@ const initialState: State = {
     artistErrorMessage: "",
     mediaSet: [],
     attachments: [],
-    currentMediaUploadIndex: -1,
-    currentAttachmentUploadIndex: -1,
     postCreateErrorMessage: "",
-    createSourceData: {}
+    createSourceData: {},
+    createdPostId: ""
 };
 
 
@@ -492,18 +489,7 @@ export const postsReducer = createReducer(
     on(createPostSuccess, (state, action) => {
             return {
                 ...state,
-                isFetching: true,
-                selectedTags: [],
-                selectedArtists: [],
-                postSavedTitle: "",
-                postSavedDescription: "",
-                tagErrorMessage: "",
-                artistErrorMessage: "",
-                mediaSet: [],
-                attachments: [],
-                currentMediaUploadIndex: -1,
-                currentAttachmentUploadIndex: -1,
-                postCreateErrorMessage: ""
+                createdPostId: action.postId
             };
         }
     ),
@@ -515,17 +501,10 @@ export const postsReducer = createReducer(
             };
         }
     ),
-    on(createPostUploadMediaStart, (state, action) => {
+    on(createAttachmentsSuccess, (state, action) => {
             return {
                 ...state,
-                currentMediaUploadIndex: action.currentIndex
-            };
-        }
-    ),
-    on(createPostUploadAttachmentStart, (state, action) => {
-            return {
-                ...state,
-                currentAttachmentUploadIndex: action.currentIndex
+                isFetching: false
             };
         }
     ),

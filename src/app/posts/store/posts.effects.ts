@@ -29,11 +29,13 @@ import {
     createArtistFail,
     createArtistStart,
     createArtistUploadAvatarStart,
+    createAttachmentsStart,
+    createAttachmentsSuccess,
+    createMediaSetStart,
+    createMediaSetSuccess,
     createPostFail,
     createPostStart,
     createPostSuccess,
-    createPostUploadAttachmentStart,
-    createPostUploadMediaStart,
     createTagFail,
     createTagStart,
     failSearch,
@@ -61,6 +63,7 @@ import {PostsService} from "../posts.service";
 import {QueryPost} from "../../shared/model/query/query-post.model";
 import {CreateAvatar} from "../../shared/model/request/create-avatar.model";
 import {EXTENSION_EXTRACT_REGEX} from "../../shared/config/common.constats";
+import {PostCreateStatusEnum} from "../../shared/enum/post-create-status.enum";
 
 @Injectable()
 export class PostsEffects {
@@ -436,26 +439,26 @@ export class PostsEffects {
             ).pipe(
                 map(artist => {
                     return fetchArtistAfterCreationSuccess({
-                            artist: artist
-                        });
-                    }),
-                    retryWhen(RETRY_HANDLER),
-                    catchError(error => {
-                        let errorMessage;
+                        artist: artist
+                    });
+                }),
+                retryWhen(RETRY_HANDLER),
+                catchError(error => {
+                    let errorMessage;
 
-                        switch (error.status) {
-                            case 503:
-                                errorMessage = 'No servers available to handle your request. Try again later.'
-                                break;
-                            case 400:
-                                errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
-                                break;
-                            case 404:
-                                errorMessage = 'Artist creation was not handled yet by servers. Try again in a moment.';
-                                break;
-                            default:
-                                errorMessage = 'Something went wrong. Try again later.';
-                                break;
+                    switch (error.status) {
+                        case 503:
+                            errorMessage = 'No servers available to handle your request. Try again later.'
+                            break;
+                        case 400:
+                            errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
+                            break;
+                        case 404:
+                            errorMessage = 'Artist creation was not handled yet by servers. Try again in a moment.';
+                            break;
+                        default:
+                            errorMessage = 'Something went wrong. Try again later.';
+                            break;
                         }
 
                         return of(fetchArtistAfterCreationFail({
@@ -476,12 +479,8 @@ export class PostsEffects {
                     observe: 'response'
                 }).pipe(
                 map(response => {
-                    return createPostUploadMediaStart({
-                        userId: action.userId,
-                        postId: response.headers.get('Id')!,
-                        currentIndex: 0,
-                        mediaSet: action.mediaSet,
-                        attachments: action.attachments
+                    return createPostSuccess({
+                        postId: response.headers.get("Id")!
                     });
                 }),
                 catchError(error => {
@@ -504,8 +503,15 @@ export class PostsEffects {
         })
     ));
 
-    createPostUploadMediaStart = createEffect(() => this.actions$.pipe(
-        ofType(createPostUploadMediaStart),
+    createPostSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createPostSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.POST_CREATED);
+        })
+    ), {dispatch: false});
+
+    createMediaSetStart = createEffect(() => this.actions$.pipe(
+        ofType(createMediaSetStart),
         switchMap((action) => {
             const data = new FormData();
             const mediaWrapper = action.mediaSet[action.currentIndex];
@@ -530,20 +536,14 @@ export class PostsEffects {
                 map(response => {
                     // If all media are uploaded
                     if (action.currentIndex == action.mediaSet.length - 1) {
-                        return createPostUploadAttachmentStart({
-                            userId: action.userId,
-                            postId: action.postId,
-                            currentIndex: 0,
-                            attachments: action.attachments
-                        });
+                        return createMediaSetSuccess();
                     }
 
-                    return createPostUploadMediaStart({
+                    return createMediaSetStart({
                         userId: action.userId,
                         postId: action.postId,
                         currentIndex: action.currentIndex + 1,
-                        mediaSet: action.mediaSet,
-                        attachments: action.attachments
+                        mediaSet: action.mediaSet
                     });
                 }),
                 retryWhen(RETRY_HANDLER),
@@ -569,12 +569,19 @@ export class PostsEffects {
         })
     ));
 
-    createPostUploadAttachmentStart = createEffect(() => this.actions$.pipe(
-        ofType(createPostUploadAttachmentStart),
+    createMediaSetSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createMediaSetSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.MEDIA_SET_UPLOADED);
+        })
+    ), {dispatch: false});
+
+    createAttachmentsStart = createEffect(() => this.actions$.pipe(
+        ofType(createAttachmentsStart),
         switchMap((action) => {
             // If no attachments to upload
             if (action.attachments.length === 0) {
-                return of(createPostSuccess());
+                return of(createAttachmentsSuccess());
             }
 
             const data = new FormData();
@@ -592,10 +599,10 @@ export class PostsEffects {
                 map(response => {
                     // If all attachments are uploaded
                     if (action.currentIndex == action.attachments.length - 1) {
-                        return createPostSuccess();
+                        return createAttachmentsSuccess();
                     }
 
-                    return createPostUploadAttachmentStart({
+                    return createAttachmentsStart({
                         userId: action.userId,
                         postId: action.postId,
                         currentIndex: action.currentIndex + 1,
@@ -625,15 +632,14 @@ export class PostsEffects {
         })
     ));
 
-    createPostSuccess = createEffect(() => this.actions$.pipe(
-        ofType(createPostSuccess),
+    createAttachmentsSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createAttachmentsSuccess),
         tap(() => {
-            this.postCreateService.postCreateCloseEvent.emit();
-
-            // Add some timout for higher chance of it being processed on time
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_UPLOADED);
             setTimeout(() => {
-                this.postsService.triggerSearch();
-            }, 50);
+                this.postCreateService.postCreateCloseEvent.emit();
+                this.postsService.triggerSearch()
+            }, 50)
         })
     ), {dispatch: false});
 

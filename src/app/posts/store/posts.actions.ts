@@ -6,6 +6,9 @@ import {Artist} from "../../shared/model/artist.model";
 import {CreatePost} from "../../shared/model/request/create-post.model";
 import {QueryPost} from "../../shared/model/query/query-post.model";
 import {CreateSource} from "../../shared/model/request/create-source.model";
+import {PostCreateStatusEnum} from "../../shared/enum/post-create-status.enum";
+
+// Posts
 
 export const updateSearchParams = createAction(
     '[Posts] Update search params',
@@ -63,6 +66,8 @@ export const selectPost = createAction(
     '[Posts] Select post',
     props<{ post: QueryPost | null }>()
 );
+
+// Post params
 
 export const updatePostSavedTitle = createAction(
     '[Posts] Update post saved title',
@@ -164,6 +169,11 @@ export const fetchArtistAfterCreationSuccess = createAction(
     props<{ artist: Artist }>()
 );
 
+export const createArtistUploadAvatarStart = createAction(
+    '[Posts] Create artist upload avatar start',
+    props<{ userId: string, artistId: string, avatar: File }>()
+);
+
 export const addMedia = createAction(
     '[Posts] Add media',
     props<{ mediaWrapper: MediaWrapper }>()
@@ -194,6 +204,21 @@ export const removeAttachment = createAction(
     props<{ index: number }>()
 );
 
+export const removeSourceFromMedia = createAction(
+    '[Posts] Remove source from media',
+    props<{ mediaIndex: number, sourceIndex: number }>()
+);
+
+export const updateSourceData = createAction(
+    '[Posts] Update source data',
+    props<{ data: any }>()
+)
+export const clearSourceData = createAction(
+    '[Posts] Clear source data'
+);
+
+// Post creation
+
 export const createPostStart = createAction(
     '[Posts] Create post start',
     props<{
@@ -210,34 +235,39 @@ export const createPostFail = createAction(
 );
 
 export const createPostSuccess = createAction(
-    '[Posts] Create post success'
+    '[Posts] Create post success',
+    props<{ postId: string }>()
 );
 
-export const createPostUploadMediaStart = createAction(
-    '[Posts] Create post upload media start',
-    props<{ userId: string, postId: string, currentIndex: number, mediaSet: MediaWrapper[], attachments: AttachmentWrapper[] }>()
+export const createMediaSetStart = createAction(
+    '[Posts] Create media set start',
+    props<{
+        userId: string,
+        postId: string,
+        mediaSet: MediaWrapper[],
+        currentIndex: number
+    }>()
 );
 
-export const createPostUploadAttachmentStart = createAction(
-    '[Posts] Create post upload attachment start',
-    props<{ userId: string, postId: string, currentIndex: number, attachments: AttachmentWrapper[] }>()
+export const createMediaSetSuccess = createAction(
+    '[Posts] Create media set success'
 );
 
-export const createArtistUploadAvatarStart = createAction(
-    '[Posts] Create artist upload avatar start',
-    props<{ userId: string, artistId: string, avatar: File }>()
+export const createAttachmentsStart = createAction(
+    '[Posts] Create attachments start',
+    props<{
+        userId: string,
+        postId: string,
+        attachments: AttachmentWrapper[],
+        currentIndex: number
+    }>()
 );
 
-export const removeSourceFromMedia = createAction(
-    '[Posts] Remove source from media',
-    props<{ mediaIndex: number, sourceIndex: number }>()
+export const createAttachmentsSuccess = createAction(
+    '[Posts] Create attachments success'
 );
 
-export const updateSourceData = createAction(
-    '[Posts] Update source data',
-    props<{ data: any }>()
-);
-
-export const clearSourceData = createAction(
-    '[Posts] Clear source data'
+export const updatePostCreateStatus = createAction(
+    '[Posts] Update post create status',
+    props<{ status: PostCreateStatusEnum }>()
 );

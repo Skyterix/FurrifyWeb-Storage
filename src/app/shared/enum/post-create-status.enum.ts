@@ -1,0 +1,3 @@
+export enum PostCreateStatusEnum {
+    POST_CREATED, MEDIA_SET_UPLOADED, ATTACHMENTS_UPLOADED,
+}
