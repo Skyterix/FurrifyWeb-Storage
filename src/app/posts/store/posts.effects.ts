@@ -5,8 +5,10 @@ import {catchError, map, retryWhen, switchMap, tap} from 'rxjs/operators';
 import {
     CREATE_ARTIST,
     CREATE_ATTACHMENT,
+    CREATE_ATTACHMENT_SOURCE,
     CREATE_AVATAR,
     CREATE_MEDIA,
+    CREATE_MEDIA_SOURCE,
     CREATE_POST,
     CREATE_TAG,
     GET_ARTIST,
@@ -29,11 +31,17 @@ import {
     createArtistFail,
     createArtistStart,
     createArtistUploadAvatarStart,
+    createAttachmentsSourcesStart,
+    createAttachmentsSourcesSuccess,
+    createAttachmentsStart,
+    createAttachmentsSuccess,
+    createMediaSetSourcesStart,
+    createMediaSetSourcesSuccess,
+    createMediaSetStart,
+    createMediaSetSuccess,
     createPostFail,
     createPostStart,
     createPostSuccess,
-    createPostUploadAttachmentStart,
-    createPostUploadMediaStart,
     createTagFail,
     createTagStart,
     failSearch,
@@ -61,6 +69,7 @@ import {PostsService} from "../posts.service";
 import {QueryPost} from "../../shared/model/query/query-post.model";
 import {CreateAvatar} from "../../shared/model/request/create-avatar.model";
 import {EXTENSION_EXTRACT_REGEX} from "../../shared/config/common.constats";
+import {PostCreateStatusEnum} from "../../shared/enum/post-create-status.enum";
 
 @Injectable()
 export class PostsEffects {
@@ -436,32 +445,32 @@ export class PostsEffects {
             ).pipe(
                 map(artist => {
                     return fetchArtistAfterCreationSuccess({
-                            artist: artist
-                        });
-                    }),
-                    retryWhen(RETRY_HANDLER),
-                    catchError(error => {
-                        let errorMessage;
+                        artist: artist
+                    });
+                }),
+                retryWhen(RETRY_HANDLER),
+                catchError(error => {
+                    let errorMessage;
 
-                        switch (error.status) {
-                            case 503:
-                                errorMessage = 'No servers available to handle your request. Try again later.'
-                                break;
-                            case 400:
-                                errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
-                                break;
-                            case 404:
-                                errorMessage = 'Artist creation was not handled yet by servers. Try again in a moment.';
-                                break;
-                            default:
-                                errorMessage = 'Something went wrong. Try again later.';
-                                break;
-                        }
+                    switch (error.status) {
+                        case 503:
+                            errorMessage = 'No servers available to handle your request. Try again later.'
+                            break;
+                        case 400:
+                            errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
+                            break;
+                        case 404:
+                            errorMessage = 'Artist creation was not handled yet by servers. Try again in a moment.';
+                            break;
+                        default:
+                            errorMessage = 'Something went wrong. Try again later.';
+                            break;
+                    }
 
-                        return of(fetchArtistAfterCreationFail({
-                            errorMessage: errorMessage
-                        }));
-                    })
+                    return of(fetchArtistAfterCreationFail({
+                        errorMessage: errorMessage
+                    }));
+                })
                 );
             }
         )
@@ -476,12 +485,8 @@ export class PostsEffects {
                     observe: 'response'
                 }).pipe(
                 map(response => {
-                    return createPostUploadMediaStart({
-                        userId: action.userId,
-                        postId: response.headers.get('Id')!,
-                        currentIndex: 0,
-                        mediaSet: action.mediaSet,
-                        attachments: action.attachments
+                    return createPostSuccess({
+                        postId: response.headers.get("Id")!
                     });
                 }),
                 catchError(error => {
@@ -504,15 +509,24 @@ export class PostsEffects {
         })
     ));
 
-    createPostUploadMediaStart = createEffect(() => this.actions$.pipe(
-        ofType(createPostUploadMediaStart),
+    createPostSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createPostSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.POST_CREATED);
+        })
+    ), {dispatch: false});
+
+    createMediaSetStart = createEffect(() => this.actions$.pipe(
+        ofType(createMediaSetStart),
         switchMap((action) => {
             const data = new FormData();
-            const mediaWrapper = action.mediaSet[action.currentIndex];
 
+            const mediaSet = [...action.mediaSet];
+            const mediaWrapper = {...mediaSet[action.currentIndex]};
             const media = {...mediaWrapper.media};
+
             // Overwrite priority based on index given by user
-            media.priority = action.mediaSet.length - action.currentIndex - 1;
+            media.priority = mediaSet.length - action.currentIndex - 1;
 
             data.append("media", new Blob([JSON.stringify(media)], {
                 type: "application/json"
@@ -526,24 +540,24 @@ export class PostsEffects {
             return this.httpClient.post(CREATE_MEDIA
                     .replace(":userId", action.userId)
                     .replace(":postId", action.postId),
-                data).pipe(
+                data, {observe: 'response'}).pipe(
                 map(response => {
+                    // Set uploaded media id and replace it in set
+                    mediaWrapper.mediaId = response.headers.get("Id")!;
+                    mediaSet[action.currentIndex] = mediaWrapper;
+
                     // If all media are uploaded
                     if (action.currentIndex == action.mediaSet.length - 1) {
-                        return createPostUploadAttachmentStart({
-                            userId: action.userId,
-                            postId: action.postId,
-                            currentIndex: 0,
-                            attachments: action.attachments
+                        return createMediaSetSuccess({
+                            mediaSet: mediaSet
                         });
                     }
 
-                    return createPostUploadMediaStart({
+                    return createMediaSetStart({
                         userId: action.userId,
                         postId: action.postId,
                         currentIndex: action.currentIndex + 1,
-                        mediaSet: action.mediaSet,
-                        attachments: action.attachments
+                        mediaSet
                     });
                 }),
                 retryWhen(RETRY_HANDLER),
@@ -569,16 +583,24 @@ export class PostsEffects {
         })
     ));
 
-    createPostUploadAttachmentStart = createEffect(() => this.actions$.pipe(
-        ofType(createPostUploadAttachmentStart),
+    createMediaSetSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createMediaSetSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.MEDIA_SET_UPLOADED);
+        })
+    ), {dispatch: false});
+
+    createAttachmentsStart = createEffect(() => this.actions$.pipe(
+        ofType(createAttachmentsStart),
         switchMap((action) => {
             // If no attachments to upload
             if (action.attachments.length === 0) {
-                return of(createPostSuccess());
+                return of(createAttachmentsSuccess());
             }
 
             const data = new FormData();
-            const attachmentWrapper = action.attachments[action.currentIndex];
+            const attachments = [...action.attachments];
+            const attachmentWrapper = {...attachments[action.currentIndex]};
 
             data.append("attachment", new Blob([JSON.stringify(attachmentWrapper.attachment)], {
                 type: "application/json"
@@ -588,18 +610,22 @@ export class PostsEffects {
             return this.httpClient.post(CREATE_ATTACHMENT
                     .replace(":userId", action.userId)
                     .replace(":postId", action.postId),
-                data).pipe(
+                data, {observe: 'response'}).pipe(
                 map(response => {
+                    // Set uploaded media id and replace it in set
+                    attachmentWrapper.attachmentId = response.headers.get("Id")!;
+                    attachments[action.currentIndex] = attachmentWrapper;
+
                     // If all attachments are uploaded
                     if (action.currentIndex == action.attachments.length - 1) {
-                        return createPostSuccess();
+                        return createAttachmentsSuccess();
                     }
 
-                    return createPostUploadAttachmentStart({
+                    return createAttachmentsStart({
                         userId: action.userId,
                         postId: action.postId,
                         currentIndex: action.currentIndex + 1,
-                        attachments: action.attachments
+                        attachments
                     });
                 }),
                 retryWhen(RETRY_HANDLER),
@@ -625,17 +651,195 @@ export class PostsEffects {
         })
     ));
 
-    createPostSuccess = createEffect(() => this.actions$.pipe(
-        ofType(createPostSuccess),
+    createAttachmentsSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createAttachmentsSuccess),
         tap(() => {
-            this.postCreateService.postCreateCloseEvent.emit();
-
-            // Add some timout for higher chance of it being processed on time
-            setTimeout(() => {
-                this.postsService.triggerSearch();
-            }, 50);
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_UPLOADED);
         })
     ), {dispatch: false});
+
+    createMediaSetSourcesStart = createEffect(() => this.actions$.pipe(
+        ofType(createMediaSetSourcesStart),
+        switchMap((action) => {
+            const media = action.mediaSet[action.currentMediaIndex];
+
+            // If no sources in media and it's last media in set
+            if (media.sources.length === 0) {
+                if (action.currentMediaIndex === action.mediaSet.length - 1) {
+                    return of(createMediaSetSourcesSuccess());
+                } else {
+                    return of(createMediaSetSourcesStart(
+                        {
+                            userId: action.userId,
+                            postId: action.postId,
+                            mediaSet: action.mediaSet,
+                            currentMediaIndex: action.currentMediaIndex + 1,
+                            currentSourceIndex: 0
+                        }
+                    ));
+                }
+            }
+
+            const mediaWrapper = action.mediaSet[action.currentMediaIndex];
+            const source = mediaWrapper.sources[action.currentSourceIndex];
+
+            return this.httpClient.post(CREATE_MEDIA_SOURCE
+                    .replace(":userId", action.userId)
+                    .replace(":postId", action.postId)
+                    .replace(":mediaId", mediaWrapper.mediaId),
+                source).pipe(
+                map(response => {
+                    // If all sources created
+                    if (action.currentSourceIndex === media.sources.length - 1) {
+                        // If all media cycled through
+                        if (action.currentMediaIndex === action.mediaSet.length - 1) {
+                            return createMediaSetSourcesSuccess();
+                        } else {
+                            return createMediaSetSourcesStart(
+                                {
+                                    userId: action.userId,
+                                    postId: action.postId,
+                                    mediaSet: action.mediaSet,
+                                    currentMediaIndex: action.currentMediaIndex + 1,
+                                    currentSourceIndex: 0
+                                }
+                            );
+                        }
+                    }
+
+                    return createMediaSetSourcesStart(
+                        {
+                            userId: action.userId,
+                            postId: action.postId,
+                            mediaSet: action.mediaSet,
+                            currentMediaIndex: action.currentMediaIndex,
+                            currentSourceIndex: action.currentSourceIndex + 1
+                        }
+                    );
+                }),
+                retryWhen(RETRY_HANDLER),
+                catchError(error => {
+                    switch (error.status) {
+                        case 503:
+                            return of(createPostFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(createPostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
+                        default:
+                            return of(createPostFail({
+                                errorMessage: 'Something went wrong while creating source for "' +
+                                    action.mediaSet[action.currentMediaIndex].mediaFile.name +
+                                    '" file. The creation of other sources has been cancelled.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
+    createMediaSetSourcesSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createMediaSetSourcesSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED);
+        })
+    ), {dispatch: false});
+
+    createAttachmentsSourcesStart = createEffect(() => this.actions$.pipe(
+        ofType(createAttachmentsSourcesStart),
+        switchMap((action) => {
+            const attachment = action.attachments[action.currentAttachmentIndex];
+
+            // If no sources in attachment and it's last attachment in set
+            if (attachment.sources.length === 0) {
+                if (action.currentAttachmentIndex === action.attachments.length - 1) {
+                    return of(createAttachmentsSourcesSuccess());
+                } else {
+                    return of(createAttachmentsSourcesStart(
+                        {
+                            userId: action.userId,
+                            postId: action.postId,
+                            attachments: action.attachments,
+                            currentAttachmentIndex: action.currentAttachmentIndex + 1,
+                            currentSourceIndex: 0
+                        }
+                    ));
+                }
+            }
+
+            const attachmentWrapper = action.attachments[action.currentAttachmentIndex];
+            const source = attachmentWrapper.sources[action.currentSourceIndex];
+
+            return this.httpClient.post(CREATE_ATTACHMENT_SOURCE
+                    .replace(":userId", action.userId)
+                    .replace(":postId", action.postId)
+                    .replace(":attachmentId", attachmentWrapper.attachmentId),
+                source).pipe(
+                map(response => {
+                    // If all sources created
+                    if (action.currentSourceIndex === attachment.sources.length - 1) {
+                        // If all attachment cycled through
+                        if (action.currentAttachmentIndex === action.attachments.length - 1) {
+                            return createAttachmentsSourcesSuccess();
+                        } else {
+                            return createAttachmentsSourcesStart(
+                                {
+                                    userId: action.userId,
+                                    postId: action.postId,
+                                    attachments: action.attachments,
+                                    currentAttachmentIndex: action.currentAttachmentIndex + 1,
+                                    currentSourceIndex: 0
+                                }
+                            );
+                        }
+                    }
+
+                    return createAttachmentsSourcesStart(
+                        {
+                            userId: action.userId,
+                            postId: action.postId,
+                            attachments: action.attachments,
+                            currentAttachmentIndex: action.currentAttachmentIndex,
+                            currentSourceIndex: action.currentSourceIndex + 1
+                        }
+                    );
+                }),
+                retryWhen(RETRY_HANDLER),
+                catchError(error => {
+                    switch (error.status) {
+                        case 503:
+                            return of(createPostFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(createPostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
+                        default:
+                            return of(createPostFail({
+                                errorMessage: 'Something went wrong while creating source for "' +
+                                    action.attachments[action.currentAttachmentIndex].file.name +
+                                    '" file. The creation of other sources has been cancelled.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
+    createAttachmentsSourcesSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createAttachmentsSourcesSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_SOURCES_CREATED);
+            setTimeout(() => {
+                this.postCreateService.postCreateCloseEvent.emit();
+                this.postsService.triggerSearch()
+            }, 50)
+        })
+    ), {dispatch: false});
+
 
     artistFetchSuccess = createEffect(() => this.actions$.pipe(
         ofType(fetchArtistAfterCreationSuccess),

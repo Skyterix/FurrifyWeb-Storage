@@ -3,9 +3,9 @@ import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
-import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper} from "../../store/posts.reducer";
-import {createPostStart} from "../../store/posts.actions";
 import {KeycloakProfile} from "keycloak-js";
+import {PostCreateService} from "../post-create.service";
+import {PostCreateStatusEnum} from "../../../shared/enum/post-create-status.enum";
 
 @Component({
     selector: 'app-post-create-upload-step',
@@ -20,75 +20,57 @@ export class PostCreateUploadStepComponent implements OnInit, OnDestroy {
     isFetching!: boolean;
     isFormValid = false;
 
-    title!: string;
-    description!: string;
-    artists!: ArtistWrapper[];
-    tags!: TagWrapper[];
-    mediaSet!: MediaWrapper[];
-    attachments!: AttachmentWrapper[];
-
     currentUser!: KeycloakProfile | null;
 
-    currentMediaUploadIndex = 0;
-    currentAttachmentUploadIndex = 0;
-
     private postsStoreSubscription!: Subscription;
-    private authenticationStoreSubscription!: Subscription;
+    private postCreateStatusChangeSubscription!: Subscription;
 
-    constructor(private store: Store<fromApp.AppState>) {
+    constructor(private store: Store<fromApp.AppState>,
+                private postCreateService: PostCreateService) {
     }
 
     ngOnInit(): void {
         this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
             this.isFetching = state.isFetching;
 
-            this.title = state.postSavedTitle;
-            this.description = state.postSavedDescription;
-            this.artists = state.selectedArtists;
-            this.tags = state.selectedTags;
-            this.mediaSet = state.mediaSet;
-            this.attachments = state.attachments;
-
-            this.currentMediaUploadIndex = state.currentMediaUploadIndex;
-            this.currentAttachmentUploadIndex = state.currentAttachmentUploadIndex;
-
-            this.isFormValid = (
-                !state.postSavedTitle || // Is title present
-                state.selectedTags.length === 0 || // Is at least one tag present
-                state.selectedArtists.length === 0 || // Is at least one artist present
-                !(state.mediaSet.length !== 0 || state.attachments.length !== 0) // Is media or attachment present
-            );
-        });
-        this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
-            this.currentUser = state.currentUser;
+            this.isFormValid = this.postCreateService.isFormDataValid();
         });
 
+        this.postCreateStatusChangeSubscription = this.postCreateService.postCreateStatusChangeEvent.subscribe(
+            status => this.handlePostCreateStatusChange(status)
+        );
     }
 
     ngOnDestroy(): void {
         this.postsStoreSubscription.unsubscribe();
-        this.authenticationStoreSubscription.unsubscribe();
+        this.postCreateStatusChangeSubscription.unsubscribe();
     }
 
     onSubmit(): void {
-        if (this.isFetching || this.isFormValid) {
+        if (this.isFetching) {
             return;
         }
 
-        const createPost = {
-            title: this.title,
-            description: this.description,
-            artists: this.artists.map(artistWrapper => artistWrapper.artist),
-            tags: this.tags.map(tagWrapper => tagWrapper.tag)
-        }
+        this.postCreateService.createPost();
+    }
 
-        this.store.dispatch(createPostStart(
-            {
-                userId: this.currentUser?.id!,
-                createPost,
-                mediaSet: this.mediaSet,
-                attachments: this.attachments
-            }
-        ))
+    private handlePostCreateStatusChange(status: PostCreateStatusEnum) {
+        switch (status) {
+            case PostCreateStatusEnum.POST_CREATED:
+                document.querySelector("#result")!.innerHTML = "POST_CREATED";
+                break;
+            case PostCreateStatusEnum.MEDIA_SET_UPLOADED:
+                document.querySelector("#result")!.innerHTML = "MEDIA_SET_UPLOADED";
+                break;
+            case PostCreateStatusEnum.ATTACHMENTS_UPLOADED:
+                document.querySelector("#result")!.innerHTML = "ATTACHMENTS_UPLOADED";
+                break;
+            case PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED:
+                document.querySelector("#result")!.innerHTML = "MEDIA_SET_SOURCES_CREATED";
+                break;
+            case PostCreateStatusEnum.ATTACHMENTS_SOURCES_CREATED:
+                document.querySelector("#result")!.innerHTML = "ATTACHMENTS_SOURCES_CREATED";
+                break;
+        }
     }
 }

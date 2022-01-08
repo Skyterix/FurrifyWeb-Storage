@@ -11,17 +11,21 @@ import {
     addArtistToSelectedSetStart,
     addArtistToSelectedSetSuccess,
     addAttachment,
+    addAttachmentSource,
     addMedia,
+    addMediaSource,
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
+    clearSourceData,
     createArtistFail,
     createArtistStart,
+    createAttachmentsSourcesSuccess,
+    createAttachmentsSuccess,
+    createMediaSetSuccess,
     createPostFail,
     createPostStart,
     createPostSuccess,
-    createPostUploadAttachmentStart,
-    createPostUploadMediaStart,
     createTagFail,
     createTagStart,
     failSearch,
@@ -37,6 +41,8 @@ import {
     removeArtistFromSelected,
     removeAttachment,
     removeMedia,
+    removeSourceFromAttachment,
+    removeSourceFromMedia,
     removeTagFromSelected,
     selectPost,
     startSearch,
@@ -45,13 +51,15 @@ import {
     updatePostSavedDescription,
     updatePostSavedTitle,
     updateSearchParams,
-    updateSearchQuery
+    updateSearchQuery,
+    updateSourceData
 } from "./posts.actions";
 import {Tag} from "../../shared/model/tag.model";
 import {Artist} from "../../shared/model/artist.model";
 import {CreateMedia} from "../../shared/model/request/create-media.model";
 import {CreateAttachment} from "../../shared/model/request/create-attachment.model";
 import {QueryPost} from "../../shared/model/query/query-post.model";
+import {CreateSource} from "../../shared/model/request/create-source.model";
 
 export class ArtistWrapper {
     constructor(public artist: Artist,
@@ -66,15 +74,23 @@ export class TagWrapper {
 }
 
 export class MediaWrapper {
+    mediaId: string;
+
     constructor(public media: CreateMedia,
+                public sources: CreateSource[],
                 public mediaFile: File,
                 public thumbnailFile: File | undefined) {
+        this.mediaId = "";
     }
 }
 
 export class AttachmentWrapper {
+    attachmentId: string;
+
     constructor(public attachment: CreateAttachment,
+                public sources: CreateSource[],
                 public file: File) {
+        this.attachmentId = "";
     }
 }
 
@@ -99,9 +115,9 @@ export interface State {
     artistErrorMessage: string;
     mediaSet: MediaWrapper[];
     attachments: AttachmentWrapper[];
-    currentMediaUploadIndex: number;
-    currentAttachmentUploadIndex: number;
     postCreateErrorMessage: string | null;
+    createSourceData: any;
+    createdPostId: string;
 }
 
 const initialState: State = {
@@ -125,9 +141,9 @@ const initialState: State = {
     artistErrorMessage: "",
     mediaSet: [],
     attachments: [],
-    currentMediaUploadIndex: -1,
-    currentAttachmentUploadIndex: -1,
-    postCreateErrorMessage: ""
+    postCreateErrorMessage: "",
+    createSourceData: {},
+    createdPostId: ""
 };
 
 
@@ -380,6 +396,13 @@ export const postsReducer = createReducer(
             };
         }
     ),
+    on(createMediaSetSuccess, (state, action) => {
+            return {
+                ...state,
+                mediaSet: action.mediaSet
+            };
+        }
+    ),
     on(createTagStart, (state, action) => {
             return {
                 ...state,
@@ -405,7 +428,7 @@ export const postsReducer = createReducer(
         }
     ),
     on(fetchArtistAfterCreationStart, (state, action) => {
-        return {
+            return {
                 ...state,
                 isFetching: true,
                 artistErrorMessage: ""
@@ -484,18 +507,7 @@ export const postsReducer = createReducer(
     on(createPostSuccess, (state, action) => {
             return {
                 ...state,
-                isFetching: true,
-                selectedTags: [],
-                selectedArtists: [],
-                postSavedTitle: "",
-                postSavedDescription: "",
-                tagErrorMessage: "",
-                artistErrorMessage: "",
-                mediaSet: [],
-                attachments: [],
-                currentMediaUploadIndex: -1,
-                currentAttachmentUploadIndex: -1,
-                postCreateErrorMessage: ""
+                createdPostId: action.postId
             };
         }
     ),
@@ -507,17 +519,98 @@ export const postsReducer = createReducer(
             };
         }
     ),
-    on(createPostUploadMediaStart, (state, action) => {
+    on(createAttachmentsSuccess, (state, action) => {
             return {
-                ...state,
-                currentMediaUploadIndex: action.currentIndex
+                ...state
             };
         }
     ),
-    on(createPostUploadAttachmentStart, (state, action) => {
+    on(createAttachmentsSourcesSuccess, (state, action) => {
             return {
                 ...state,
-                currentAttachmentUploadIndex: action.currentIndex
+                isFetching: false
+            };
+        }
+    ),
+    on(removeSourceFromMedia, (state, action) => {
+            const modifiedMediaSet = state.mediaSet.slice().map((media, index) => {
+                if (index !== action.mediaIndex) {
+                    return media;
+                }
+
+                const newMedia = {...media};
+
+                newMedia.sources = media.sources.filter(
+                    (source, index) => index !== action.sourceIndex
+                );
+
+                return newMedia;
+            });
+
+            return {
+                ...state,
+                mediaSet: modifiedMediaSet
+            };
+        }
+    ),
+    on(removeSourceFromAttachment, (state, action) => {
+            const modifiedAttachmentSet = state.attachments.slice().map((attachment, index) => {
+                if (index !== action.attachmentIndex) {
+                    return attachment;
+                }
+
+                const newAttachment = {...attachment};
+
+                newAttachment.sources = attachment.sources.filter(
+                    (source, index) => index !== action.sourceIndex
+                );
+
+                return newAttachment;
+            });
+
+            return {
+                ...state,
+                attachments: modifiedAttachmentSet
+            };
+        }
+    ),
+    on(clearSourceData, (state, action) => {
+            return {
+                ...state,
+                createSourceData: null
+            };
+        }
+    ),
+    on(updateSourceData, (state, action) => {
+        return {
+            ...state,
+                createSourceData: action.data
+            };
+        }
+    ),
+    on(addMediaSource, (state, action) => {
+            let newMedia = {...state.mediaSet[action.mediaIndex]}
+            newMedia.sources = [...newMedia.sources, action.source];
+
+            let newMediaSet = [...state.mediaSet]
+            newMediaSet[action.mediaIndex] = newMedia;
+
+            return {
+                ...state,
+                mediaSet: newMediaSet
+            };
+        }
+    ),
+    on(addAttachmentSource, (state, action) => {
+            let newAttachment = {...state.attachments[action.attachmentIndex]}
+            newAttachment.sources = [...newAttachment.sources, action.source];
+
+            let newAttachments = [...state.attachments]
+            newAttachments[action.attachmentIndex] = newAttachment;
+
+            return {
+                ...state,
+                attachments: newAttachments
             };
         }
     ),

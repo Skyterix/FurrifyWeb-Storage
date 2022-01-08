@@ -29,6 +29,22 @@ import {AttachmentCreateComponent} from './post-create/attachment-create/attachm
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {PaginatorComponent} from './post-list/paginator/paginator.component';
 import {GalleryViewComponent} from './post-view/post-details/gallery-view/gallery-view.component';
+import {
+    MediaSourceItemComponent
+} from './post-create/post-create-content-step/media-source-item/media-source-item.component';
+import {MediaSourceCreateComponent} from './post-create/media-source-create/media-source-create.component';
+import {
+    MediaSourceDeviantArtComponent
+} from './post-create/media-source-create/media-source-deviantart/media-source-deviant-art.component';
+import {
+    AttachmentSourceCreateComponent
+} from './post-create/attachment-source-create/attachment-source-create.component';
+import {
+    AttachmentSourceDeviantArtComponent
+} from './post-create/attachment-source-create/attachment-source-deviant-art/attachment-source-deviant-art.component';
+import {
+    AttachmentSourceItemComponent
+} from './post-create/post-create-content-step/attachment-source-item/attachment-source-item.component';
 
 
 @NgModule({
@@ -54,7 +70,13 @@ import {GalleryViewComponent} from './post-view/post-details/gallery-view/galler
         MediaCreateComponent,
         AttachmentCreateComponent,
         PaginatorComponent,
-        GalleryViewComponent
+        GalleryViewComponent,
+        MediaSourceItemComponent,
+        MediaSourceCreateComponent,
+        MediaSourceDeviantArtComponent,
+        AttachmentSourceCreateComponent,
+        AttachmentSourceDeviantArtComponent,
+        AttachmentSourceItemComponent
     ],
     imports: [
         CommonModule,
@@ -67,12 +89,8 @@ import {GalleryViewComponent} from './post-view/post-details/gallery-view/galler
     bootstrap: [
         PostCreateComponent,
         PostCreateInfoStepComponent,
-        PostCreateContentStepComponent,
-        PostCreateUploadStepComponent,
-        ArtistCreateComponent,
-        MediaCreateComponent,
-        AttachmentCreateComponent,
-        TagCreateComponent
+        MediaSourceDeviantArtComponent,
+        AttachmentSourceDeviantArtComponent
     ]
 })
 export class PostsModule {
