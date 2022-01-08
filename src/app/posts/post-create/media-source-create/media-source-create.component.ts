@@ -70,7 +70,11 @@ export class MediaSourceCreateComponent implements OnInit {
     }
 
     onSubmit(): void {
-        if (this.data === null) {
+        // If data is null or source is duplicate
+        if (this.data === null ||
+            this.sourceCreateService.isMediaSourceDuplicate(
+                this.sourceCreateForm.controls.strategy.value, this.data, this.media
+            )) {
             return;
         }
 

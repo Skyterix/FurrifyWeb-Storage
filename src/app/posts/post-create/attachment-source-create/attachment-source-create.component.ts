@@ -70,7 +70,11 @@ export class AttachmentSourceCreateComponent implements OnInit {
     }
 
     onSubmit(): void {
-        if (this.data === null) {
+        // If data is null or source is duplicate
+        if (this.data === null ||
+            this.sourceCreateService.isAttachmentSourceDuplicate(
+                this.sourceCreateForm.controls.strategy.value, this.data, this.attachment
+            )) {
             return;
         }
 
