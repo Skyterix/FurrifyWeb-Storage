@@ -114,7 +114,8 @@ export class MediaCreateComponent implements OnInit {
             return;
         }
 
-        const fileExtension = this.selectedMediaFile.name.split('.').pop()!.toUpperCase();
+        const fileExtension = MediaExtensionsConfig.PREFIX +
+            this.selectedMediaFile.name.split('.').pop()!.toUpperCase();
 
         const mediaWrapper = new MediaWrapper(
             new CreateMedia(

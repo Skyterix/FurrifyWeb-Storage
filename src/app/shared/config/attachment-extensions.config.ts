@@ -1,5 +1,7 @@
 export class AttachmentExtensionsConfig {
 
+    public static PREFIX = "EXTENSION_";
+
     public static EXTENSIONS = [
         'mid',
         'midi',
