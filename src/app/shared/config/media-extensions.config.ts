@@ -2,6 +2,8 @@ import {MediaType} from "../enum/media-type.enum";
 
 export class MediaExtensionsConfig {
 
+    public static PREFIX = "EXTENSION_";
+
     private static IMAGES = [
         'webp',
         'ico',
@@ -58,7 +60,7 @@ export class MediaExtensionsConfig {
     }
 
     public static getTypeByExtension(extension: string): MediaType | null {
-        extension = extension.toLowerCase();
+        extension = extension.replace(this.PREFIX, "").toLowerCase();
 
         if (this.IMAGES.includes(extension)) {
             return MediaType.IMAGE;

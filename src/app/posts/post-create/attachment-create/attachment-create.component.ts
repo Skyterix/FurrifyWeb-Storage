@@ -79,7 +79,8 @@ export class AttachmentCreateComponent implements OnInit {
             return;
         }
 
-        const fileExtension = this.selectedFile.name.split('.').pop()!.toUpperCase();
+        const fileExtension = AttachmentExtensionsConfig.PREFIX +
+            this.selectedFile.name.split('.').pop()!.toUpperCase();
 
         const attachmentWrapper = new AttachmentWrapper(
             new CreateAttachment(

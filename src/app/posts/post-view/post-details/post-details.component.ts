@@ -42,6 +42,8 @@ export class PostDetailsComponent implements OnInit {
 
     posterUrl!: string;
 
+    private static GIF_MEDIA_EXTENSION: string = MediaExtensionsConfig.PREFIX + "GIF";
+
     constructor(private renderer: Renderer2,
                 private postsService: PostsService,
                 private store: Store<fromApp.AppState>,
@@ -57,7 +59,7 @@ export class PostDetailsComponent implements OnInit {
             switch (MediaExtensionsConfig.getTypeByExtension(media.extension)) {
                 case MediaType.ANIMATION:
                     // Only gif is supported in gallery
-                    if (media.extension === "GIF") {
+                    if (media.extension === PostDetailsComponent.GIF_MEDIA_EXTENSION) {
                         this.galleryItems.push({
                             src: CDN_ADDRESS + media.fileUri,
                             w: 0,
@@ -147,7 +149,7 @@ export class PostDetailsComponent implements OnInit {
 
                 break;
             case MediaType.ANIMATION:
-                if (media.extension === "GIF") {
+                if (media.extension === PostDetailsComponent.GIF_MEDIA_EXTENSION) {
                     this.renderer.setAttribute(this.imageViewRef.nativeElement, 'src', CDN_ADDRESS + media.fileUri);
                 }
 
