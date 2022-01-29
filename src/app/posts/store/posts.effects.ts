@@ -70,6 +70,7 @@ import {QueryPost} from "../../shared/model/query/query-post.model";
 import {CreateAvatar} from "../../shared/model/request/create-avatar.model";
 import {EXTENSION_EXTRACT_REGEX} from "../../shared/config/common.constats";
 import {PostCreateStatusEnum} from "../../shared/enum/post-create-status.enum";
+import {AvatarExtensionsConfig} from "../../shared/config/avatar-extensions.config";
 
 @Injectable()
 export class PostsEffects {
@@ -394,8 +395,10 @@ export class PostsEffects {
         ofType(createArtistUploadAvatarStart),
         switchMap((action) => {
             const data = new FormData();
+
             const avatarCreateCommand = new CreateAvatar(
-                EXTENSION_EXTRACT_REGEX.exec(action.avatar.name)![1].toUpperCase()
+                // Extract extension from filename and add prefix
+                AvatarExtensionsConfig.PREFIX + EXTENSION_EXTRACT_REGEX.exec(action.avatar.name)![1].toUpperCase()
             );
 
             data.append("avatar", new Blob([JSON.stringify(avatarCreateCommand)], {
