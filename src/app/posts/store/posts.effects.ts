@@ -753,6 +753,11 @@ export class PostsEffects {
     createAttachmentsSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(createAttachmentsSourcesStart),
         switchMap((action) => {
+            // If no attachments created
+            if (action.attachments.length === 0) {
+                return of(createAttachmentsSourcesSuccess());
+            }
+
             const attachment = action.attachments[action.currentAttachmentIndex];
 
             // If no sources in attachment and it's last attachment in set
