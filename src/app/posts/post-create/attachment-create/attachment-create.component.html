@@ -25,7 +25,7 @@
                 <input (change)="onFileSelected($event)" formControlName="attachmentFile" id="file"
                        type="file">
             </div>
-            <button (click)="onSubmit()" [disabled]="!addFileForm.valid"
+            <button (click)="onSubmit()" [disabled]="!selectedFile"
                     class="btn btn-accent">
                 <span>Create</span>
             </button>

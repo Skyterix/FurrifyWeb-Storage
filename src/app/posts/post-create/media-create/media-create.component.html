@@ -38,7 +38,7 @@
 
                 <input (change)="onMediaFileSelected($event)" formControlName="mediaFile" id="mediaFile" type="file">
             </div>
-            <button (click)="onSubmit()" [disabled]="!mediaFileForm.valid"
+            <button (click)="onSubmit()" [disabled]="!selectedMediaFile"
                     class="btn btn-accent">
                 <span>Create</span>
             </button>
