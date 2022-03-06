@@ -142,6 +142,10 @@ export class PostsEffects {
                             return of(getPostFail({
                                 postFetchErrorMessage: 'No servers available to handle your request. Try again later.'
                             }));
+                        case 404:
+                            return of(getPostFail({
+                                postFetchErrorMessage: 'Post does not exists.'
+                            }));
                         case 400:
                             return of(getPostFail({
                                 postFetchErrorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
