@@ -28,6 +28,7 @@ import {
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
+    clearPostData,
     createArtistFail,
     createArtistStart,
     createArtistUploadAvatarStart,
@@ -841,12 +842,14 @@ export class PostsEffects {
         })
     ));
 
+    // On last thing created in post
     createAttachmentsSourcesSuccess = createEffect(() => this.actions$.pipe(
         ofType(createAttachmentsSourcesSuccess),
         tap(() => {
             this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_SOURCES_CREATED);
             setTimeout(() => {
                 this.postCreateService.postCreateCloseEvent.emit();
+                this.store.dispatch(clearPostData());
                 this.postsService.triggerSearch()
             }, 50)
         })

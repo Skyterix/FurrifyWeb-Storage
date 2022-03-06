@@ -17,6 +17,7 @@ import {
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
+    clearPostData,
     clearSourceData,
     createArtistFail,
     createArtistStart,
@@ -611,6 +612,23 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 attachments: newAttachments
+            };
+        }
+    ),
+    on(clearPostData, (state, action) => {
+            return {
+                ...state,
+                selectedTags: [],
+                selectedArtists: [],
+                postSavedTitle: "",
+                postSavedDescription: "",
+                tagErrorMessage: "",
+                artistErrorMessage: "",
+                mediaSet: [],
+                attachments: [],
+                postCreateErrorMessage: "",
+                createSourceData: {},
+                createdPostId: ""
             };
         }
     ),
