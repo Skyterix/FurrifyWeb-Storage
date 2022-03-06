@@ -99,8 +99,18 @@ export class PostCreateService {
             return false;
         }
 
+        // If some tag is not created
+        if (!!this.tags.find(tag => !tag.isExisting)) {
+            return false;
+        }
+
         // Is at least one artist present
         if (this.artists.length === 0) {
+            return false;
+        }
+
+        // If some tag is not created
+        if (!!this.artists.find(artist => !artist.isExisting)) {
             return false;
         }
 

@@ -63,7 +63,9 @@
         <!-- Submit -->
         <div class="mt-4">
             <button (click)="onNextStep()"
-                    [disabled]="!postInfoForm.valid || selectedTags.length == 0"
+                    [disabled]="!postInfoForm.valid ||
+                    selectedTags.length == 0 ||
+                    selectedArtists.length == 0"
                     class="btn btn-accent">Next
             </button>
         </div>
