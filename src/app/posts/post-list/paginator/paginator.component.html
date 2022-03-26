@@ -30,7 +30,7 @@
             [queryParams]="{ page: +pageInfo.number + 2 }"
             [routerLink]="['/posts']" queryParamsHandling="merge">{{ +pageInfo.number + 2 }}</li>
 
-        <li (click)="triggerSearch()" *ngIf="pageInfo.number !== pageInfo.totalPages + 1"
+        <li (click)="triggerSearch()" *ngIf="pageInfo.number !== pageInfo.totalPages"
             [queryParams]="{ page: pageInfo.totalPages }" [routerLink]="['/posts']"
             queryParamsHandling="merge">
             <fa-icon [icon]="doubleChevronRight"></fa-icon>
