@@ -73,4 +73,9 @@ export class PostItemsComponent implements OnInit {
     onEditPost(): void {
         alert("Not implemented yet.");
     }
+
+    // TODO Implement
+    onDeletePost(): void {
+        alert("Not implemented yet.");
+    }
 }
