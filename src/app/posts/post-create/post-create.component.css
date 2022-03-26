@@ -42,13 +42,20 @@ section {
     z-index: 11;
 }
 
-.row .left .front {
-    z-index: 12;
+.row .left .back {
     position: absolute;
     height: 100%;
     width: 100%;
     left: 0;
-    margin-top: -3rem;
+    top: 10%;
+    z-index: -1;
+}
+
+.row .left .front {
+    position: relative;
+    z-index: 12;
+    height: 100%;
+    width: 100%;
 }
 
 .row .left .back {
