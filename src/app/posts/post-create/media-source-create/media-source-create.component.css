@@ -21,3 +21,10 @@ h1 {
 .animate__animated {
     animation-duration: .1s;
 }
+
+@media (max-width: 768px) {
+    article {
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 8px;
+    }
+}

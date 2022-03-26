@@ -68,3 +68,10 @@ ul li .badge {
     border: none;
     height: 100%;
 }
+
+@media (max-width: 768px) {
+    article {
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 8px;
+    }
+}
