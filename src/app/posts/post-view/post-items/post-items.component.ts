@@ -74,8 +74,10 @@ export class PostItemsComponent implements OnInit {
         alert("Not implemented yet.");
     }
 
-    // TODO Implement
+    // TODO Implement and add confirmation when trying to delete
     onDeletePost(): void {
+
+
         alert("Not implemented yet.");
     }
 }
