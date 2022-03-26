@@ -319,3 +319,18 @@ export const updatePostCreateStatus = createAction(
 export const clearPostData = createAction(
     '[Posts] Clear post data'
 );
+
+export const deletePostStart = createAction(
+    '[Posts] Delete post start',
+    props<{ userId: string, postId: string }>()
+);
+
+export const deletePostSuccess = createAction(
+    '[Posts] Delete post success',
+    props<{ postId: string }>()
+);
+
+export const deletePostFail = createAction(
+    '[Posts] Delete post fail',
+    props<{ errorMessage: string }>()
+);

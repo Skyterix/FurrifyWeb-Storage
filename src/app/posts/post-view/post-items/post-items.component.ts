@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Media} from "../../../shared/model/media.model";
 import {MediaUtils} from "../../../shared/util/media.utils";
 import {Store} from "@ngrx/store";
@@ -10,13 +10,17 @@ import {MediaType} from "../../../shared/enum/media-type.enum";
 import {MediaExtensionsConfig} from "../../../shared/config/media-extensions.config";
 import {MediaIconsConfig} from "../../../shared/config/media-icons.config";
 import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
+import {deletePostStart} from "../../store/posts.actions";
+import {KeycloakService} from "keycloak-angular";
+import {Subscription} from "rxjs";
+import {KeycloakProfile} from "keycloak-js";
 
 @Component({
     selector: 'app-post-items',
     templateUrl: './post-items.component.html',
     styleUrls: ['./post-items.component.css']
 })
-export class PostItemsComponent implements OnInit {
+export class PostItemsComponent implements OnInit, OnDestroy {
     @Input() post!: QueryPost;
 
     sortedMedia!: Media[];
@@ -26,12 +30,20 @@ export class PostItemsComponent implements OnInit {
 
     currentIndex!: number;
 
+    private authenticationStoreSubscription!: Subscription;
+    private currentUser!: KeycloakProfile | null;
+
     constructor(private store: Store<fromApp.AppState>,
+                private keycloakService: KeycloakService,
                 private activatedRoute: ActivatedRoute,
                 private router: Router) {
     }
 
     ngOnInit(): void {
+        this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
+            this.currentUser = state.currentUser;
+        });
+
         this.sortedMedia = MediaUtils.sortByPriority([...this.post.mediaSet]);
 
         this.activatedRoute.params.subscribe(params => {
@@ -42,6 +54,10 @@ export class PostItemsComponent implements OnInit {
                 this.fileUrl = CDN_ADDRESS + this.sortedMedia[params.index].fileUri;
             }
         });
+    }
+
+    ngOnDestroy(): void {
+        this.authenticationStoreSubscription.unsubscribe();
     }
 
     onLoadMediaRequest(index: number): void {
@@ -76,8 +92,9 @@ export class PostItemsComponent implements OnInit {
 
     // TODO Implement and add confirmation when trying to delete
     onDeletePost(): void {
-
-
-        alert("Not implemented yet.");
+        this.store.dispatch(deletePostStart({
+            userId: this.currentUser?.id!,
+            postId: this.post.postId
+        }));
     }
 }

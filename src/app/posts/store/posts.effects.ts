@@ -11,6 +11,7 @@ import {
     CREATE_MEDIA_SOURCE,
     CREATE_POST,
     CREATE_TAG,
+    DELETE_POST,
     GET_ARTIST,
     GET_ARTISTS_BY_PREFERRED_NICKNAME,
     GET_POST,
@@ -45,6 +46,9 @@ import {
     createPostSuccess,
     createTagFail,
     createTagStart,
+    deletePostFail,
+    deletePostStart,
+    deletePostSuccess,
     failSearch,
     fetchArtistAfterCreationFail,
     fetchArtistAfterCreationStart,
@@ -72,6 +76,7 @@ import {CreateAvatar} from "../../shared/model/request/create-avatar.model";
 import {EXTENSION_EXTRACT_REGEX} from "../../shared/config/common.constats";
 import {PostCreateStatusEnum} from "../../shared/enum/post-create-status.enum";
 import {AvatarExtensionsConfig} from "../../shared/config/avatar-extensions.config";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class PostsEffects {
@@ -842,6 +847,39 @@ export class PostsEffects {
         })
     ));
 
+    deletePostStart = createEffect(() => this.actions$.pipe(
+        ofType(deletePostStart),
+        switchMap((action) => {
+            return this.httpClient.delete(DELETE_POST
+                .replace(":userId", action.userId)
+                .replace(":postId", action.postId), {
+                observe: 'response'
+            }).pipe(
+                map(response => {
+                    return deletePostSuccess({
+                        postId: action.postId
+                    });
+                }),
+                catchError(error => {
+                    switch (error.status) {
+                        case 503:
+                            return of(deletePostFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(deletePostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
+                        default:
+                            return of(deletePostFail({
+                                errorMessage: 'Something went wrong. Try again later.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
     // On last thing created in post
     createAttachmentsSourcesSuccess = createEffect(() => this.actions$.pipe(
         ofType(createAttachmentsSourcesSuccess),
@@ -877,9 +915,16 @@ export class PostsEffects {
         })
     ), {dispatch: false});
 
+    deletePostSuccess = createEffect(() => this.actions$.pipe(
+        ofType(deletePostSuccess),
+        tap(() => {
+            this.router.navigate(['/posts'], {queryParamsHandling: "merge"});
+        })
+    ), {dispatch: false});
 
     constructor(
         private store: Store<fromApp.AppState>,
+        private router: Router,
         private actions$: Actions,
         private httpClient: HttpClient,
         private postCreateService: PostCreateService,

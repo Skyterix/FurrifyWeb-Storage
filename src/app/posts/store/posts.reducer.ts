@@ -29,6 +29,7 @@ import {
     createPostSuccess,
     createTagFail,
     createTagStart,
+    deletePostSuccess,
     failSearch,
     fetchArtistAfterCreationFail,
     fetchArtistAfterCreationStart,
@@ -629,6 +630,14 @@ export const postsReducer = createReducer(
                 postCreateErrorMessage: "",
                 createSourceData: {},
                 createdPostId: ""
+            };
+        }
+    ),
+    on(deletePostSuccess, (state, action) => {
+            return {
+                ...state,
+                // Filter out deleted post
+                posts: state.posts.filter(post => post.postId !== action.postId)
             };
         }
     ),
