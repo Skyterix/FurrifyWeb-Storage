@@ -315,3 +315,7 @@ export const updatePostCreateStatus = createAction(
     '[Posts] Update post create status',
     props<{ status: PostCreateStatusEnum }>()
 );
+
+export const clearPostData = createAction(
+    '[Posts] Clear post data'
+);

@@ -23,7 +23,9 @@ export class MediaUtils {
         const postMediaExtensions = mediaSet.map((media) => media.extension);
 
         return postMediaExtensions.some((extension) => {
-            return MediaExtensionsConfig.getExtensionsByType(type).includes(extension.toLowerCase());
+            extension = extension.replace(MediaExtensionsConfig.PREFIX, "").toLowerCase();
+
+            return MediaExtensionsConfig.getExtensionsByType(type).includes(extension);
         });
     }
 

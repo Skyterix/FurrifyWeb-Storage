@@ -61,7 +61,7 @@
         <!-- Submit -->
         <div class="mt-4 text-center">
             <button (click)="onNextStep()"
-                    [disabled]="!(mediaSet.length !== 0 || attachments.length !== 0)"
+                    [disabled]="mediaSet.length == 0"
                     class="btn btn-accent p-3 pt-2 pb-2">Next
             </button>
         </div>
