@@ -1,5 +1,7 @@
 article {
     background: #272727;
+    border-bottom-left-radius: 8px;
+    border-top-left-radius: 8px;
 }
 
 .close {
@@ -22,4 +24,11 @@ textarea {
 
 .animate__animated {
     animation-duration: .1s;
+}
+
+@media (max-width: 768px) {
+    article {
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 8px;
+    }
 }

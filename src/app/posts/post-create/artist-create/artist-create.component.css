@@ -1,5 +1,7 @@
 article {
     background: #272727;
+    border-bottom-left-radius: 8px;
+    border-top-left-radius: 8px;
 }
 
 .close {
@@ -65,4 +67,11 @@ ul li .badge {
 .input-group-text {
     border: none;
     height: 100%;
+}
+
+@media (max-width: 768px) {
+    article {
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 8px;
+    }
 }

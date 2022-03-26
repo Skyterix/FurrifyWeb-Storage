@@ -39,16 +39,24 @@ section {
     background-size: 100% 100%;
     border-bottom-left-radius: 8px;
     border-top-left-radius: 8px;
+    min-height: 430px;
     z-index: 11;
 }
 
-.row .left .front {
-    z-index: 12;
+.row .left .back {
     position: absolute;
     height: 100%;
     width: 100%;
     left: 0;
-    margin-top: -3rem;
+    top: 10%;
+    z-index: -1;
+}
+
+.row .left .front {
+    position: relative;
+    z-index: 12;
+    height: 100%;
+    width: 100%;
 }
 
 .row .left .back {
@@ -57,4 +65,16 @@ section {
 
 .animate__animated {
     animation-duration: .1s;
+}
+
+@media (max-width: 768px) {
+    .row .left {
+        border-top-right-radius: 8px !important;
+    }
+
+    .row .right {
+        border-top-right-radius: 0 !important;
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 8px !important;
+    }
 }
