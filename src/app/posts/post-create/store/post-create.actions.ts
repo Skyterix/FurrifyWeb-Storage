@@ -1,5 +1,3 @@
-// Post params
-
 import {createAction, props} from "@ngrx/store";
 import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper} from "./post-create.reducer";
 import {Tag} from "../../../shared/model/tag.model";

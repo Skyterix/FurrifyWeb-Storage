@@ -13,6 +13,7 @@ import {StoreModule} from "@ngrx/store";
 import {EffectsModule} from "@ngrx/effects";
 import {PostsEffects} from "./posts/store/posts.effects";
 import {HttpClientModule} from "@angular/common/http";
+import {PostCreateEffects} from "./posts/post-create/store/post-create.effects";
 
 function initializeKeycloak(keycloak: KeycloakService) {
     return () =>
@@ -44,7 +45,8 @@ function initializeKeycloak(keycloak: KeycloakService) {
         KeycloakAngularModule,
         StoreModule.forRoot(fromApp.appReducerMap),
         EffectsModule.forRoot([
-            PostsEffects
+            PostsEffects,
+            PostCreateEffects
         ]),
         StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
         HttpClientModule

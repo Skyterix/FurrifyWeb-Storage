@@ -21,6 +21,7 @@ import {GalleryViewComponent} from './post-view/post-details/gallery-view/galler
 import {
     PostDeleteConfirmationComponent
 } from './confirmations/post-delete-confirmation/post-delete-confirmation.component';
+import {PostCreateModule} from "./post-create/post-create.module";
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import {
         FontAwesomeModule,
         ReactiveFormsModule,
         PostsRoutingModule,
+        PostCreateModule,
         SharedModule
     ],
     bootstrap: []
