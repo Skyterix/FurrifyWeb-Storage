@@ -30,7 +30,9 @@
             <!-- Selected Media sources -->
             <ul *ngIf="this.sortedMedia[this.index] !== undefined" class="p-1">
                 <!-- TODO Implement href for source, and think if post even needs one or should media only -->
-                <li *ngFor="let source of sortedMedia[index].sources" class="rounded-pill p-2 d-inline me-1 bg-violet">
+                <!-- TODO Style me -->
+                <li *ngFor="let source of mediaSources" class="rounded-pill p-2 d-inline me-1 bg-violet">
+                    <!-- TODO Put loading spinner here -->
                     <a
                         class="text-decoration-none text-white"
                         href="#">{{ source.strategy | removeText:'SourceStrategy' }}</a>

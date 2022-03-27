@@ -11,6 +11,5 @@ export interface QueryPost {
     attachments: Attachment[];
     tags: Tag[];
     artists: QueryArtist[];
-    updateDate: Date;
     createDate: Date;
 }

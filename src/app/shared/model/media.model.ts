@@ -1,5 +1,3 @@
-import {Source} from "./source.model";
-
 export interface Media {
     mediaId: string;
     postId: string;
@@ -7,7 +5,6 @@ export interface Media {
     priority: number;
     filename: string;
     extension: string;
-    sources: Source[];
     fileUri: string;
     thumbnailUri: string;
     md5: string;

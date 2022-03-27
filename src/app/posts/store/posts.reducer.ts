@@ -12,6 +12,9 @@ import {
     deletePostSuccess,
     failSearch,
     getPostFail,
+    getPostMediaSourcesFail,
+    getPostMediaSourcesStart,
+    getPostMediaSourcesSuccess,
     getPostStart,
     getPostSuccess,
     selectPost,
@@ -21,6 +24,7 @@ import {
     updateSearchQuery
 } from "./posts.actions";
 import {QueryPost} from "../../shared/model/query/query-post.model";
+import {QuerySource} from "../../shared/model/query/query-source.model";
 
 export interface State {
     isFetching: boolean;
@@ -34,6 +38,9 @@ export interface State {
     posts: QueryPost[];
     pageInfo: PageInfo | null;
     selectedPost: QueryPost | null;
+    areSourcesFetching: boolean;
+    fetchSourcesErrorMessage: string;
+    selectedPostMediaSources: QuerySource[];
 }
 
 const initialState: State = {
@@ -48,6 +55,9 @@ const initialState: State = {
     posts: [],
     pageInfo: null,
     selectedPost: null,
+    areSourcesFetching: true,
+    fetchSourcesErrorMessage: "",
+    selectedPostMediaSources: []
 };
 
 
@@ -152,6 +162,31 @@ export const postsReducer = createReducer(
                 posts: state.posts.filter(post => post.postId !== action.postId),
                 isFetching: false
             };
+        }
+    ),
+    on(getPostMediaSourcesStart, (state, action) => {
+            return {
+                ...state,
+                areSourcesFetching: true,
+                fetchSourcesErrorMessage: "",
+                selectedPostMediaSources: []
+            }
+        }
+    ),
+    on(getPostMediaSourcesFail, (state, action) => {
+            return {
+                ...state,
+                areSourcesFetching: false,
+                fetchSourcesErrorMessage: action.errorMessage
+            }
+        }
+    ),
+    on(getPostMediaSourcesSuccess, (state, action) => {
+            return {
+                ...state,
+                areSourcesFetching: false,
+                selectedPostMediaSources: action.sources
+            }
         }
     ),
 );
