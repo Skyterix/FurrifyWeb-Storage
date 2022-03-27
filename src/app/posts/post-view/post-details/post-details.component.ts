@@ -14,10 +14,10 @@ import * as PhotoSwipe from "photoswipe";
 import * as PhotoSwipeUI_Default from "photoswipe/dist/photoswipe-ui-default";
 import {MediaExtensionsConfig} from "../../../shared/config/media-extensions.config";
 import {MediaType} from "../../../shared/enum/media-type.enum";
-import {Source} from "../../../shared/model/source.model";
 import {getPostMediaSourcesStart} from "../../store/posts.actions";
 import {Subscription} from "rxjs";
 import {KeycloakProfile} from "keycloak-js";
+import {QuerySource} from "../../../shared/model/query/query-source.model";
 
 declare var videojs: any;
 
@@ -42,11 +42,13 @@ export class PostDetailsComponent implements OnInit, OnDestroy {
     sortedTags!: Tag[];
     sortedMedia!: Media[];
 
-    mediaSources!: Source[];
+    mediaSources!: QuerySource[];
 
     galleryItems: { src: string, w: number, h: number }[] = [];
 
     posterUrl!: string;
+
+    areSourcesFetching!: boolean;
 
     private static GIF_MEDIA_EXTENSION: string = MediaExtensionsConfig.PREFIX + "GIF";
 
@@ -65,6 +67,7 @@ export class PostDetailsComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
             this.mediaSources = state.selectedPostMediaSources;
+            this.areSourcesFetching = state.areSourcesFetching;
         });
 
         this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
