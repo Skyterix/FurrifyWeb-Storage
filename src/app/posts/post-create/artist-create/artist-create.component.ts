@@ -104,7 +104,7 @@ export class ArtistCreateComponent implements OnInit {
 
         // Let the animation finish
         setTimeout(() => {
-            this.postCreateService.artistCreateCloseEvent.emit();
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
         }, 100);
     }
 

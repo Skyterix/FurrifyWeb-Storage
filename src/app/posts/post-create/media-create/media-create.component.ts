@@ -49,7 +49,7 @@ export class MediaCreateComponent implements OnInit {
 
         // Let the animation finish
         setTimeout(() => {
-            this.postCreateService.mediaCreateCloseEvent.emit();
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
         }, 100);
     }
 

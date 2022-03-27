@@ -45,6 +45,9 @@ import {
 import {
     AttachmentSourceItemComponent
 } from './post-create/post-create-content-step/attachment-source-item/attachment-source-item.component';
+import {
+    PostDeleteConfirmationComponent
+} from './confirmations/post-delete-confirmation/post-delete-confirmation.component';
 
 
 @NgModule({
@@ -76,7 +79,8 @@ import {
         MediaSourceDeviantArtComponent,
         AttachmentSourceCreateComponent,
         AttachmentSourceDeviantArtComponent,
-        AttachmentSourceItemComponent
+        AttachmentSourceItemComponent,
+        PostDeleteConfirmationComponent
     ],
     imports: [
         CommonModule,

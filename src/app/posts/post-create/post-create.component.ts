@@ -44,22 +44,17 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     private postUploadStepOpenEventSubscription!: Subscription;
 
     private tagCreateOpenEventSubscription!: Subscription;
-    private tagCreateCloseEventSubscription!: Subscription;
+    private clearPostCreateSideStepModalSubscription!: Subscription;
 
     private artistCreateOpenEventSubscription!: Subscription;
-    private artistCreateCloseEventSubscription!: Subscription;
 
     private mediaSourceCreateOpenEventSubscription!: Subscription;
-    private mediaSourceCreateCloseEventSubscription!: Subscription;
 
     private attachmentSourceCreateOpenEventSubscription!: Subscription;
-    private attachmentSourceCreateCloseEventSubscription!: Subscription;
 
     private mediaCreateOpenEventSubscription!: Subscription;
-    private mediaCreateCloseEventSubscription!: Subscription;
 
     private attachmentCreateOpenEventSubscription!: Subscription;
-    private attachmentCreateCloseEventSubscription!: Subscription;
 
     private storeSubscription!: Subscription;
 
@@ -86,46 +81,31 @@ export class PostCreateComponent implements OnInit, OnDestroy {
             const componentRef = this.loadSideStep<TagCreateComponent>(TagCreateComponent);
             componentRef.instance.value = tagValue;
         });
-        this.tagCreateCloseEventSubscription = this.postCreateService.tagCreateCloseEvent.subscribe(() => {
-            setTimeout(() => this.clearSideView());
-        });
 
         this.artistCreateOpenEventSubscription = this.postCreateService.artistCreateOpenEvent.subscribe(artistPreferredNickname => {
             const componentRef = this.loadSideStep<ArtistCreateComponent>(ArtistCreateComponent);
             componentRef.instance.preferredNickname = artistPreferredNickname;
-        });
-        this.artistCreateCloseEventSubscription = this.postCreateService.artistCreateCloseEvent.subscribe(() => {
-            setTimeout(() => this.clearSideView());
         });
 
         this.mediaSourceCreateOpenEventSubscription = this.postCreateService.mediaSourceCreateOpenEvent.subscribe(media => {
             const componentRef = this.loadSideStep<MediaSourceCreateComponent>(MediaSourceCreateComponent);
             componentRef.instance.media = media;
         });
-        this.mediaSourceCreateCloseEventSubscription = this.postCreateService.mediaSourceCreateCloseEvent.subscribe(() => {
-            setTimeout(() => this.clearSideView());
-        });
 
         this.attachmentSourceCreateOpenEventSubscription = this.postCreateService.attachmentSourceCreateOpenEvent.subscribe(attachment => {
             const componentRef = this.loadSideStep<AttachmentSourceCreateComponent>(AttachmentSourceCreateComponent);
             componentRef.instance.attachment = attachment;
         });
-        this.attachmentSourceCreateCloseEventSubscription = this.postCreateService.attachmentSourceCreateCloseEvent.subscribe(() => {
-            setTimeout(() => this.clearSideView());
-        });
 
         this.mediaCreateOpenEventSubscription = this.postCreateService.mediaCreateOpenEvent.subscribe(() => {
             this.loadSideStep<MediaCreateComponent>(MediaCreateComponent);
         });
-        this.mediaCreateCloseEventSubscription = this.postCreateService.mediaCreateCloseEvent.subscribe(() => {
+        this.clearPostCreateSideStepModalSubscription = this.postCreateService.clearPostCreateSideStepModalEvent.subscribe(() => {
             setTimeout(() => this.clearSideView());
         });
 
         this.attachmentCreateOpenEventSubscription = this.postCreateService.attachmentCreateOpenEvent.subscribe(() => {
             this.loadSideStep<AttachmentCreateComponent>(AttachmentCreateComponent);
-        });
-        this.attachmentCreateCloseEventSubscription = this.postCreateService.attachmentCreateCloseEvent.subscribe(() => {
-            setTimeout(() => this.clearSideView());
         });
 
         this.storeSubscription = this.store.select('posts').subscribe(state => {
@@ -140,18 +120,14 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         this.postInfoStepOpenEventSubscription.unsubscribe();
         this.postContentStepOpenEventSubscription.unsubscribe();
         this.postUploadStepOpenEventSubscription.unsubscribe();
-        this.tagCreateCloseEventSubscription.unsubscribe();
-        this.tagCreateCloseEventSubscription.unsubscribe();
         this.artistCreateOpenEventSubscription.unsubscribe();
-        this.artistCreateCloseEventSubscription.unsubscribe();
         this.mediaCreateOpenEventSubscription.unsubscribe();
-        this.mediaCreateCloseEventSubscription.unsubscribe();
         this.artistCreateOpenEventSubscription.unsubscribe();
-        this.artistCreateCloseEventSubscription.unsubscribe();
         this.mediaSourceCreateOpenEventSubscription.unsubscribe();
-        this.mediaSourceCreateCloseEventSubscription.unsubscribe();
         this.attachmentSourceCreateOpenEventSubscription.unsubscribe();
-        this.attachmentSourceCreateCloseEventSubscription.unsubscribe();
+
+        this.clearPostCreateSideStepModalSubscription.unsubscribe();
+
         this.storeSubscription.unsubscribe();
     }
 
@@ -161,7 +137,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
 
         // Let the animations finish
         setTimeout(() => {
-            this.postCreateService.postCreateCloseEvent.emit();
+            this.postCreateService.clearPostCreateModalEvent.emit();
         }, 100);
     }
 

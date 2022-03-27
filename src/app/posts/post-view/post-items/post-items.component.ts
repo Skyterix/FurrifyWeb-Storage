@@ -10,6 +10,9 @@ import {MediaType} from "../../../shared/enum/media-type.enum";
 import {MediaExtensionsConfig} from "../../../shared/config/media-extensions.config";
 import {MediaIconsConfig} from "../../../shared/config/media-icons.config";
 import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
+import {KeycloakService} from "keycloak-angular";
+import {PostsService} from "../../posts.service";
+import {ConfirmationsService} from "../../confirmations/confirmations.service";
 
 @Component({
     selector: 'app-post-items',
@@ -27,6 +30,9 @@ export class PostItemsComponent implements OnInit {
     currentIndex!: number;
 
     constructor(private store: Store<fromApp.AppState>,
+                private confirmationsService: ConfirmationsService,
+                private postsService: PostsService,
+                private keycloakService: KeycloakService,
                 private activatedRoute: ActivatedRoute,
                 private router: Router) {
     }
@@ -74,10 +80,7 @@ export class PostItemsComponent implements OnInit {
         alert("Not implemented yet.");
     }
 
-    // TODO Implement and add confirmation when trying to delete
     onDeletePost(): void {
-
-
-        alert("Not implemented yet.");
+        this.confirmationsService.postDeleteConfirmationOpenEvent.emit(this.post);
     }
 }

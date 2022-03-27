@@ -18,6 +18,10 @@ import {MediaUtils} from "../shared/util/media.utils";
 import {PostsService} from "./posts.service";
 import {CDN_ADDRESS} from "../shared/config/api.constants";
 import {QueryPost} from "../shared/model/query/query-post.model";
+import {
+    PostDeleteConfirmationComponent
+} from "./confirmations/post-delete-confirmation/post-delete-confirmation.component";
+import {ConfirmationsService} from "./confirmations/confirmations.service";
 
 @Component({
     selector: 'app-posts',
@@ -26,19 +30,22 @@ import {QueryPost} from "../shared/model/query/query-post.model";
 })
 export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
 
-    @ViewChild('createPost', {read: ViewContainerRef}) createPostRef!: ViewContainerRef;
+    @ViewChild('modal', {read: ViewContainerRef}) modalRef!: ViewContainerRef;
     @ViewChild('background', {read: ElementRef}) backgroundRef!: ElementRef;
     @ViewChild('defaultBackground', {read: ElementRef}) defaultBackgroundRef!: ElementRef;
 
     private selectedPost!: QueryPost | null;
 
     private postCreateOpenSubscription!: Subscription;
-    private postCreateCloseSubscription!: Subscription;
+    private postDeleteConfirmationOpenSubscription!: Subscription;
+    private clearPostCreateModalSubscription!: Subscription;
+    private clearConfirmationModalSubscription!: Subscription;
     private storeSubscription!: Subscription;
 
     constructor(private store: Store<fromApp.AppState>,
-                private postCreateService: PostCreateService,
+                private confirmationsService: ConfirmationsService,
                 private postsService: PostsService,
+                private postCreateService: PostCreateService,
                 private router: Router,
                 private activatedRoute: ActivatedRoute,
                 private renderer: Renderer2) {
@@ -48,8 +55,21 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.postCreateOpenSubscription = this.postCreateService.postCreateOpenEvent.subscribe(() => {
             this.loadPostCreateForm();
         });
-        this.postCreateCloseSubscription = this.postCreateService.postCreateCloseEvent.subscribe(() => {
-            this.clearPostCreateForm();
+        this.clearPostCreateModalSubscription = this.postCreateService.clearPostCreateModalEvent.subscribe(() => {
+            this.router.navigate([], {
+                queryParams: {
+                    create: false
+                },
+                queryParamsHandling: "merge"
+            });
+
+            this.clearModal();
+        });
+        this.clearConfirmationModalSubscription = this.confirmationsService.clearConfirmationModalEvent.subscribe(() => {
+            this.clearModal();
+        });
+        this.postDeleteConfirmationOpenSubscription = this.confirmationsService.postDeleteConfirmationOpenEvent.subscribe(post => {
+            this.loadPostDeleteConfirmationModal(post);
         });
 
         const isCreatePostModeOn = this.activatedRoute.snapshot.queryParams.create;
@@ -75,7 +95,9 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
     ngOnDestroy(): void {
         this.storeSubscription.unsubscribe();
         this.postCreateOpenSubscription.unsubscribe();
-        this.postCreateCloseSubscription.unsubscribe();
+        this.clearPostCreateModalSubscription.unsubscribe();
+        this.clearConfirmationModalSubscription.unsubscribe();
+        this.postDeleteConfirmationOpenSubscription.unsubscribe();
     }
 
     private loadPostCreateForm(): void {
@@ -86,19 +108,18 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
             queryParamsHandling: "merge"
         });
 
-        this.createPostRef!.clear();
-        this.createPostRef!.createComponent(PostCreateComponent);
+        this.modalRef!.clear();
+        this.modalRef!.createComponent(PostCreateComponent);
     }
 
-    private clearPostCreateForm(): void {
-        this.router.navigate([], {
-            queryParams: {
-                create: false
-            },
-            queryParamsHandling: "merge"
-        });
+    private loadPostDeleteConfirmationModal(post: QueryPost): void {
+        this.modalRef!.clear();
+        const component = this.modalRef!.createComponent(PostDeleteConfirmationComponent);
+        component.instance.post = post;
+    }
 
-        this.createPostRef.clear();
+    private clearModal(): void {
+        this.modalRef.clear();
     }
 
     private loadBackground(): void {
