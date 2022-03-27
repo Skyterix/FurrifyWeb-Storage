@@ -29,6 +29,8 @@ import {
     createPostSuccess,
     createTagFail,
     createTagStart,
+    deletePostFail,
+    deletePostStart,
     deletePostSuccess,
     failSearch,
     fetchArtistAfterCreationFail,
@@ -115,6 +117,7 @@ export interface State {
     postSavedDescription: string;
     tagErrorMessage: string;
     artistErrorMessage: string;
+    postDeleteErrorMessage: string;
     mediaSet: MediaWrapper[];
     attachments: AttachmentWrapper[];
     postCreateErrorMessage: string | null;
@@ -144,6 +147,7 @@ const initialState: State = {
     mediaSet: [],
     attachments: [],
     postCreateErrorMessage: "",
+    postDeleteErrorMessage: "",
     createSourceData: {},
     createdPostId: ""
 };
@@ -633,11 +637,28 @@ export const postsReducer = createReducer(
             };
         }
     ),
+    on(deletePostStart, (state, action) => {
+            return {
+                ...state,
+                isFetching: true
+            };
+        }
+    ),
+    on(deletePostFail, (state, action) => {
+            return {
+                ...state,
+                // Filter out deleted post
+                postDeleteErrorMessage: action.errorMessage,
+                isFetching: false
+            };
+        }
+    ),
     on(deletePostSuccess, (state, action) => {
             return {
                 ...state,
                 // Filter out deleted post
-                posts: state.posts.filter(post => post.postId !== action.postId)
+                posts: state.posts.filter(post => post.postId !== action.postId),
+                isFetching: false
             };
         }
     ),

@@ -84,7 +84,7 @@ export class TagCreateComponent implements OnInit, OnDestroy {
 
         // Let the animation finish
         setTimeout(() => {
-            this.postCreateService.tagCreateCloseEvent.emit();
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
         }, 100);
     }
 

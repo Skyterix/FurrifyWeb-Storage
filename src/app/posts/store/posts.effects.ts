@@ -294,7 +294,7 @@ export class PostsEffects {
     tagFetchSuccess = createEffect(() => this.actions$.pipe(
         ofType(fetchTagAfterCreationSuccess),
         tap(() => {
-            this.postCreateService.tagCreateCloseEvent.emit();
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
         })
     ), {dispatch: false});
 
@@ -886,7 +886,7 @@ export class PostsEffects {
         tap(() => {
             this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_SOURCES_CREATED);
             setTimeout(() => {
-                this.postCreateService.postCreateCloseEvent.emit();
+                this.postCreateService.clearPostCreateModalEvent.emit();
                 this.store.dispatch(clearPostData());
                 this.postsService.triggerSearch()
             }, 50)
@@ -897,21 +897,21 @@ export class PostsEffects {
     artistFetchSuccess = createEffect(() => this.actions$.pipe(
         ofType(fetchArtistAfterCreationSuccess),
         tap(() => {
-            this.postCreateService.artistCreateCloseEvent.emit();
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
         })
     ), {dispatch: false});
 
     addMedia = createEffect(() => this.actions$.pipe(
         ofType(addMedia),
         tap(() => {
-            this.postCreateService.mediaCreateCloseEvent.emit();
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
         })
     ), {dispatch: false});
 
     addAttachment = createEffect(() => this.actions$.pipe(
         ofType(addAttachment),
         tap(() => {
-            this.postCreateService.attachmentCreateCloseEvent.emit();
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
         })
     ), {dispatch: false});
 
