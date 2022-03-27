@@ -1,0 +1,26 @@
+<div #backdrop class="modal-backdrop position-fixed animate__animated animate__fadeIn"></div>
+
+<section #section class="animate__animated animate__fadeIn">
+    <div class="box p-4">
+        <!-- Error message -->
+        <div *ngIf="!!errorMessage" class="text-center mt-4">
+            <p class="alert-danger d-inline-block p-3 m-0">
+                <span>{{ errorMessage }}</span>
+            </p>
+        </div>
+
+        <h2 class="display-6">Post Delete</h2>
+        <p class="mt-2 fw-lighter">This action cannot be undone. Post and corresponding files will be permanently
+            removed.</p>
+
+        <div class="mt-4">
+            <button (click)="onPostDelete()" [disabled]="isFetching" class="btn btn-danger me-2"
+                    type="button">
+                <fa-icon *ngIf="isFetching" [fixedWidth]="true" [icon]="spinnerIcon" [spin]="true" class="text-white"
+                         size="sm"></fa-icon>
+                <span *ngIf="!isFetching">Delete</span>
+            </button>
+            <button (click)="onClose()" class="btn btn-dark ms-2">Cancel</button>
+        </div>
+    </div>
+</section>

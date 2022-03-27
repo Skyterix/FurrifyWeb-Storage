@@ -42,7 +42,7 @@ export class AttachmentCreateComponent implements OnInit {
 
         // Let the animation finish
         setTimeout(() => {
-            this.postCreateService.attachmentCreateCloseEvent.emit();
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
         }, 100);
     }
 

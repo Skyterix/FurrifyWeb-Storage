@@ -88,7 +88,7 @@ export class AttachmentSourceCreateComponent implements OnInit {
             )
         }));
 
-        this.postCreateService.mediaSourceCreateCloseEvent.emit();
+        this.postCreateService.clearPostCreateSideStepModalEvent.emit();
     }
 
     onClose(): void {
@@ -96,7 +96,7 @@ export class AttachmentSourceCreateComponent implements OnInit {
 
         // Let the animation finish
         setTimeout(() => {
-            this.postCreateService.mediaSourceCreateCloseEvent.emit();
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
         }, 100);
     }
 
