@@ -41,7 +41,7 @@ export class PostDeleteConfirmationComponent implements OnInit, OnDestroy {
             this.currentUser = state.currentUser;
         });
 
-        this.storeSubscription = this.store.select('posts').subscribe(state => {
+        this.storeSubscription = this.store.select('postCreate').subscribe(state => {
             this.isFetching = state.isFetching;
             this.errorMessage = state.postDeleteErrorMessage;
         });

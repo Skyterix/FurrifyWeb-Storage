@@ -5,11 +5,11 @@ import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {PostCreateService} from "../post-create.service";
-import {MediaWrapper} from "../../store/posts.reducer";
 import {MediaSourceStrategyConfig} from "../../../shared/config/media-source-strategy.config";
-import {addMediaSource, clearSourceData} from "../../store/posts.actions";
 import {CreateSource} from "../../../shared/model/request/create-source.model";
 import {SourceCreateService} from "../source-create.service";
+import {MediaWrapper} from "../store/post-create.reducer";
+import {addMediaSource, clearSourceData} from "../store/post-create.actions";
 
 @Component({
     selector: 'app-media-source-create',
@@ -33,7 +33,7 @@ export class MediaSourceCreateComponent implements OnInit {
 
     sourceCreateForm!: FormGroup;
 
-    private postsStoreSubscription!: Subscription;
+    private postCreateStoreSubscription!: Subscription;
 
     constructor(private store: Store<fromApp.AppState>,
                 private postCreateService: PostCreateService,
@@ -42,7 +42,7 @@ export class MediaSourceCreateComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
+        this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
             this.isFetching = state.isFetching;
             this.errorMessage = state.artistErrorMessage;
             this.mediaSet = state.mediaSet;
@@ -66,7 +66,7 @@ export class MediaSourceCreateComponent implements OnInit {
     }
 
     ngOnDestroy(): void {
-        this.postsStoreSubscription.unsubscribe();
+        this.postCreateStoreSubscription.unsubscribe();
     }
 
     onSubmit(): void {

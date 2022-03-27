@@ -1,15 +1,15 @@
 import {Component, ElementRef, Input, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
-import {AttachmentWrapper} from "../../store/posts.reducer";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {PostCreateService} from "../post-create.service";
 import {SourceCreateService} from "../source-create.service";
-import {addAttachmentSource, clearSourceData} from "../../store/posts.actions";
 import {CreateSource} from "../../../shared/model/request/create-source.model";
 import {AttachmentSourceStrategyConfig} from "../../../shared/config/attchment-source-strategy.config";
+import {addAttachmentSource, clearSourceData} from "../store/post-create.actions";
+import {AttachmentWrapper} from "../store/post-create.reducer";
 
 @Component({
     selector: 'app-attachment-source-create',
@@ -33,7 +33,7 @@ export class AttachmentSourceCreateComponent implements OnInit {
 
     sourceCreateForm!: FormGroup;
 
-    private postsStoreSubscription!: Subscription;
+    private postCreateStoreSubscription!: Subscription;
 
     constructor(private store: Store<fromApp.AppState>,
                 private postCreateService: PostCreateService,
@@ -42,7 +42,7 @@ export class AttachmentSourceCreateComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
+        this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
             this.isFetching = state.isFetching;
             this.errorMessage = state.artistErrorMessage;
             this.attachments = state.attachments;
@@ -66,7 +66,7 @@ export class AttachmentSourceCreateComponent implements OnInit {
     }
 
     ngOnDestroy(): void {
-        this.postsStoreSubscription.unsubscribe();
+        this.postCreateStoreSubscription.unsubscribe();
     }
 
     onSubmit(): void {

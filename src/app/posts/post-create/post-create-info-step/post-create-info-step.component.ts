@@ -5,6 +5,9 @@ import {Store} from "@ngrx/store";
 import {PostCreateService} from "../post-create.service";
 import * as fromApp from '../../../store/app.reducer';
 import {Subscription} from "rxjs";
+import {take} from "rxjs/operators";
+import {KeycloakProfile} from "keycloak-js";
+import {ArtistWrapper, TagWrapper} from "../store/post-create.reducer";
 import {
     addArtistToSelectedSetStart,
     addTagToSelectedSetStart,
@@ -12,10 +15,7 @@ import {
     removeTagFromSelected,
     updatePostSavedDescription,
     updatePostSavedTitle
-} from "../../store/posts.actions";
-import {take} from "rxjs/operators";
-import {ArtistWrapper, TagWrapper} from "../../store/posts.reducer";
-import {KeycloakProfile} from "keycloak-js";
+} from "../store/post-create.actions";
 
 @Component({
     selector: 'app-post-create-info-step',
@@ -38,7 +38,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
 
     private currentUser!: KeycloakProfile | null;
 
-    private postsStoreSubscription!: Subscription;
+    private postCreateStoreSubscription!: Subscription;
     private authenticationStoreSubscription!: Subscription;
 
     constructor(private postCreateService: PostCreateService,
@@ -61,7 +61,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
+        this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
             this.isFetching = state.isFetching;
             this.selectedTags = state.selectedTags;
             this.selectedArtists = state.selectedArtists;
@@ -72,7 +72,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         });
 
         // Initialize values
-        this.store.select('posts').pipe(take(1)).subscribe(state => {
+        this.store.select('postCreate').pipe(take(1)).subscribe(state => {
             this.postInfoForm.setValue({
                 title: state.postSavedTitle,
                 description: state.postSavedDescription,
@@ -81,7 +81,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.postsStoreSubscription.unsubscribe();
+        this.postCreateStoreSubscription.unsubscribe();
         this.authenticationStoreSubscription.unsubscribe();
     }
 

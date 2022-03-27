@@ -8,11 +8,11 @@ import * as fromApp from "../../../store/app.reducer";
 import {PostCreateService} from "../post-create.service";
 import {Artist} from "../../../shared/model/artist.model";
 import {Source} from "../../../shared/model/source.model";
-import {createArtistStart} from "../../store/posts.actions";
 import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
 import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../shared/config/common.constats";
 import {AvatarExtensionsConfig} from "../../../shared/config/avatar-extensions.config";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
+import {createArtistStart} from "../store/post-create.actions";
 
 @Component({
     selector: 'app-artist-create',
@@ -43,7 +43,7 @@ export class ArtistCreateComponent implements OnInit {
     selectedSources: Source[] = [];
     selectedNicknames: string[] = [];
 
-    private postsStoreSubscription!: Subscription;
+    private postCreateStoreSubscription!: Subscription;
     private authenticationStoreSubscription!: Subscription;
 
     constructor(private store: Store<fromApp.AppState>,
@@ -52,7 +52,7 @@ export class ArtistCreateComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
+        this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
             this.isFetching = state.isFetching;
             this.errorMessage = state.artistErrorMessage;
         });
@@ -73,7 +73,7 @@ export class ArtistCreateComponent implements OnInit {
     }
 
     ngOnDestroy(): void {
-        this.postsStoreSubscription.unsubscribe();
+        this.postCreateStoreSubscription.unsubscribe();
         this.authenticationStoreSubscription.unsubscribe()
     }
 

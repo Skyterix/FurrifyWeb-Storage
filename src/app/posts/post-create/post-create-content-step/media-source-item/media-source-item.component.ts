@@ -2,8 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../../store/app.reducer";
-import {removeSourceFromMedia} from "../../../store/posts.actions";
 import {CreateSource} from "../../../../shared/model/request/create-source.model";
+import {removeSourceFromMedia} from "../../store/post-create.actions";
 
 @Component({
     selector: 'app-media-source-item',

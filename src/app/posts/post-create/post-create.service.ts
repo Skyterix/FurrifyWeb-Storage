@@ -1,16 +1,16 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper} from "../store/posts.reducer";
 import {PostCreateStatusEnum} from "../../shared/enum/post-create-status.enum";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../store/app.reducer";
+import {KeycloakProfile} from "keycloak-js";
+import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper} from "./store/post-create.reducer";
 import {
     createAttachmentsSourcesStart,
     createAttachmentsStart,
     createMediaSetSourcesStart,
     createMediaSetStart,
     createPostStart
-} from "../store/posts.actions";
-import {KeycloakProfile} from "keycloak-js";
+} from "./store/post-create.actions";
 
 @Injectable({
     providedIn: 'root'
@@ -46,7 +46,7 @@ export class PostCreateService {
     private createdPostId!: string;
 
     constructor(private store: Store<fromApp.AppState>) {
-        this.store.select('posts').subscribe(state => {
+        this.store.select('postCreate').subscribe(state => {
             this.title = state.postSavedTitle;
             this.description = state.postSavedDescription;
             this.artists = state.selectedArtists;
