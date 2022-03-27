@@ -1,15 +1,15 @@
 import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {PostCreateService} from "../post-create.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {MediaWrapper} from "../../store/posts.reducer";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
-import {addMedia} from "../../store/posts.actions";
 import {CreateMedia} from "../../../shared/model/request/create-media.model";
 import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
 import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../shared/config/common.constats";
 import {MediaExtensionsConfig} from "../../../shared/config/media-extensions.config";
 import {ThumbnailExtensionsConfig} from "../../../shared/config/thumbnail-extensions.config";
+import {addMedia} from "../store/post-create.actions";
+import {MediaWrapper} from "../store/post-create.reducer";
 
 @Component({
     selector: 'app-media-create',

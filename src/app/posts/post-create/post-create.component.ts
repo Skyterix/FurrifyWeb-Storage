@@ -108,7 +108,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
             this.loadSideStep<AttachmentCreateComponent>(AttachmentCreateComponent);
         });
 
-        this.storeSubscription = this.store.select('posts').subscribe(state => {
+        this.storeSubscription = this.store.select('postCreate').subscribe(state => {
             this.errorMessage = state.postCreateErrorMessage;
         });
 

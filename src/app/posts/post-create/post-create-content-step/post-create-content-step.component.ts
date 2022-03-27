@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AttachmentWrapper, MediaWrapper} from "../../store/posts.reducer";
 import {PostCreateService} from "../post-create.service";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {Subscription} from "rxjs";
-import {removeAttachment, removeMedia, updateMediaSet} from "../../store/posts.actions";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {removeAttachment, removeMedia, updateMediaSet} from "../store/post-create.actions";
+import {AttachmentWrapper, MediaWrapper} from "../store/post-create.reducer";
 
 @Component({
     selector: 'app-post-create-content-step',
@@ -17,21 +17,21 @@ export class PostCreateContentStepComponent implements OnInit, OnDestroy {
     mediaSet: MediaWrapper[] = [];
     attachments: AttachmentWrapper[] = [];
 
-    private postsStoreSubscription!: Subscription;
+    private postCreateStoreSubscription!: Subscription;
 
     constructor(private postCreateService: PostCreateService,
                 private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit(): void {
-        this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
+        this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
             this.mediaSet = state.mediaSet;
             this.attachments = state.attachments;
         });
     }
 
     ngOnDestroy(): void {
-        this.postsStoreSubscription.unsubscribe();
+        this.postCreateStoreSubscription.unsubscribe();
     }
 
     loadCreateMediaForm(): void {

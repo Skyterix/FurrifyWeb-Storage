@@ -6,9 +6,9 @@ import {PostCreateService} from "../post-create.service";
 import * as fromApp from '../../../store/app.reducer';
 import {TagTypesConfig} from "../../../shared/config/tag-types.config";
 import {Tag} from "../../../shared/model/tag.model";
-import {createTagStart} from "../../store/posts.actions";
 import {KeycloakProfile} from "keycloak-js";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
+import {createTagStart} from "../store/post-create.actions";
 
 @Component({
     selector: 'app-tag-create',
@@ -32,7 +32,7 @@ export class TagCreateComponent implements OnInit, OnDestroy {
 
     currentUser!: KeycloakProfile | null;
 
-    private postsStoreSubscription!: Subscription;
+    private postCreateStoreSubscription!: Subscription;
     private authenticationStoreSubscription!: Subscription;
 
     constructor(private store: Store<fromApp.AppState>,
@@ -41,7 +41,7 @@ export class TagCreateComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
+        this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
             this.isFetching = state.isFetching;
             this.errorMessage = state.tagErrorMessage;
         });
@@ -58,7 +58,7 @@ export class TagCreateComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.postsStoreSubscription.unsubscribe();
+        this.postCreateStoreSubscription.unsubscribe();
         this.authenticationStoreSubscription.unsubscribe();
     }
 

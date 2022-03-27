@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AttachmentWrapper, MediaWrapper} from "../store/posts.reducer";
+import {AttachmentWrapper, MediaWrapper} from "./store/post-create.reducer";
 
 @Injectable({
     providedIn: 'root'
