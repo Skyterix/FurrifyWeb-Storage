@@ -135,8 +135,6 @@ export class PostsEffects {
                         .append("Accept", RESPONSE_TYPE)
                 }).pipe(
                 map(sources => {
-                    console.log(sources);
-
                     return getPostMediaSourcesSuccess({
                         sources: sources._embedded.sourceSnapshotList
                     });

@@ -21,8 +21,10 @@
     transition: all .3s ease;
 }
 
-.bg-violet {
+.source {
     background: #37115a;
+    user-select: none;
+    cursor: pointer;
 }
 
 ul {
