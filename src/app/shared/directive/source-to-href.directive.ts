@@ -14,19 +14,11 @@ export class SourceToHrefDirective implements OnInit {
     }
 
     ngOnInit(): void {
-        // TODO Implement me
-
-        switch (this.source.originType) {
-            case "ARTIST":
-                alert("Not implemented yet.")
-                break;
-            case "MEDIA":
-                alert("Not implemented yet.")
-                break;
-            case "ATTACHMENT":
-                alert("Not implemented yet.")
-                break;
+        if (!this.source.data.url) {
+            return;
         }
+
+        this.renderer.setAttribute(this.elementRef.nativeElement, "href", this.source.data.url)
     }
 
 }
