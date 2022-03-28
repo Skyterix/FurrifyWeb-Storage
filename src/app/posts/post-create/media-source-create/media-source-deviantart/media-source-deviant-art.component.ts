@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../../store/app.reducer";
 import {updateSourceData} from "../../store/post-create.actions";
+import {URL_REGEX} from "../../../../shared/config/common.constats";
 
 @Component({
     selector: 'app-media-source-deviant-art',
@@ -18,20 +19,20 @@ export class MediaSourceDeviantArtComponent implements OnInit {
 
     ngOnInit(): void {
         this.mediaSourceForm = new FormGroup({
-            deviationId: new FormControl(null, [Validators.required])
+            deviationUrl: new FormControl(null, [Validators.pattern(URL_REGEX)])
         });
     }
 
     onChange(): void {
-        let id = this.mediaSourceForm.controls.deviationId.value;
+        let url = this.mediaSourceForm.controls.deviationUrl.value;
         // If id is empty set it to null to prevent form from being valid
-        if (id === "") {
-            id = null;
+        if (url === "") {
+            url = null;
         }
 
         this.store.dispatch(updateSourceData({
             data: {
-                id: id
+                url: url
             }
         }));
     }
