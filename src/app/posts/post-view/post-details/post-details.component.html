@@ -29,7 +29,6 @@
             <p class="h1 font-weight-light">Sources</p>
             <!-- Selected Media sources -->
             <ul *ngIf="this.sortedMedia[this.index] !== undefined" class="p-1">
-                <!-- TODO Implement href for source, and think if post even needs one or should media only -->
                 <li *ngIf="areSourcesFetching" class="text-center">
                     <fa-icon [icon]="circleNotchIcon" [spin]="true" class="spinner" size="3x"></fa-icon>
                 </li>
