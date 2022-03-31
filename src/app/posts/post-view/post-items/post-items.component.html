@@ -26,7 +26,7 @@
                        target="_blank">{{ attachment.filename }}</a>
                 </li>
                 <li>
-                    <ul class="mt-2">
+                    <ul class="mt-2 sources">
                         <li *ngIf="areAttachmentsSourcesFetching" class="text-center">
                             <fa-icon [icon]="circleNotchIcon" [spin]="true" class="spinner" size="3x"></fa-icon>
                         </li>
@@ -36,7 +36,7 @@
 
                             <a
                                 [appSourceToHref]="source"
-                                class="text-decoration-none text-white">{{ source.strategy | removeText:'SourceStrategy' }}</a>
+                                class="text-decoration-none text-white">{{ source.strategy | removeSourceStrategyText:'SourceStrategy' }}</a>
                         </li>
                     </ul>
                 </li>

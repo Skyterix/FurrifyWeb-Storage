@@ -28,7 +28,7 @@
             <p class="p-1">{{ post.description }}</p>
             <p class="h1 font-weight-light">Sources</p>
             <!-- Selected Media sources -->
-            <ul *ngIf="this.sortedMedia[this.index] !== undefined" class="p-1">
+            <ul *ngIf="this.sortedMedia[this.index] !== undefined" class="p-1 sources">
                 <li *ngIf="areSourcesFetching" class="text-center">
                     <fa-icon [icon]="circleNotchIcon" [spin]="true" class="spinner" size="3x"></fa-icon>
                 </li>
@@ -37,7 +37,7 @@
 
                     <a
                         class="text-decoration-none text-white"
-                        [appSourceToHref]="source">{{ source.strategy | removeText:'SourceStrategy' }}</a>
+                        [appSourceToHref]="source">{{ source.strategy | removeSourceStrategyText:'SourceStrategy' }}</a>
                 </li>
             </ul>
         </div>
