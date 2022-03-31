@@ -11,7 +11,13 @@ import {
     deletePostStart,
     deletePostSuccess,
     failSearch,
+    getPostAttachmentSourcesFail,
+    getPostAttachmentsSourcesStart,
+    getPostAttachmentsSourcesSuccess,
     getPostFail,
+    getPostMediaSourcesFail,
+    getPostMediaSourcesStart,
+    getPostMediaSourcesSuccess,
     getPostStart,
     getPostSuccess,
     selectPost,
@@ -21,6 +27,7 @@ import {
     updateSearchQuery
 } from "./posts.actions";
 import {QueryPost} from "../../shared/model/query/query-post.model";
+import {QuerySource} from "../../shared/model/query/query-source.model";
 
 export interface State {
     isFetching: boolean;
@@ -34,6 +41,11 @@ export interface State {
     posts: QueryPost[];
     pageInfo: PageInfo | null;
     selectedPost: QueryPost | null;
+    areMediaSourcesFetching: boolean;
+    areAttachmentSourcesFetching: boolean;
+    fetchSourcesErrorMessage: string;
+    selectedPostMediaSources: QuerySource[];
+    selectedPostAttachmentsSources: QuerySource[][];
 }
 
 const initialState: State = {
@@ -48,6 +60,11 @@ const initialState: State = {
     posts: [],
     pageInfo: null,
     selectedPost: null,
+    areMediaSourcesFetching: true,
+    areAttachmentSourcesFetching: true,
+    fetchSourcesErrorMessage: "",
+    selectedPostMediaSources: [],
+    selectedPostAttachmentsSources: []
 };
 
 
@@ -152,6 +169,56 @@ export const postsReducer = createReducer(
                 posts: state.posts.filter(post => post.postId !== action.postId),
                 isFetching: false
             };
+        }
+    ),
+    on(getPostMediaSourcesStart, (state, action) => {
+            return {
+                ...state,
+                areMediaSourcesFetching: true,
+                fetchSourcesErrorMessage: "",
+                selectedPostMediaSources: []
+            }
+        }
+    ),
+    on(getPostMediaSourcesFail, (state, action) => {
+            return {
+                ...state,
+                areMediaSourcesFetching: false,
+                fetchSourcesErrorMessage: action.errorMessage
+            }
+        }
+    ),
+    on(getPostMediaSourcesSuccess, (state, action) => {
+            return {
+                ...state,
+                areMediaSourcesFetching: false,
+                selectedPostMediaSources: action.sources
+            }
+        }
+    ),
+    on(getPostAttachmentsSourcesStart, (state, action) => {
+            return {
+                ...state,
+                areAttachmentSourcesFetching: true,
+                fetchSourcesErrorMessage: "",
+                selectedPostAttachmentsSources: []
+            }
+        }
+    ),
+    on(getPostAttachmentSourcesFail, (state, action) => {
+            return {
+                ...state,
+                areAttachmentSourcesFetching: false,
+                fetchSourcesErrorMessage: action.errorMessage
+            }
+        }
+    ),
+    on(getPostAttachmentsSourcesSuccess, (state, action) => {
+            return {
+                ...state,
+                areAttachmentSourcesFetching: false,
+                selectedPostAttachmentsSources: action.attachmentsSources
+            }
         }
     ),
 );

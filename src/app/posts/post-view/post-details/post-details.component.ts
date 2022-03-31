@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {Tag} from "../../../shared/model/tag.model";
 import {TagUtils} from "../../../shared/util/tag.utils";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
@@ -14,6 +14,10 @@ import * as PhotoSwipe from "photoswipe";
 import * as PhotoSwipeUI_Default from "photoswipe/dist/photoswipe-ui-default";
 import {MediaExtensionsConfig} from "../../../shared/config/media-extensions.config";
 import {MediaType} from "../../../shared/enum/media-type.enum";
+import {getPostMediaSourcesStart} from "../../store/posts.actions";
+import {Subscription} from "rxjs";
+import {KeycloakProfile} from "keycloak-js";
+import {QuerySource} from "../../../shared/model/query/query-source.model";
 
 declare var videojs: any;
 
@@ -22,7 +26,7 @@ declare var videojs: any;
     templateUrl: './post-details.component.html',
     styleUrls: ['./post-details.component.css']
 })
-export class PostDetailsComponent implements OnInit {
+export class PostDetailsComponent implements OnInit, OnDestroy {
 
     @Input() post!: QueryPost;
 
@@ -38,11 +42,20 @@ export class PostDetailsComponent implements OnInit {
     sortedTags!: Tag[];
     sortedMedia!: Media[];
 
+    mediaSources!: QuerySource[];
+
     galleryItems: { src: string, w: number, h: number }[] = [];
 
     posterUrl!: string;
 
+    areSourcesFetching!: boolean;
+
     private static GIF_MEDIA_EXTENSION: string = MediaExtensionsConfig.PREFIX + "GIF";
+
+    private currentUser!: KeycloakProfile | null;
+
+    private postsStoreSubscription!: Subscription;
+    private authenticationStoreSubscription!: Subscription;
 
     constructor(private renderer: Renderer2,
                 private postsService: PostsService,
@@ -52,6 +65,15 @@ export class PostDetailsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
+            this.mediaSources = state.selectedPostMediaSources;
+            this.areSourcesFetching = state.areMediaSourcesFetching;
+        });
+
+        this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
+            this.currentUser = state.currentUser;
+        });
+
         // Sort
         this.sortedTags = TagUtils.sortTagsByPriority([...this.post.tags]);
         this.sortedMedia = MediaUtils.sortByPriority([...this.post.mediaSet]);
@@ -95,6 +117,11 @@ export class PostDetailsComponent implements OnInit {
                 this.router.navigate(['/posts', this.post.postId, 'media', 0]);
             }
         });
+    }
+
+    ngOnDestroy(): void {
+        this.postsStoreSubscription.unsubscribe();
+        this.authenticationStoreSubscription.unsubscribe();
     }
 
     onImageLoaded(): void {
@@ -175,6 +202,12 @@ export class PostDetailsComponent implements OnInit {
 
                 break;
         }
+
+        this.store.dispatch(getPostMediaSourcesStart({
+            userId: this.currentUser!.id!,
+            postId: this.post.postId,
+            mediaId: media.mediaId
+        }));
 
     }
 }

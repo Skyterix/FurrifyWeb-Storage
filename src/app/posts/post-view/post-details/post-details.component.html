@@ -20,7 +20,7 @@
 
         <img #imageView (click)="openImageGallery()" (load)="onImageLoaded()" *ngIf="this.post.mediaSet.length != 0"
              alt="post media" class="img-fluid media"/>
-        <fa-icon #mediaSpinner [icon]="circleNotchIcon" [spin]="true" class="spinner" size="3x"></fa-icon>
+        <fa-icon #mediaSpinner [icon]="circleNotchIcon" [spin]="true" class="media-spinner" size="3x"></fa-icon>
     </div>
     <div class="post-info p-3">
         <div>
@@ -28,12 +28,16 @@
             <p class="p-1">{{ post.description }}</p>
             <p class="h1 font-weight-light">Sources</p>
             <!-- Selected Media sources -->
-            <ul *ngIf="this.sortedMedia[this.index] !== undefined" class="p-1">
-                <!-- TODO Implement href for source, and think if post even needs one or should media only -->
-                <li *ngFor="let source of sortedMedia[index].sources" class="rounded-pill p-2 d-inline me-1 bg-violet">
+            <ul *ngIf="this.sortedMedia[this.index] !== undefined" class="p-1 sources">
+                <li *ngIf="areSourcesFetching" class="text-center">
+                    <fa-icon [icon]="circleNotchIcon" [spin]="true" class="spinner" size="3x"></fa-icon>
+                </li>
+
+                <li *ngFor="let source of mediaSources" class="rounded-pill source p-2 d-inline me-1">
+
                     <a
                         class="text-decoration-none text-white"
-                        href="#">{{ source.strategy | removeText:'SourceStrategy' }}</a>
+                        [appSourceToHref]="source">{{ source.strategy | removeSourceStrategyText:'SourceStrategy' }}</a>
                 </li>
             </ul>
         </div>

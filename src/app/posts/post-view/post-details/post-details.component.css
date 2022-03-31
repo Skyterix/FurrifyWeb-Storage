@@ -8,11 +8,23 @@
     cursor: zoom-in;
 }
 
-.spinner {
+.media-spinner {
     display: none;
     width: 100%;
     text-align: center;
     height: 600px;
     line-height: 600px;
     transition: all .3s ease;
+}
+
+.spinner {
+    transition: all .3s ease;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.sources {
+    list-style-type: none;
 }

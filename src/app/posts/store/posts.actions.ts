@@ -1,6 +1,8 @@
 import {createAction, props} from '@ngrx/store';
 import {PageInfo} from '../../shared/model/page-info.model';
 import {QueryPost} from "../../shared/model/query/query-post.model";
+import {QuerySource} from "../../shared/model/query/query-source.model";
+import {Attachment} from "../../shared/model/attachment.model";
 
 // Posts
 
@@ -74,4 +76,40 @@ export const deletePostSuccess = createAction(
 export const deletePostFail = createAction(
     '[Posts] Delete post fail',
     props<{ errorMessage: string }>()
+);
+
+export const getPostMediaSourcesStart = createAction(
+    '[Posts] Get post media sources start',
+    props<{ userId: string, postId: string, mediaId: string }>()
+);
+
+export const getPostMediaSourcesFail = createAction(
+    '[Posts] Get post media sources fail',
+    props<{ errorMessage: string }>()
+);
+
+export const getPostMediaSourcesSuccess = createAction(
+    '[Posts] Get post media sources success',
+    props<{ sources: QuerySource[] }>()
+);
+
+export const getPostAttachmentsSourcesStart = createAction(
+    '[Posts] Get post attachments sources start',
+    props<{
+        userId: string,
+        postId: string,
+        attachments: Attachment[],
+        currentAttachmentsSources: QuerySource[][],
+        currentIndex: number
+    }>()
+);
+
+export const getPostAttachmentSourcesFail = createAction(
+    '[Posts] Get post attachment sources fail',
+    props<{ errorMessage: string }>()
+);
+
+export const getPostAttachmentsSourcesSuccess = createAction(
+    '[Posts] Get post attachments sources success',
+    props<{ attachmentsSources: QuerySource[][] }>()
 );

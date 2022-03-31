@@ -215,7 +215,10 @@ export const createAttachmentsStart = createAction(
 );
 
 export const createAttachmentsSuccess = createAction(
-    '[PostCreate] Create attachments success'
+    '[PostCreate] Create attachments success',
+    props<{
+        attachments: AttachmentWrapper[]
+    }>()
 );
 
 export const createMediaSetSourcesStart = createAction(

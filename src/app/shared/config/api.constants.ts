@@ -11,6 +11,10 @@ export const GET_TAG = SERVER_ADDRESS + '/users/:userId/tags/:value';
 export const GET_ARTIST = SERVER_ADDRESS + '/users/:userId/artists/:artistId';
 export const GET_ARTISTS_BY_PREFERRED_NICKNAME = SERVER_ADDRESS + '/users/:userId/artists';
 
+export const GET_POST_MEDIA_SOURCES = SERVER_ADDRESS + '/users/:userId/posts/:postId/media/:mediaId/sources';
+export const GET_POST_ATTACHMENT_SOURCES = SERVER_ADDRESS + '/users/:userId/posts/:postId/attachments/:attachmentId/sources';
+
+
 export const CREATE_TAG = SERVER_ADDRESS + '/users/:userId/tags';
 export const CREATE_ARTIST = SERVER_ADDRESS + '/users/:userId/artists';
 export const CREATE_POST = SERVER_ADDRESS + '/users/:userId/posts';

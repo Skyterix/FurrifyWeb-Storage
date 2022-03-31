@@ -510,7 +510,9 @@ export class PostCreateEffects {
         switchMap((action) => {
             // If no attachments to upload
             if (action.attachments.length === 0) {
-                return of(createAttachmentsSuccess());
+                return of(createAttachmentsSuccess({
+                    attachments: action.attachments
+                }));
             }
 
             const data = new FormData();
@@ -533,7 +535,9 @@ export class PostCreateEffects {
 
                     // If all attachments are uploaded
                     if (action.currentIndex == action.attachments.length - 1) {
-                        return createAttachmentsSuccess();
+                        return createAttachmentsSuccess({
+                            attachments: attachments
+                        });
                     }
 
                     return createAttachmentsStart({
@@ -565,6 +569,13 @@ export class PostCreateEffects {
             );
         })
     ));
+
+    createAttachmentsSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createAttachmentsSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_UPLOADED);
+        })
+    ), {dispatch: false});
 
     createMediaSetSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(createMediaSetSourcesStart),
@@ -647,6 +658,13 @@ export class PostCreateEffects {
             );
         })
     ));
+
+    createMediaSetSourcesSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createMediaSetSourcesSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED);
+        })
+    ), {dispatch: false});
 
     createAttachmentsSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(createAttachmentsSourcesStart),
@@ -735,19 +753,6 @@ export class PostCreateEffects {
         })
     ));
 
-    createMediaSetSourcesSuccess = createEffect(() => this.actions$.pipe(
-        ofType(createMediaSetSourcesSuccess),
-        tap(() => {
-            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED);
-        })
-    ), {dispatch: false});
-
-    createAttachmentsSuccess = createEffect(() => this.actions$.pipe(
-        ofType(createAttachmentsSuccess),
-        tap(() => {
-            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_UPLOADED);
-        })
-    ), {dispatch: false});
 
     // On last thing created in post
     createAttachmentsSourcesSuccess = createEffect(() => this.actions$.pipe(
