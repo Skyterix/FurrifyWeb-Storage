@@ -25,6 +25,10 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {ReactiveFormsModule} from "@angular/forms";
 import {SharedModule} from "../../shared/shared.module";
+import {
+    AttachmentSourcePatreonComponent
+} from './attachment-source-create/attachment-source-patreon/attachment-source-patreon.component';
+import {MediaSourcePatreonComponent} from './media-source-create/media-source-patreon/media-source-patreon.component';
 
 @NgModule({
     declarations: [
@@ -42,7 +46,9 @@ import {SharedModule} from "../../shared/shared.module";
         MediaSourceDeviantArtComponent,
         AttachmentSourceCreateComponent,
         AttachmentSourceDeviantArtComponent,
-        AttachmentSourceItemComponent
+        AttachmentSourceItemComponent,
+        AttachmentSourcePatreonComponent,
+        MediaSourcePatreonComponent
     ],
     imports: [
         CommonModule,

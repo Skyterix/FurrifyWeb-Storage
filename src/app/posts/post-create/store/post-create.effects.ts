@@ -566,13 +566,6 @@ export class PostCreateEffects {
         })
     ));
 
-    createAttachmentsSuccess = createEffect(() => this.actions$.pipe(
-        ofType(createAttachmentsSuccess),
-        tap(() => {
-            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_UPLOADED);
-        })
-    ), {dispatch: false});
-
     createMediaSetSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(createMediaSetSourcesStart),
         switchMap((action) => {
@@ -654,13 +647,6 @@ export class PostCreateEffects {
             );
         })
     ));
-
-    createMediaSetSourcesSuccess = createEffect(() => this.actions$.pipe(
-        ofType(createMediaSetSourcesSuccess),
-        tap(() => {
-            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED);
-        })
-    ), {dispatch: false});
 
     createAttachmentsSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(createAttachmentsSourcesStart),
@@ -749,6 +735,19 @@ export class PostCreateEffects {
         })
     ));
 
+    createMediaSetSourcesSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createMediaSetSourcesSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED);
+        })
+    ), {dispatch: false});
+
+    createAttachmentsSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createAttachmentsSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_UPLOADED);
+        })
+    ), {dispatch: false});
 
     // On last thing created in post
     createAttachmentsSourcesSuccess = createEffect(() => this.actions$.pipe(
