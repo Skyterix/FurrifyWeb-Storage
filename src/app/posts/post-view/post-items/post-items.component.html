@@ -18,7 +18,7 @@
     <!-- Attachments -->
     <p class="h1 font-weight-light p-1 mt-4">Attachment</p>
     <div class="post-attachments p-1 justify-content-start">
-        <div *ngFor="let attachment of post.attachments" class="attachment">
+        <div *ngFor="let attachment of post.attachments; let index = index" class="attachment">
             <ul class="attachment-info p-1">
                 <li class="infs">
                     <img [appAttachmentIcon]="attachment.extension" alt="attachment icon" class="icon me-2"/>
@@ -27,12 +27,17 @@
                 </li>
                 <li>
                     <ul class="mt-2">
-                        <!-- TODO Implement href for source -->
-                        <!--                        <li *ngFor="let source of attachment.sources"
-                                                    class="p-2 d-inline ms-n1 me-2 bg-violet rounded-pill">
-                                                    <a class="text-white text-decoration-none"
-                                                       href="#">{{ source.strategy | removeText:'SourceStrategy' }}</a>
-                                                </li>-->
+                        <li *ngIf="areAttachmentsSourcesFetching" class="text-center">
+                            <fa-icon [icon]="circleNotchIcon" [spin]="true" class="spinner" size="3x"></fa-icon>
+                        </li>
+
+                        <li *ngFor="let source of attachmentSources[index]"
+                            class="rounded-pill source p-2 d-inline me-1">
+
+                            <a
+                                [appSourceToHref]="source"
+                                class="text-decoration-none text-white">{{ source.strategy | removeText:'SourceStrategy' }}</a>
+                        </li>
                     </ul>
                 </li>
             </ul>

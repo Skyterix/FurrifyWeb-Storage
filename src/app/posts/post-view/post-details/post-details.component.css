@@ -21,12 +21,6 @@
     transition: all .3s ease;
 }
 
-.source {
-    background: #37115a;
-    user-select: none;
-    cursor: pointer;
-}
-
 ul {
     list-style-type: none;
 }

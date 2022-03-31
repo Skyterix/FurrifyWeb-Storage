@@ -11,6 +11,9 @@ import {
     deletePostStart,
     deletePostSuccess,
     failSearch,
+    getPostAttachmentSourcesFail,
+    getPostAttachmentsSourcesStart,
+    getPostAttachmentsSourcesSuccess,
     getPostFail,
     getPostMediaSourcesFail,
     getPostMediaSourcesStart,
@@ -38,9 +41,11 @@ export interface State {
     posts: QueryPost[];
     pageInfo: PageInfo | null;
     selectedPost: QueryPost | null;
-    areSourcesFetching: boolean;
+    areMediaSourcesFetching: boolean;
+    areAttachmentSourcesFetching: boolean;
     fetchSourcesErrorMessage: string;
     selectedPostMediaSources: QuerySource[];
+    selectedPostAttachmentsSources: QuerySource[][];
 }
 
 const initialState: State = {
@@ -55,9 +60,11 @@ const initialState: State = {
     posts: [],
     pageInfo: null,
     selectedPost: null,
-    areSourcesFetching: true,
+    areMediaSourcesFetching: true,
+    areAttachmentSourcesFetching: true,
     fetchSourcesErrorMessage: "",
-    selectedPostMediaSources: []
+    selectedPostMediaSources: [],
+    selectedPostAttachmentsSources: []
 };
 
 
@@ -167,7 +174,7 @@ export const postsReducer = createReducer(
     on(getPostMediaSourcesStart, (state, action) => {
             return {
                 ...state,
-                areSourcesFetching: true,
+                areMediaSourcesFetching: true,
                 fetchSourcesErrorMessage: "",
                 selectedPostMediaSources: []
             }
@@ -176,7 +183,7 @@ export const postsReducer = createReducer(
     on(getPostMediaSourcesFail, (state, action) => {
             return {
                 ...state,
-                areSourcesFetching: false,
+                areMediaSourcesFetching: false,
                 fetchSourcesErrorMessage: action.errorMessage
             }
         }
@@ -184,8 +191,33 @@ export const postsReducer = createReducer(
     on(getPostMediaSourcesSuccess, (state, action) => {
             return {
                 ...state,
-                areSourcesFetching: false,
+                areMediaSourcesFetching: false,
                 selectedPostMediaSources: action.sources
+            }
+        }
+    ),
+    on(getPostAttachmentsSourcesStart, (state, action) => {
+            return {
+                ...state,
+                areAttachmentSourcesFetching: true,
+                fetchSourcesErrorMessage: "",
+                selectedPostAttachmentsSources: []
+            }
+        }
+    ),
+    on(getPostAttachmentSourcesFail, (state, action) => {
+            return {
+                ...state,
+                areAttachmentSourcesFetching: false,
+                fetchSourcesErrorMessage: action.errorMessage
+            }
+        }
+    ),
+    on(getPostAttachmentsSourcesSuccess, (state, action) => {
+            return {
+                ...state,
+                areAttachmentSourcesFetching: false,
+                selectedPostAttachmentsSources: action.attachmentsSources
             }
         }
     ),

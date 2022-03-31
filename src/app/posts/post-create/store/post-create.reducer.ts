@@ -410,7 +410,8 @@ export const postCreateReducer = createReducer(
     ),
     on(createAttachmentsSuccess, (state, action) => {
             return {
-                ...state
+                ...state,
+                attachments: action.attachments
             };
         }
     ),

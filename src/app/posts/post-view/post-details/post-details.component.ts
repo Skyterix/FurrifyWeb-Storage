@@ -67,7 +67,7 @@ export class PostDetailsComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
             this.mediaSources = state.selectedPostMediaSources;
-            this.areSourcesFetching = state.areSourcesFetching;
+            this.areSourcesFetching = state.areMediaSourcesFetching;
         });
 
         this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {

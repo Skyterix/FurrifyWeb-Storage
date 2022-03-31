@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Media} from "../../../shared/model/media.model";
 import {MediaUtils} from "../../../shared/util/media.utils";
 import {Store} from "@ngrx/store";
@@ -13,21 +13,36 @@ import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 import {KeycloakService} from "keycloak-angular";
 import {PostsService} from "../../posts.service";
 import {ConfirmationsService} from "../../confirmations/confirmations.service";
+import {QuerySource} from "../../../shared/model/query/query-source.model";
+import {getPostAttachmentsSourcesStart} from "../../store/posts.actions";
+import {Subscription} from "rxjs";
+import {KeycloakProfile} from "keycloak-js";
+import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 
 @Component({
     selector: 'app-post-items',
     templateUrl: './post-items.component.html',
     styleUrls: ['./post-items.component.css']
 })
-export class PostItemsComponent implements OnInit {
+export class PostItemsComponent implements OnInit, OnDestroy {
     @Input() post!: QueryPost;
+
+    circleNotchIcon = faCircleNotch;
 
     sortedMedia!: Media[];
 
     cdnAddress = CDN_ADDRESS;
     fileUrl!: string;
 
+    attachmentSources: QuerySource[][] = [];
+
     currentIndex!: number;
+
+    areAttachmentsSourcesFetching!: boolean;
+
+    private authenticationStoreSubscription!: Subscription;
+    private postsStoreSubscription!: Subscription;
+    private currentUser!: KeycloakProfile | null;
 
     constructor(private store: Store<fromApp.AppState>,
                 private confirmationsService: ConfirmationsService,
@@ -48,6 +63,22 @@ export class PostItemsComponent implements OnInit {
                 this.fileUrl = CDN_ADDRESS + this.sortedMedia[params.index].fileUri;
             }
         });
+
+        this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
+            this.currentUser = state.currentUser;
+        });
+        this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
+            this.areAttachmentsSourcesFetching = state.areAttachmentSourcesFetching;
+            this.attachmentSources = state.selectedPostAttachmentsSources;
+        });
+
+        setTimeout(() => this.loadAttachmentSources());
+    }
+
+
+    ngOnDestroy(): void {
+        this.authenticationStoreSubscription.unsubscribe();
+        this.postsStoreSubscription.unsubscribe();
     }
 
     onLoadMediaRequest(index: number): void {
@@ -82,5 +113,16 @@ export class PostItemsComponent implements OnInit {
 
     onDeletePost(): void {
         this.confirmationsService.postDeleteConfirmationOpenEvent.emit(this.post);
+    }
+
+    loadAttachmentSources(): void {
+        // Load attachments sources
+        this.store.dispatch(getPostAttachmentsSourcesStart({
+            userId: this.currentUser!.id!,
+            postId: this.post.postId,
+            attachments: this.post.attachments,
+            currentAttachmentsSources: [],
+            currentIndex: 0
+        }));
     }
 }
