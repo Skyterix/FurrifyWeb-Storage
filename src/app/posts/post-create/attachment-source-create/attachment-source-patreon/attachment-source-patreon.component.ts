@@ -6,11 +6,11 @@ import {updateSourceData} from "../../store/post-create.actions";
 import {URL_REGEX} from "../../../../shared/config/common.constats";
 
 @Component({
-    selector: 'app-attachment-source-deviant-art',
-    templateUrl: './attachment-source-deviant-art.component.html',
-    styleUrls: ['./attachment-source-deviant-art.component.css']
+    selector: 'app-attachment-source-patreon',
+    templateUrl: './attachment-source-patreon.component.html',
+    styleUrls: ['./attachment-source-patreon.component.css']
 })
-export class AttachmentSourceDeviantArtComponent implements OnInit {
+export class AttachmentSourcePatreonComponent implements OnInit {
 
     attachmentSourceForm!: FormGroup;
 
@@ -19,12 +19,12 @@ export class AttachmentSourceDeviantArtComponent implements OnInit {
 
     ngOnInit(): void {
         this.attachmentSourceForm = new FormGroup({
-            deviationUrl: new FormControl(null, [Validators.pattern(URL_REGEX)])
+            postUrl: new FormControl(null, [Validators.pattern(URL_REGEX)])
         });
     }
 
     onChange(): void {
-        let url = this.attachmentSourceForm.controls.deviationUrl.value;
+        let url = this.attachmentSourceForm.controls.postUrl.value;
         // If id is empty set it to null to prevent form from being valid
         if (url === "") {
             url = null;
