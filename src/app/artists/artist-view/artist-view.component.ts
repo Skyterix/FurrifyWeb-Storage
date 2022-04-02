@@ -119,6 +119,9 @@ export class ArtistViewComponent implements OnInit {
             return;
         }
 
+        // Clear gallery
+        this.galleryItems = [];
+
         switch (AvatarExtensionsConfig.getTypeByExtension(this.selectedArtist!.avatar.extension)) {
             case AvatarType.IMAGE:
                 this.galleryItems.push({
