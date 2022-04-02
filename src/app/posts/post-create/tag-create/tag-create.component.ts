@@ -23,7 +23,7 @@ export class TagCreateComponent implements OnInit, OnDestroy {
 
     @Input() value!: string;
 
-    errorMessage!: string;
+    errorMessage!: string | null;
     isFetching!: boolean;
 
     createTagForm!: FormGroup;

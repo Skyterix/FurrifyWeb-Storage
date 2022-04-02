@@ -12,7 +12,7 @@ import {MediaIconsConfig} from "../../../shared/config/media-icons.config";
 import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 import {KeycloakService} from "keycloak-angular";
 import {PostsService} from "../../posts.service";
-import {ConfirmationsService} from "../../confirmations/confirmations.service";
+import {ConfirmationsService} from "../../../shared/component/confirmations/confirmations.service";
 import {QuerySource} from "../../../shared/model/query/query-source.model";
 import {getPostAttachmentsSourcesStart} from "../../store/posts.actions";
 import {Subscription} from "rxjs";
@@ -42,6 +42,7 @@ export class PostItemsComponent implements OnInit, OnDestroy {
 
     private authenticationStoreSubscription!: Subscription;
     private postsStoreSubscription!: Subscription;
+
     private currentUser!: KeycloakProfile | null;
 
     constructor(private store: Store<fromApp.AppState>,

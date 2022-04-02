@@ -1,0 +1,52 @@
+<app-gallery-view></app-gallery-view>
+
+<div class="container p-3 mt-2">
+    <!-- Error message -->
+    <div *ngIf="!!errorMessage" class="text-center mb-5">
+        <p class="alert-danger mt-5 d-inline-block p-3">
+            <span>{{ errorMessage }}</span>
+        </p>
+    </div>
+
+    <div class="avatar">
+        <img (click)="openImageGallery()"
+             [src]="(!!selectedArtist?.avatar) ? cdnAddress + selectedArtist!.avatar.thumbnailUri : '../assets/user-default.jpg'"
+             alt="artist avatar" src="./assets/user-default.jpg"/>
+        <p class="display-6 mt-2">{{ this.selectedArtist?.preferredNickname }}</p>
+
+        <!-- Buttons -->
+        <div>
+            <div *ngIf="!!selectedArtist?.avatar" class="d-inline-block p-1 justify-content-start">
+                <a [href]="cdnAddress + selectedArtist!.avatar!.fileUri">
+                    <button class="btn btn-accent">Download</button>
+                </a>
+            </div>
+
+            <div class="d-inline-block p-1 justify-content-start">
+                <button (click)="onEditAvatar()" class="btn btn-accent">Edit Artist</button>
+            </div>
+
+            <div class="d-inline-block p-1 justify-content-start">
+                <button (click)="onDeleteAvatar()" class="btn btn-danger">Delete Artist</button>
+            </div>
+        </div>
+
+        <div class="text-start">
+            <p class="h1 font-weight-light">Sources</p>
+            <!-- Selected Artist sources -->
+            <ul class="p-1 sources">
+                <li *ngIf="areSourcesFetching" class="text-center">
+                    <fa-icon [icon]="circleNotchIcon" [spin]="true" class="spinner" size="3x"></fa-icon>
+                </li>
+
+                <li *ngFor="let source of artistSources" class="rounded-pill source p-2 d-inline me-1">
+
+                    <a
+                        [appSourceToHref]="source"
+                        class="text-decoration-none text-white">{{ source.strategy | removeSourceStrategyText:'SourceStrategy' }}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>

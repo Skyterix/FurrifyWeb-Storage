@@ -12,6 +12,10 @@ const appRoutes: Routes = [
         loadChildren: () => import('./posts/posts.module').then(m => m.PostsModule)
     },
     {
+        path: 'artists',
+        loadChildren: () => import('./artists/artists.module').then(m => m.ArtistsModule)
+    },
+    {
         path: 'settings',
         loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
     },

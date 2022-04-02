@@ -29,7 +29,7 @@ export class ArtistCreateComponent implements OnInit {
 
     @ViewChild('article', {read: ElementRef}) articleRef!: ElementRef;
 
-    errorMessage!: string;
+    errorMessage!: string | null;
     isFetching!: boolean;
 
     selectedFile!: File;
@@ -161,7 +161,7 @@ export class ArtistCreateComponent implements OnInit {
 
         /* Check extension against accepted extensions list.
            The check for null is not required, regex check above ensures that extension must be present. */
-        if (!AvatarExtensionsConfig.EXTENSIONS.includes(extension![1].toLowerCase())) {
+        if (!AvatarExtensionsConfig.IMAGES.includes(extension![1].toLowerCase())) {
             this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as avatar."
 
             this.artistAvatarFileForm.reset();

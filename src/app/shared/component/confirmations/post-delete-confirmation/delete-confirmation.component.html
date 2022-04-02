@@ -9,12 +9,12 @@
             </p>
         </div>
 
-        <h2 class="display-6">Post Delete</h2>
-        <p class="mt-2 fw-lighter">This action cannot be undone. Post and corresponding files will be permanently
+        <h2 class="display-6">Delete confirmation</h2>
+        <p class="mt-2 fw-lighter">This action cannot be undone. Data and corresponding files will be permanently
             removed.</p>
 
         <div class="mt-4">
-            <button (click)="onPostDelete()" [disabled]="isFetching" class="btn btn-danger me-2"
+            <button (click)="onDelete()" [disabled]="isFetching" class="btn btn-danger me-2"
                     type="button">
                 <fa-icon *ngIf="isFetching" [fixedWidth]="true" [icon]="spinnerIcon" [spin]="true" class="text-white"
                          size="sm"></fa-icon>

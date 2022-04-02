@@ -26,7 +26,7 @@ export class AttachmentSourceCreateComponent implements OnInit {
     @Input() attachment!: AttachmentWrapper;
     attachments!: AttachmentWrapper[];
 
-    errorMessage!: string;
+    errorMessage!: string | null;
     isFetching!: boolean;
 
     data: any = null;

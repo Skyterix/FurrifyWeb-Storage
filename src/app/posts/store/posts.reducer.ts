@@ -43,7 +43,8 @@ export interface State {
     selectedPost: QueryPost | null;
     areMediaSourcesFetching: boolean;
     areAttachmentSourcesFetching: boolean;
-    fetchSourcesErrorMessage: string;
+    fetchSourcesErrorMessage: string | null;
+    postDeleteErrorMessage: string | null;
     selectedPostMediaSources: QuerySource[];
     selectedPostAttachmentsSources: QuerySource[][];
 }
@@ -62,7 +63,8 @@ const initialState: State = {
     selectedPost: null,
     areMediaSourcesFetching: true,
     areAttachmentSourcesFetching: true,
-    fetchSourcesErrorMessage: "",
+    fetchSourcesErrorMessage: null,
+    postDeleteErrorMessage: null,
     selectedPostMediaSources: [],
     selectedPostAttachmentsSources: []
 };
@@ -117,7 +119,8 @@ export const postsReducer = createReducer(
     on(selectPost, (state, action) => {
             return {
                 ...state,
-                selectedPost: action.post
+                selectedPost: action.post,
+                fetchErrorMessage: null,
             }
         }
     ),
@@ -125,6 +128,7 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
+                fetchErrorMessage: null,
                 selectedPost: null,
                 selectedMedia: null
             }
@@ -175,7 +179,7 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 areMediaSourcesFetching: true,
-                fetchSourcesErrorMessage: "",
+                fetchSourcesErrorMessage: null,
                 selectedPostMediaSources: []
             }
         }
@@ -200,7 +204,7 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 areAttachmentSourcesFetching: true,
-                fetchSourcesErrorMessage: "",
+                fetchSourcesErrorMessage: null,
                 selectedPostAttachmentsSources: []
             }
         }
