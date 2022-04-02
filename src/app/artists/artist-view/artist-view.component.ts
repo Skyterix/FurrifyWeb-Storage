@@ -137,6 +137,7 @@ export class ArtistViewComponent implements OnInit {
     }
 
     onEditAvatar(): void {
+        // TODO Implement
         alert("Not implemented yet.");
     }
 
