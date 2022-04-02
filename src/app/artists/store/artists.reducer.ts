@@ -18,8 +18,8 @@ export interface State {
     fetchErrorMessage: string | null;
     selectedArtist: QueryArtist | null;
     areArtistSourcesFetching: boolean;
-    fetchSourcesErrorMessage: string;
-    artistDeleteErrorMessage: string;
+    fetchSourcesErrorMessage: string | null;
+    artistDeleteErrorMessage: string | null;
     selectedArtistSources: QuerySource[];
 }
 
@@ -28,8 +28,8 @@ const initialState: State = {
     fetchErrorMessage: null,
     selectedArtist: null,
     areArtistSourcesFetching: true,
-    fetchSourcesErrorMessage: "",
-    artistDeleteErrorMessage: "",
+    fetchSourcesErrorMessage: null,
+    artistDeleteErrorMessage: null,
     selectedArtistSources: []
 };
 
@@ -40,6 +40,7 @@ export const artistsReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
+                fetchSourcesErrorMessage: null,
                 selectedArtist: null
             }
         }
@@ -80,7 +81,6 @@ export const artistsReducer = createReducer(
             return {
                 ...state,
                 // Filter out deleted artist
-                // TODO
                 isFetching: false
             };
         }
@@ -89,7 +89,7 @@ export const artistsReducer = createReducer(
             return {
                 ...state,
                 areArtistSourcesFetching: true,
-                fetchSourcesErrorMessage: "",
+                fetchSourcesErrorMessage: null,
                 selectedArtistSources: []
             }
         }

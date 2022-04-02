@@ -85,8 +85,8 @@ export interface State {
     selectedArtists: ArtistWrapper[];
     postSavedTitle: string;
     postSavedDescription: string;
-    tagErrorMessage: string;
-    artistErrorMessage: string;
+    tagErrorMessage: string | null;
+    artistErrorMessage: string | null;
     mediaSet: MediaWrapper[];
     attachments: AttachmentWrapper[];
     postCreateErrorMessage: string | null;
@@ -101,11 +101,11 @@ const initialState: State = {
     selectedArtists: [],
     postSavedTitle: "",
     postSavedDescription: "",
-    tagErrorMessage: "",
-    artistErrorMessage: "",
+    tagErrorMessage: null,
+    artistErrorMessage: null,
     mediaSet: [],
     attachments: [],
-    postCreateErrorMessage: "",
+    postCreateErrorMessage: null,
     createSourceData: {},
     createdPostId: ""
 };
@@ -176,7 +176,7 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
-                tagErrorMessage: ""
+                tagErrorMessage: null
             };
         }
     ),
@@ -192,7 +192,7 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
-                tagErrorMessage: ""
+                tagErrorMessage: null
             };
         }
     ),
@@ -294,7 +294,7 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
-                artistErrorMessage: ""
+                artistErrorMessage: null
             };
         }
     ),
@@ -302,7 +302,7 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
-                artistErrorMessage: ""
+                artistErrorMessage: null
             };
         }
     ),
@@ -318,7 +318,7 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
-                artistErrorMessage: ""
+                artistErrorMessage: null
             };
         }
     ),
@@ -387,7 +387,7 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
-                postCreateErrorMessage: ""
+                postCreateErrorMessage: null
             };
         }
     ),
@@ -509,11 +509,11 @@ export const postCreateReducer = createReducer(
                 selectedArtists: [],
                 postSavedTitle: "",
                 postSavedDescription: "",
-                tagErrorMessage: "",
-                artistErrorMessage: "",
+                tagErrorMessage: null,
+                artistErrorMessage: null,
                 mediaSet: [],
                 attachments: [],
-                postCreateErrorMessage: "",
+                postCreateErrorMessage: null,
                 createSourceData: {},
                 createdPostId: ""
             };
