@@ -23,7 +23,7 @@ export class DeleteConfirmationComponent implements OnInit, OnDestroy {
     onDeleteCallback!: (onDelete: void) => void;
 
     isFetching!: boolean;
-    errorMessage!: string;
+    errorMessage!: string | null;
 
     private authenticationStoreSubscription!: Subscription;
     private artistsStoreSubscription!: Subscription;

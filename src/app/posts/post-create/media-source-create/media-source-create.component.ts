@@ -26,7 +26,7 @@ export class MediaSourceCreateComponent implements OnInit {
     @Input() media!: MediaWrapper;
     mediaSet!: MediaWrapper[];
 
-    errorMessage!: string;
+    errorMessage!: string | null;
     isFetching!: boolean;
 
     data: any = null;

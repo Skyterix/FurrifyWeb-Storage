@@ -29,7 +29,7 @@ export class ArtistCreateComponent implements OnInit {
 
     @ViewChild('article', {read: ElementRef}) articleRef!: ElementRef;
 
-    errorMessage!: string;
+    errorMessage!: string | null;
     isFetching!: boolean;
 
     selectedFile!: File;
