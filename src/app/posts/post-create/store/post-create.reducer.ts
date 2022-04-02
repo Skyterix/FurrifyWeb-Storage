@@ -87,7 +87,6 @@ export interface State {
     postSavedDescription: string;
     tagErrorMessage: string;
     artistErrorMessage: string;
-    postDeleteErrorMessage: string;
     mediaSet: MediaWrapper[];
     attachments: AttachmentWrapper[];
     postCreateErrorMessage: string | null;
@@ -107,7 +106,6 @@ const initialState: State = {
     mediaSet: [],
     attachments: [],
     postCreateErrorMessage: "",
-    postDeleteErrorMessage: "",
     createSourceData: {},
     createdPostId: ""
 };

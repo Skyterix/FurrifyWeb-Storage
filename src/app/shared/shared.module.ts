@@ -4,6 +4,11 @@ import {RemoveSourceStrategyTextPipe} from "./pipe/remove-source-strategy-text.p
 import {AccountLinkDirective} from './directive/account-link.directive';
 import {SourceToHrefDirective} from './directive/source-to-href.directive';
 import {GalleryViewComponent} from "./component/gallery-view/gallery-view.component";
+import {
+    DeleteConfirmationComponent
+} from "./component/confirmations/post-delete-confirmation/delete-confirmation.component";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {CommonModule} from "@angular/common";
 
 @NgModule({
     declarations: [
@@ -11,16 +16,21 @@ import {GalleryViewComponent} from "./component/gallery-view/gallery-view.compon
         RemoveSourceStrategyTextPipe,
         AccountLinkDirective,
         SourceToHrefDirective,
-        GalleryViewComponent
+        GalleryViewComponent,
+        DeleteConfirmationComponent
     ],
     exports: [
         ColoredTagDirective,
         RemoveSourceStrategyTextPipe,
         AccountLinkDirective,
         SourceToHrefDirective,
-        GalleryViewComponent
+        GalleryViewComponent,
+        DeleteConfirmationComponent
     ],
-    imports: []
+    imports: [
+        FontAwesomeModule,
+        CommonModule
+    ]
 })
 export class SharedModule {
 }

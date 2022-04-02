@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {KeycloakProfile} from "keycloak-js";
 import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
@@ -13,6 +13,7 @@ import {AvatarExtensionsConfig} from "../../shared/config/avatar-extensions.conf
 import {AvatarType} from "../../shared/enum/avatar-type.enum";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import {QuerySource} from "../../shared/model/query/query-source.model";
+import {ConfirmationsService} from "../../shared/component/confirmations/confirmations.service";
 
 @Component({
     selector: 'app-artist-view',
@@ -22,6 +23,7 @@ import {QuerySource} from "../../shared/model/query/query-source.model";
 export class ArtistViewComponent implements OnInit {
 
     @ViewChild('avatar', {read: ElementRef}) avatarRef!: ElementRef;
+    @ViewChild('modal', {read: ViewContainerRef}) modalRef!: ViewContainerRef;
 
     circleNotchIcon = faCircleNotch;
 
@@ -42,7 +44,8 @@ export class ArtistViewComponent implements OnInit {
 
     constructor(private activatedRoute: ActivatedRoute,
                 private renderer: Renderer2,
-                private store: Store<fromApp.AppState>) {
+                private store: Store<fromApp.AppState>,
+                private confirmationsService: ConfirmationsService) {
     }
 
     ngOnInit(): void {
@@ -138,6 +141,10 @@ export class ArtistViewComponent implements OnInit {
     }
 
     onDeleteAvatar(): void {
-        // TODO
+        if (!this.selectedArtist) {
+            return;
+        }
+
+        this.confirmationsService.artistDeleteConfirmationOpenEvent.emit(this.selectedArtist);
     }
 }

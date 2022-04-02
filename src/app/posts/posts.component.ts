@@ -19,9 +19,11 @@ import {PostsService} from "./posts.service";
 import {CDN_ADDRESS} from "../shared/config/api.constants";
 import {QueryPost} from "../shared/model/query/query-post.model";
 import {
-    PostDeleteConfirmationComponent
-} from "./confirmations/post-delete-confirmation/post-delete-confirmation.component";
-import {ConfirmationsService} from "./confirmations/confirmations.service";
+    DeleteConfirmationComponent
+} from "../shared/component/confirmations/post-delete-confirmation/delete-confirmation.component";
+import {ConfirmationsService} from "../shared/component/confirmations/confirmations.service";
+import {deletePostStart} from "./store/posts.actions";
+import {KeycloakProfile} from "keycloak-js";
 
 @Component({
     selector: 'app-posts',
@@ -35,11 +37,13 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('defaultBackground', {read: ElementRef}) defaultBackgroundRef!: ElementRef;
 
     private selectedPost!: QueryPost | null;
+    private currentUser!: KeycloakProfile | null;
 
     private postCreateOpenSubscription!: Subscription;
     private postDeleteConfirmationOpenSubscription!: Subscription;
     private clearPostCreateModalSubscription!: Subscription;
     private clearConfirmationModalSubscription!: Subscription;
+    private authenticationStoreSubscription!: Subscription;
     private storeSubscription!: Subscription;
 
     constructor(private store: Store<fromApp.AppState>,
@@ -71,6 +75,9 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.postDeleteConfirmationOpenSubscription = this.confirmationsService.postDeleteConfirmationOpenEvent.subscribe(post => {
             this.loadPostDeleteConfirmationModal(post);
         });
+        this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
+            this.currentUser = state.currentUser;
+        });
 
         const isCreatePostModeOn = this.activatedRoute.snapshot.queryParams.create;
         if (isCreatePostModeOn == 'true') {
@@ -98,6 +105,7 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.clearPostCreateModalSubscription.unsubscribe();
         this.clearConfirmationModalSubscription.unsubscribe();
         this.postDeleteConfirmationOpenSubscription.unsubscribe();
+        this.authenticationStoreSubscription.unsubscribe();
     }
 
     private loadPostCreateForm(): void {
@@ -114,8 +122,13 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private loadPostDeleteConfirmationModal(post: QueryPost): void {
         this.modalRef!.clear();
-        const component = this.modalRef!.createComponent(PostDeleteConfirmationComponent);
-        component.instance.post = post;
+        const component = this.modalRef!.createComponent(DeleteConfirmationComponent);
+        component.instance.onDeleteCallback = () => {
+            this.store.dispatch(deletePostStart({
+                userId: this.currentUser?.id!,
+                postId: post.postId
+            }));
+        };
     }
 
     private clearModal(): void {

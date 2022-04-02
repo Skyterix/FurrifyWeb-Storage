@@ -44,6 +44,7 @@ export interface State {
     areMediaSourcesFetching: boolean;
     areAttachmentSourcesFetching: boolean;
     fetchSourcesErrorMessage: string;
+    postDeleteErrorMessage: string;
     selectedPostMediaSources: QuerySource[];
     selectedPostAttachmentsSources: QuerySource[][];
 }
@@ -63,6 +64,7 @@ const initialState: State = {
     areMediaSourcesFetching: true,
     areAttachmentSourcesFetching: true,
     fetchSourcesErrorMessage: "",
+    postDeleteErrorMessage: "",
     selectedPostMediaSources: [],
     selectedPostAttachmentsSources: []
 };
@@ -117,7 +119,8 @@ export const postsReducer = createReducer(
     on(selectPost, (state, action) => {
             return {
                 ...state,
-                selectedPost: action.post
+                selectedPost: action.post,
+                fetchErrorMessage: null,
             }
         }
     ),
@@ -125,6 +128,7 @@ export const postsReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
+                fetchErrorMessage: null,
                 selectedPost: null,
                 selectedMedia: null
             }
