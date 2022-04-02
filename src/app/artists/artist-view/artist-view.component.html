@@ -1,0 +1,18 @@
+<app-gallery-view></app-gallery-view>
+
+<div class="container p-3 mt-2">
+    <!-- Error message -->
+    <div *ngIf="!!errorMessage" class="text-center mt-5">
+        <p class="alert-danger mt-5 d-inline-block p-3">
+            <span>{{ errorMessage }}</span>
+        </p>
+    </div>
+
+    <div class="avatar">
+        <img (click)="openImageGallery()"
+             [src]="(!!selectedArtist?.avatar) ? cdnAddress + selectedArtist!.avatar.thumbnailUri : '../assets/user-default.jpg'"
+             alt="artist avatar" src="./assets/user-default.jpg"/>
+        <p class="display-6 mt-2">{{ this.selectedArtist?.preferredNickname }}</p>
+    </div>
+
+</div>

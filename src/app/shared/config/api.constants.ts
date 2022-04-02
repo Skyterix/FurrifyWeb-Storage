@@ -12,6 +12,7 @@ export const GET_ARTIST = SERVER_ADDRESS + '/users/:userId/artists/:artistId';
 export const GET_ARTISTS_BY_PREFERRED_NICKNAME = SERVER_ADDRESS + '/users/:userId/artists';
 
 export const GET_POST_MEDIA_SOURCES = SERVER_ADDRESS + '/users/:userId/posts/:postId/media/:mediaId/sources';
+export const GET_ARTIST_SOURCES = SERVER_ADDRESS + '/users/:userId/artists/:artistId/sources';
 export const GET_POST_ATTACHMENT_SOURCES = SERVER_ADDRESS + '/users/:userId/posts/:postId/attachments/:attachmentId/sources';
 
 
@@ -26,6 +27,7 @@ export const CREATE_MEDIA_SOURCE = SERVER_ADDRESS + '/users/:userId/posts/:postI
 export const CREATE_ATTACHMENT_SOURCE = SERVER_ADDRESS + '/users/:userId/posts/:postId/attachments/:attachmentId/sources';
 
 export const DELETE_POST = SERVER_ADDRESS + '/users/:userId/posts/:postId';
+export const DELETE_ARTIST = SERVER_ADDRESS + '/users/:userId/artists/:artistId';
 
 // Fixes not getting hal+json from response
 export const RESPONSE_TYPE = "*";

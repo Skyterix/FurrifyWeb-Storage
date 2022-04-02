@@ -1,0 +1,32 @@
+section {
+    z-index: -1;
+    padding-top: 62px;
+    min-height: 100vh;
+    text-align: center;
+    clear: both;
+}
+
+.bg, .default-bg {
+    position: fixed;
+    z-index: -10;
+    height: 100vh;
+    width: 100vw;
+    filter: blur(12px);
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity .25s ease;
+}
+
+.default-bg {
+    background-image: url("../../assets/posts-bg.jpg");
+    opacity: 1;
+}
+
+.backdrop {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    z-index: -11;
+    background: rgba(24, 24, 24, 1);
+}

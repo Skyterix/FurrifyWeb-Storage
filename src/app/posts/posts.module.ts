@@ -17,7 +17,6 @@ import {AttachmentIconDirective} from "./post-view/post-items/attachment-icon.di
 import {DropdownDirective} from "./nav/dropdown.directive";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {PaginatorComponent} from './post-list/paginator/paginator.component';
-import {GalleryViewComponent} from './post-view/post-details/gallery-view/gallery-view.component';
 import {
     PostDeleteConfirmationComponent
 } from './confirmations/post-delete-confirmation/post-delete-confirmation.component';
@@ -38,7 +37,6 @@ import {PostCreateModule} from "./post-create/post-create.module";
         AttachmentIconDirective,
         DropdownDirective,
         PaginatorComponent,
-        GalleryViewComponent,
         PostDeleteConfirmationComponent
     ],
     imports: [
@@ -49,6 +47,9 @@ import {PostCreateModule} from "./post-create/post-create.module";
         PostsRoutingModule,
         PostCreateModule,
         SharedModule
+    ],
+    exports: [
+        NavComponent
     ],
     bootstrap: []
 })

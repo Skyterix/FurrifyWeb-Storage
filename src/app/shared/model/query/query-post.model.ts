@@ -1,7 +1,7 @@
 import {Media} from "../media.model";
 import {Attachment} from "../attachment.model";
 import {Tag} from "../tag.model";
-import {QueryArtist} from "./query-artist.model";
+import {QueryPostArtist} from "./query-post-artist.model";
 
 export interface QueryPost {
     postId: string;
@@ -10,6 +10,6 @@ export interface QueryPost {
     mediaSet: Media[];
     attachments: Attachment[];
     tags: Tag[];
-    artists: QueryArtist[];
+    artists: QueryPostArtist[];
     createDate: Date;
 }

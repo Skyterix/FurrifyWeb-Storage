@@ -48,7 +48,8 @@
     <div class="post-artists p-1 justify-content-start">
         <ul class="artists p-0">
             <li *ngFor="let artist of post.artists" class="artist rounded me-3 mt-2">
-                <a [routerLink]="['/artists', artist.artistId]" class="text-decoration-none text-center d-inline-block">
+                <a [routerLink]="['/artists', artist.artistId]" class="text-decoration-none text-center d-inline-block"
+                   queryParamsHandling="merge">
                     <img
                         [src]="(!!artist.thumbnailUri) ? cdnAddress + artist.thumbnailUri : '../assets/user-default.jpg'"
                         alt="artist avatar cover" class="avatar rounded-circle"/>

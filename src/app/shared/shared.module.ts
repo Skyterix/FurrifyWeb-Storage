@@ -3,19 +3,22 @@ import {ColoredTagDirective} from "./directive/colored-tag.directive";
 import {RemoveSourceStrategyTextPipe} from "./pipe/remove-source-strategy-text.pipe";
 import {AccountLinkDirective} from './directive/account-link.directive';
 import {SourceToHrefDirective} from './directive/source-to-href.directive';
+import {GalleryViewComponent} from "./component/gallery-view/gallery-view.component";
 
 @NgModule({
     declarations: [
         ColoredTagDirective,
         RemoveSourceStrategyTextPipe,
         AccountLinkDirective,
-        SourceToHrefDirective
+        SourceToHrefDirective,
+        GalleryViewComponent
     ],
     exports: [
         ColoredTagDirective,
         RemoveSourceStrategyTextPipe,
         AccountLinkDirective,
-        SourceToHrefDirective
+        SourceToHrefDirective,
+        GalleryViewComponent
     ],
     imports: []
 })
