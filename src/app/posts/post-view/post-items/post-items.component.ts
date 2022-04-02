@@ -42,6 +42,7 @@ export class PostItemsComponent implements OnInit, OnDestroy {
 
     private authenticationStoreSubscription!: Subscription;
     private postsStoreSubscription!: Subscription;
+
     private currentUser!: KeycloakProfile | null;
 
     constructor(private store: Store<fromApp.AppState>,

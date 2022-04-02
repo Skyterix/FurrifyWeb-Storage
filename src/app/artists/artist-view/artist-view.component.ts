@@ -5,12 +5,14 @@ import {ActivatedRoute} from "@angular/router";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../store/app.reducer";
 import {QueryArtist} from "../../shared/model/query/query-artist.model";
-import {getArtistStart} from "../store/artists.actions";
+import {getArtistSourcesStart, getArtistStart} from "../store/artists.actions";
 import {CDN_ADDRESS} from "../../shared/config/api.constants";
 import * as PhotoSwipe from "photoswipe";
 import * as PhotoSwipeUI_Default from "photoswipe/dist/photoswipe-ui-default";
 import {AvatarExtensionsConfig} from "../../shared/config/avatar-extensions.config";
 import {AvatarType} from "../../shared/enum/avatar-type.enum";
+import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
+import {QuerySource} from "../../shared/model/query/query-source.model";
 
 @Component({
     selector: 'app-artist-view',
@@ -21,9 +23,14 @@ export class ArtistViewComponent implements OnInit {
 
     @ViewChild('avatar', {read: ElementRef}) avatarRef!: ElementRef;
 
+    circleNotchIcon = faCircleNotch;
+
     isFetching!: boolean;
+    areSourcesFetching!: boolean;
     selectedArtist!: QueryArtist | null;
     currentUser!: KeycloakProfile | null;
+
+    artistSources!: QuerySource[];
 
     galleryItems: { src: string, w: number, h: number }[] = [];
 
@@ -43,6 +50,8 @@ export class ArtistViewComponent implements OnInit {
             this.isFetching = state.isFetching;
             this.selectedArtist = state.selectedArtist;
             this.errorMessage = state.fetchErrorMessage;
+            this.areSourcesFetching = state.areArtistSourcesFetching;
+            this.artistSources = state.selectedArtistSources;
 
             this.loadGalleryItems();
         });
@@ -97,6 +106,12 @@ export class ArtistViewComponent implements OnInit {
             artistId,
             userId: this.currentUser?.id!
         }));
+
+        // Load artist sources
+        this.store.dispatch(getArtistSourcesStart({
+            userId: this.currentUser!.id!,
+            artistId
+        }));
     }
 
     private loadGalleryItems() {
@@ -113,5 +128,13 @@ export class ArtistViewComponent implements OnInit {
                 });
                 break;
         }
+    }
+
+    onEditAvatar(): void {
+        alert("Not implemented yet.");
+    }
+
+    onDeleteAvatar(): void {
+        // TODO
     }
 }

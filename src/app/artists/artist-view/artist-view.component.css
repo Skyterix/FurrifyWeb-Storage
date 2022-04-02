@@ -16,3 +16,8 @@
     user-select: none;
     cursor: zoom-in;
 }
+
+
+.sources {
+    list-style-type: none;
+}

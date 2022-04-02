@@ -5,6 +5,7 @@ import {ArtistViewComponent} from './artist-view/artist-view.component';
 import {ArtistsRoutingModule} from "./artists-routing.module";
 import {PostsModule} from "../posts/posts.module";
 import {SharedModule} from "../shared/shared.module";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import {SharedModule} from "../shared/shared.module";
         CommonModule,
         ArtistsRoutingModule,
         PostsModule,
-        SharedModule
+        SharedModule,
+        FontAwesomeModule
     ]
 })
 export class ArtistsModule {
