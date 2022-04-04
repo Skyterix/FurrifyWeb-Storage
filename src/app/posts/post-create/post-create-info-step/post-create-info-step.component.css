@@ -2,7 +2,7 @@
     user-select: none;
 }
 
-.badge.bg-red {
+.artist.bg-red {
     cursor: pointer;
     background: red !important;
 }
@@ -21,4 +21,29 @@ textarea {
 
 .animate__animated {
     animation-duration: .1s;
+}
+
+.create-source {
+    cursor: pointer;
+}
+
+.artists {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.remove {
+    cursor: pointer;
+    background: red !important;
+}
+
+.options {
+    line-height: 34px;
+    text-align: right;
+    width: 100%;
+}
+
+.add-source {
+    cursor: pointer;
 }

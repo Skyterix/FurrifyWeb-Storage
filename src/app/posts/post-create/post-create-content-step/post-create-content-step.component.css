@@ -7,7 +7,6 @@ ul li, .cdk-drag-preview {
 
 .filename {
     word-wrap: break-word;
-    padding-right: 5px;
 }
 
 ul li .badge, .cdk-drag-preview .badge {
