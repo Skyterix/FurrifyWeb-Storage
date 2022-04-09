@@ -25,10 +25,16 @@ import {
     fetchArtistAfterCreationFail,
     fetchArtistAfterCreationStart,
     fetchArtistAfterCreationSuccess,
+    fetchArtistSourcesFail,
+    fetchArtistSourcesStart,
+    fetchArtistSourcesSuccess,
     fetchTagAfterCreationFail,
     fetchTagAfterCreationStart,
     fetchTagAfterCreationSuccess,
     removeArtistFromSelected,
+    removeArtistSourceFail,
+    removeArtistSourceStart,
+    removeArtistSourceSuccess,
     removeAttachment,
     removeMedia,
     removeSourceFromAttachment,
@@ -44,10 +50,13 @@ import {Artist} from "../../../shared/model/artist.model";
 import {CreateMedia} from "../../../shared/model/request/create-media.model";
 import {CreateSource} from "../../../shared/model/request/create-source.model";
 import {CreateAttachment} from "../../../shared/model/request/create-attachment.model";
+import {QuerySource} from "../../../shared/model/query/query-source.model";
 
 export class ArtistWrapper {
     constructor(public artist: Artist,
-                public isExisting: boolean | null) {
+                public sources: QuerySource[],
+                public isExisting: boolean | null,
+                public areSourcesFetching: boolean | null) {
     }
 }
 
@@ -245,7 +254,7 @@ export const postCreateReducer = createReducer(
                 isFetching: true,
                 postCreateErrorMessage: null,
                 // Set temporarily isExisting value to null to show loading spinner
-                selectedArtists: [...state.selectedArtists, new ArtistWrapper(artist, null)]
+                selectedArtists: [...state.selectedArtists, new ArtistWrapper(artist, [], null, null)]
             };
         }
     ),
@@ -339,7 +348,7 @@ export const postCreateReducer = createReducer(
             });
 
             // Replace old tag with new one
-            newArtists[oldArtistIndex] = new ArtistWrapper(action.artist, true);
+        newArtists[oldArtistIndex] = new ArtistWrapper(action.artist, [], true, null);
 
             return {
                 ...state,
@@ -516,6 +525,152 @@ export const postCreateReducer = createReducer(
                 postCreateErrorMessage: null,
                 createSourceData: {},
                 createdPostId: ""
+            };
+        }
+    ),
+    on(fetchArtistSourcesStart, (state, action) => {
+            const artistIndex = state.selectedArtists.findIndex((artistWrapper) => {
+                return artistWrapper.artist.artistId === action.artistId;
+            });
+
+            const newArtists = [...state.selectedArtists];
+
+            const newArtist = {...newArtists[artistIndex]};
+            newArtist.sources = [];
+            newArtist.areSourcesFetching = false;
+
+
+            newArtists[artistIndex] = newArtist;
+
+            return {
+                ...state,
+                selectedArtists: newArtists,
+                postCreateErrorMessage: null
+            };
+        }
+    ),
+    on(fetchArtistSourcesFail, (state, action) => {
+            const artistIndex = state.selectedArtists.findIndex((artistWrapper) => {
+                return artistWrapper.artist.artistId === action.artistId;
+            });
+
+            const newArtists = [...state.selectedArtists];
+
+            const newArtist = {...newArtists[artistIndex]};
+            newArtist.areSourcesFetching = false;
+
+            newArtists[artistIndex] = newArtist;
+
+            return {
+                ...state,
+                selectedArtists: newArtists,
+                postCreateErrorMessage: action.errorMessage
+            };
+        }
+    ),
+    on(fetchArtistSourcesSuccess, (state, action) => {
+            const artistIndex = state.selectedArtists.findIndex((artistWrapper) => {
+                return artistWrapper.artist.artistId === action.artistId;
+            });
+
+            const newArtists = [...state.selectedArtists];
+
+            const newArtist = {...newArtists[artistIndex]};
+            newArtist.sources = action.artistSources;
+            newArtist.areSourcesFetching = false;
+
+            newArtists[artistIndex] = newArtist;
+
+            return {
+                ...state,
+                selectedArtists: newArtists
+            };
+        }
+    ),
+    on(removeArtistSourceStart, (state, action) => {
+            const artistIndex = state.selectedArtists.findIndex((artistWrapper) => {
+                return artistWrapper.artist.artistId === action.artistId;
+            });
+
+            let newArtists: ArtistWrapper[] = [...state.selectedArtists];
+            const newArtist: ArtistWrapper = {...newArtists[artistIndex]};
+
+            const sourceIndex = newArtist.sources.findIndex((source) => {
+                return source.sourceId === action.sourceId;
+            });
+
+            // Set is fetching for spinner to display
+            const newSources = [...newArtist.sources];
+            const newSource = {...newSources[sourceIndex]};
+            newSource.isFetching = true;
+
+            // Overwrite old source with the new one
+            newSources[sourceIndex] = newSource;
+            newArtist.sources = newSources;
+
+            // Overwrite old artist with the new one
+            newArtists[artistIndex] = newArtist;
+
+            return {
+                ...state,
+                selectedArtists: newArtists,
+                postCreateErrorMessage: null
+            };
+        }
+    ),
+    on(removeArtistSourceFail, (state, action) => {
+            const artistIndex = state.selectedArtists.findIndex((artistWrapper) => {
+                return artistWrapper.artist.artistId === action.artistId;
+            });
+
+            let newArtists: ArtistWrapper[] = [...state.selectedArtists];
+            const newArtist: ArtistWrapper = {...newArtists[artistIndex]};
+
+            const sourceIndex = newArtist.sources.findIndex((source) => {
+                return source.sourceId === action.sourceId;
+            });
+
+            // Set is fetching for spinner to display
+            const newSources = [...newArtist.sources];
+            const newSource = {...newSources[sourceIndex]};
+            newSource.isFetching = false;
+
+            // Overwrite old source with the new one
+            newSources[sourceIndex] = newSource;
+            newArtist.sources = newSources;
+
+            // Overwrite old artist with the new one
+            newArtists[artistIndex] = newArtist;
+
+            return {
+                ...state,
+                selectedArtists: newArtists,
+                postCreateErrorMessage: action.errorMessage
+            };
+        }
+    ),
+    on(removeArtistSourceSuccess, (state, action) => {
+            const artistIndex = state.selectedArtists.findIndex((artistWrapper) => {
+                return artistWrapper.artist.artistId === action.artistId;
+            });
+
+            const newArtists = [...state.selectedArtists];
+            const newArtist = {...newArtists[artistIndex]};
+
+            let newSources = [...newArtist.sources];
+            // Remove artist source by source id
+            newSources = newSources.filter((source) => {
+                return source.sourceId !== action.sourceId;
+            });
+
+            newArtist.sources = newSources;
+
+            // Overwrite old artist with new one
+            newArtists[artistIndex] = newArtist;
+
+            return {
+                ...state,
+                selectedArtists: newArtists
             };
         }
     ),

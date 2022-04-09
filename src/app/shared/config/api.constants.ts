@@ -29,5 +29,7 @@ export const CREATE_ATTACHMENT_SOURCE = SERVER_ADDRESS + '/users/:userId/posts/:
 export const DELETE_POST = SERVER_ADDRESS + '/users/:userId/posts/:postId';
 export const DELETE_ARTIST = SERVER_ADDRESS + '/users/:userId/artists/:artistId';
 
+export const DELETE_SOURCE = SERVER_ADDRESS + '/users/:userId/sources/:sourceId';
+
 // Fixes not getting hal+json from response
 export const RESPONSE_TYPE = "*";

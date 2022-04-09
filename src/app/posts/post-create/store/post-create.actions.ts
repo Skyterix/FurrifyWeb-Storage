@@ -5,6 +5,7 @@ import {Artist} from "../../../shared/model/artist.model";
 import {CreateSource} from "../../../shared/model/request/create-source.model";
 import {CreatePost} from "../../../shared/model/request/create-post.model";
 import {PostCreateStatusEnum} from "../../../shared/enum/post-create-status.enum";
+import {QuerySource} from "../../../shared/model/query/query-source.model";
 
 export const updatePostSavedTitle = createAction(
     '[PostCreate] Update post saved title',
@@ -259,4 +260,34 @@ export const updatePostCreateStatus = createAction(
 
 export const clearPostData = createAction(
     '[PostCreate] Clear post data'
+);
+
+export const fetchArtistSourcesStart = createAction(
+    '[PostCreate] Fetch artist sources start',
+    props<{ userId: string, artistId: string }>()
+);
+
+export const fetchArtistSourcesFail = createAction(
+    '[PostCreate] Fetch artist sources fail',
+    props<{ artistId: string, errorMessage: string }>()
+);
+
+export const fetchArtistSourcesSuccess = createAction(
+    '[PostCreate] Fetch artist sources success',
+    props<{ artistId: string, artistSources: QuerySource[] }>()
+);
+
+export const removeArtistSourceStart = createAction(
+    '[PostCreate] Remove artist source start',
+    props<{ userId: string, artistId: string, sourceId: string }>()
+);
+
+export const removeArtistSourceFail = createAction(
+    '[PostCreate] Remove artist source fail',
+    props<{ artistId: string, sourceId: string, errorMessage: string }>()
+);
+
+export const removeArtistSourceSuccess = createAction(
+    '[PostCreate] Remove artist source success',
+    props<{ artistId: string, sourceId: string }>()
 );

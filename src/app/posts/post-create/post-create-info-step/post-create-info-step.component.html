@@ -44,7 +44,8 @@
                        formControlName="artist"
                        placeholder="Artist value" type="text"/>
 
-                <ul class="artists">
+                <!-- TODO Make it responsive -->
+                <ul class="artists ps-1 pe-1">
                     <li *ngFor="let artistWrapper of selectedArtists" class="mt-1 text-end">
                         <!-- Artist -->
                         <span (click)="loadCreateArtistForm(artistWrapper)"
@@ -54,7 +55,6 @@
                             <!-- Spinner -->
                             <fa-icon *ngIf="artistWrapper.isExisting == null" [icon]="spinnerIcon" [spin]="true"
                                      class="me-1" size="sm"></fa-icon>
-
 
                             <span class="filename">{{ artistWrapper.artist.preferredNickname }}</span>
 
@@ -70,13 +70,18 @@
                         <div class="clearfix"></div>
 
 
+                        <!-- Sources Spinner -->
+                        <div *ngIf="!!artistWrapper.areSourcesFetching" class="text-center">
+                            <fa-icon [icon]="spinnerIcon" [spin]="true"
+                                     class="me-1" size="sm"></fa-icon>
+                        </div>
+
                         <!-- Sources -->
-                        <!-- TODO Load from database request
-                                               <div>
-                                                    <app-media-source-item *ngFor="let source of media.sources; let sourceIndex = index"
-                                                                           [mediaIndex]="mediaIndex" [sourceIndex]="sourceIndex"
-                                                                           [source]="source"></app-media-source-item>
-                                                </div>-->
+                        <div class="text-start ">
+                            <app-artist-source-item
+                                *ngFor="let source of artistWrapper.sources"
+                                [artistId]="artistWrapper.artist.artistId" [source]="source"></app-artist-source-item>
+                        </div>
                     </li>
                 </ul>
 

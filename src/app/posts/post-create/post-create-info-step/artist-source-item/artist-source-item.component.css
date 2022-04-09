@@ -1,0 +1,17 @@
+p {
+    color: #5c5c5c;
+    font-size: 0.9em;
+}
+
+.remove {
+    display: inline-flex;
+    float: right;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.remove fa-icon {
+    color: #fff;
+    margin-top: 1px;
+}
