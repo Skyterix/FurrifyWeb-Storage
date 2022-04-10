@@ -44,7 +44,12 @@ export class PostCreateService {
     private attachments!: AttachmentWrapper[];
     private currentUser!: KeycloakProfile | null;
 
+    private currentStatus: PostCreateStatusEnum | undefined;
+
     private createdPostId!: string;
+
+    private currentIndex!: number;
+    private currentSourceIndex!: number;
 
     constructor(private store: Store<fromApp.AppState>) {
         this.store.select('postCreate').subscribe(state => {
@@ -55,6 +60,9 @@ export class PostCreateService {
             this.mediaSet = state.mediaSet;
             this.attachments = state.attachments;
 
+            this.currentIndex = state.currentIndex;
+            this.currentSourceIndex = state.currentSourceIndex;
+
             this.createdPostId = state.createdPostId;
         });
 
@@ -62,22 +70,20 @@ export class PostCreateService {
             this.currentUser = state.currentUser;
         });
 
-        this.postCreateStatusChangeEvent.subscribe(status => {
-            switch (status) {
-                case PostCreateStatusEnum.POST_CREATED:
-                    this.uploadMediaSet();
-                    break;
-                case PostCreateStatusEnum.MEDIA_SET_UPLOADED:
-                    this.uploadAttachments();
-                    break;
-                case PostCreateStatusEnum.ATTACHMENTS_UPLOADED:
-                    this.createMediaSetSources();
-                    break;
-                case PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED:
-                    this.createAttachmentsSources();
-                    break;
-            }
-        });
+        this.postCreateStatusChangeEvent.subscribe(status =>
+            this.handlePostCreateStatusChange(status, 0, 0));
+    }
+
+    retryPostCreate(): void {
+        if (!this.currentStatus) {
+            return;
+        }
+
+        this.handlePostCreateStatusChange(
+            this.currentStatus,
+            this.currentIndex,
+            this.currentSourceIndex
+        );
     }
 
     isFormDataValid(): boolean {
@@ -114,7 +120,35 @@ export class PostCreateService {
         return true;
     }
 
-    createPost(): void {
+    triggerPostCreate(): void {
+        this.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.REQUEST_RECEIVED);
+    }
+
+    private handlePostCreateStatusChange(status: PostCreateStatusEnum,
+                                         currentIndex: number,
+                                         currentSourceIndex: number) {
+        this.currentStatus = status;
+
+        switch (status) {
+            case PostCreateStatusEnum.REQUEST_RECEIVED:
+                this.createPost();
+                break;
+            case PostCreateStatusEnum.POST_CREATED:
+                this.uploadMediaSet(currentIndex);
+                break;
+            case PostCreateStatusEnum.MEDIA_SET_UPLOADED:
+                this.uploadAttachments(currentIndex);
+                break;
+            case PostCreateStatusEnum.ATTACHMENTS_UPLOADED:
+                this.createMediaSetSources(currentIndex, currentSourceIndex);
+                break;
+            case PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED:
+                this.createAttachmentsSources(currentIndex, currentSourceIndex);
+                break;
+        }
+    }
+
+    private createPost(): void {
         if (!this.currentUser || !this.isFormDataValid()) {
             return;
         }
@@ -136,48 +170,48 @@ export class PostCreateService {
         ))
     }
 
-    private uploadMediaSet(): void {
+    private uploadMediaSet(startIndex: number): void {
         this.store.dispatch(createMediaSetStart(
             {
                 userId: this.currentUser?.id!,
                 postId: this.createdPostId,
                 mediaSet: this.mediaSet,
-                currentIndex: 0
+                currentIndex: startIndex
             }
         ))
     }
 
-    private uploadAttachments(): void {
+    private uploadAttachments(startIndex: number): void {
         this.store.dispatch(createAttachmentsStart(
             {
                 userId: this.currentUser?.id!,
                 postId: this.createdPostId,
                 attachments: this.attachments,
-                currentIndex: 0
+                currentIndex: startIndex
             }
         ))
     }
 
-    private createMediaSetSources(): void {
+    private createMediaSetSources(startMediaIndex: number, startSourceIndex: number): void {
         this.store.dispatch(createMediaSetSourcesStart(
             {
                 userId: this.currentUser?.id!,
                 postId: this.createdPostId,
                 mediaSet: this.mediaSet,
-                currentMediaIndex: 0,
-                currentSourceIndex: 0
+                currentMediaIndex: startMediaIndex,
+                currentSourceIndex: startSourceIndex
             }
         ))
     }
 
-    private createAttachmentsSources(): void {
+    private createAttachmentsSources(startMediaIndex: number, startSourceIndex: number): void {
         this.store.dispatch(createAttachmentsSourcesStart(
             {
                 userId: this.currentUser?.id!,
                 postId: this.createdPostId,
                 attachments: this.attachments,
-                currentAttachmentIndex: 0,
-                currentSourceIndex: 0
+                currentAttachmentIndex: startMediaIndex,
+                currentSourceIndex: startSourceIndex
             }
         ))
     }

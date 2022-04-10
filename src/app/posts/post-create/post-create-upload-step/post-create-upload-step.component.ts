@@ -51,11 +51,14 @@ export class PostCreateUploadStepComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.postCreateService.createPost();
+        this.postCreateService.triggerPostCreate();
     }
 
     private handlePostCreateStatusChange(status: PostCreateStatusEnum) {
         switch (status) {
+            case PostCreateStatusEnum.REQUEST_RECEIVED:
+                document.querySelector("#result")!.innerHTML = "REQUEST_RECEIVED";
+                break;
             case PostCreateStatusEnum.POST_CREATED:
                 document.querySelector("#result")!.innerHTML = "POST_CREATED";
                 break;
