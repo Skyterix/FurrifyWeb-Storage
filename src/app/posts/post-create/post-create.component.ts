@@ -38,6 +38,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     @ViewChild('section', {read: ElementRef}) sectionRef!: ElementRef;
 
     isFetching = false;
+    isErrorPostCreationRelated = false;
     errorMessage: string | null = null;
 
     private postInfoStepOpenEventSubscription!: Subscription;
@@ -116,6 +117,8 @@ export class PostCreateComponent implements OnInit, OnDestroy {
 
         this.storeSubscription = this.store.select('postCreate').subscribe(state => {
             this.errorMessage = state.postCreateErrorMessage;
+            this.isErrorPostCreationRelated = state.isErrorPostCreationRelated;
+
         });
 
         // Load default step
@@ -163,5 +166,9 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         }
 
         this.currentSideStepRef.clear();
+    }
+
+    onRetry(): void {
+        this.postCreateService.retryPostCreate();
     }
 }

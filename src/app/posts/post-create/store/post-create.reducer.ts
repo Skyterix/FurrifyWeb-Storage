@@ -20,8 +20,12 @@ import {
     createArtistSourceStart,
     createArtistSourceSuccess,
     createArtistStart,
+    createAttachmentsSourcesStart,
     createAttachmentsSourcesSuccess,
+    createAttachmentsStart,
     createAttachmentsSuccess,
+    createMediaSetSourcesStart,
+    createMediaSetStart,
     createMediaSetSuccess,
     createPostFail,
     createPostStart,
@@ -95,6 +99,7 @@ export class AttachmentWrapper {
 
 export interface State {
     // Create Post
+    isErrorPostCreationRelated: boolean;
     isFetching: boolean;
     selectedTags: TagWrapper[];
     selectedArtists: ArtistWrapper[];
@@ -108,10 +113,13 @@ export interface State {
     artistSourceCreateErrorMessage: string | null;
     createSourceData: any;
     createdPostId: string;
+    currentIndex: number;
+    currentSourceIndex: number
 }
 
 const initialState: State = {
     // Create Post
+    isErrorPostCreationRelated: false,
     isFetching: false,
     selectedTags: [],
     selectedArtists: [],
@@ -124,7 +132,9 @@ const initialState: State = {
     postCreateErrorMessage: null,
     artistSourceCreateErrorMessage: null,
     createSourceData: {},
-    createdPostId: ""
+    createdPostId: "",
+    currentIndex: 0,
+    currentSourceIndex: 0
 };
 
 export const postCreateReducer = createReducer(
@@ -404,7 +414,10 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 isFetching: true,
-                postCreateErrorMessage: null
+                postCreateErrorMessage: null,
+                isErrorPostCreationRelated: false,
+                currentIndex: 0,
+                currentSourceIndex: 0
             };
         }
     ),
@@ -419,10 +432,49 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 isFetching: false,
-                postCreateErrorMessage: action.errorMessage
+                postCreateErrorMessage: action.errorMessage,
+                isErrorPostCreationRelated: true
             };
         }
     ),
+    on(createMediaSetStart, (state, action) => {
+        return {
+            ...state,
+            isFetching: true,
+            postCreateErrorMessage: null,
+            isErrorPostCreationRelated: false,
+            currentIndex: action.currentIndex
+        };
+    }),
+    on(createAttachmentsStart, (state, action) => {
+        return {
+            ...state,
+            isFetching: true,
+            postCreateErrorMessage: null,
+            isErrorPostCreationRelated: false,
+            currentIndex: action.currentIndex
+        };
+    }),
+    on(createMediaSetSourcesStart, (state, action) => {
+        return {
+            ...state,
+            isFetching: true,
+            postCreateErrorMessage: null,
+            isErrorPostCreationRelated: false,
+            currentIndex: action.currentMediaIndex,
+            currentSourceIndex: action.currentSourceIndex
+        };
+    }),
+    on(createAttachmentsSourcesStart, (state, action) => {
+        return {
+            ...state,
+            isFetching: true,
+            postCreateErrorMessage: null,
+            isErrorPostCreationRelated: false,
+            currentIndex: action.currentAttachmentIndex,
+            currentSourceIndex: action.currentSourceIndex
+        };
+    }),
     on(createAttachmentsSuccess, (state, action) => {
             return {
                 ...state,
@@ -431,8 +483,8 @@ export const postCreateReducer = createReducer(
         }
     ),
     on(createAttachmentsSourcesSuccess, (state, action) => {
-            return {
-                ...state,
+        return {
+            ...state,
                 isFetching: false
             };
         }

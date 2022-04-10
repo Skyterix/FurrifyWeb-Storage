@@ -1,4 +1,5 @@
 export enum PostCreateStatusEnum {
+    REQUEST_RECEIVED,
     POST_CREATED,
     MEDIA_SET_UPLOADED,
     ATTACHMENTS_UPLOADED,
