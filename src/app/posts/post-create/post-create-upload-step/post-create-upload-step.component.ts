@@ -30,7 +30,7 @@ export class PostCreateUploadStepComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.postsStoreSubscription = this.store.select('posts').subscribe(state => {
+        this.postsStoreSubscription = this.store.select('postCreate').subscribe(state => {
             this.isFetching = state.isFetching;
 
             this.isFormValid = this.postCreateService.isFormDataValid();
