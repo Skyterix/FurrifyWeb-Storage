@@ -1,6 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {
+    addArtistSourceAfterCreationFail,
+    addArtistSourceAfterCreationStart,
+    addArtistSourceAfterCreationSuccess,
     addArtistToSelectedSetFail,
     addArtistToSelectedSetStart,
     addArtistToSelectedSetSuccess,
@@ -11,6 +14,9 @@ import {
     addTagToSelectedSetSuccess,
     clearPostData,
     createArtistFail,
+    createArtistSourceFail,
+    createArtistSourceStart,
+    createArtistSourceSuccess,
     createArtistStart,
     createArtistUploadAvatarStart,
     createAttachmentsSourcesStart,
@@ -29,14 +35,21 @@ import {
     fetchArtistAfterCreationFail,
     fetchArtistAfterCreationStart,
     fetchArtistAfterCreationSuccess,
+    fetchArtistSourcesFail,
+    fetchArtistSourcesStart,
+    fetchArtistSourcesSuccess,
     fetchTagAfterCreationFail,
     fetchTagAfterCreationStart,
-    fetchTagAfterCreationSuccess
+    fetchTagAfterCreationSuccess,
+    removeArtistSourceFail,
+    removeArtistSourceStart,
+    removeArtistSourceSuccess
 } from "./post-create.actions";
 import {catchError, map, retryWhen, switchMap, tap} from "rxjs/operators";
 import {Tag} from "../../../shared/model/tag.model";
 import {
     CREATE_ARTIST,
+    CREATE_ARTIST_SOURCE,
     CREATE_ATTACHMENT,
     CREATE_ATTACHMENT_SOURCE,
     CREATE_AVATAR,
@@ -44,8 +57,11 @@ import {
     CREATE_MEDIA_SOURCE,
     CREATE_POST,
     CREATE_TAG,
+    DELETE_SOURCE,
     GET_ARTIST,
+    GET_ARTIST_SOURCES,
     GET_ARTISTS_BY_PREFERRED_NICKNAME,
+    GET_SOURCE,
     GET_TAG,
     RESPONSE_TYPE
 } from "../../../shared/config/api.constants";
@@ -53,7 +69,7 @@ import {of} from "rxjs";
 import {RETRY_HANDLER} from "../../../shared/store/shared.effects";
 import {HypermediaResultList} from "../../../shared/model/hypermedia-result-list.model";
 import {Artist} from "../../../shared/model/artist.model";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {CreateAvatar} from "../../../shared/model/request/create-avatar.model";
 import {AvatarExtensionsConfig} from "../../../shared/config/avatar-extensions.config";
 import {EXTENSION_EXTRACT_REGEX} from "../../../shared/config/common.constats";
@@ -64,6 +80,8 @@ import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {Router} from "@angular/router";
 import {ArtistWrapper, TagWrapper} from "./post-create.reducer";
+import {QuerySource} from "../../../shared/model/query/query-source.model";
+import {dummy} from "../../../shared/store/shared.actions";
 
 @Injectable()
 export class PostCreateEffects {
@@ -227,12 +245,12 @@ export class PostCreateEffects {
                         };
 
                         return addArtistToSelectedSetSuccess({
-                            artistWrapper: new ArtistWrapper(artist, false)
+                            artistWrapper: new ArtistWrapper(artist, [], false, null)
                         });
                     }
 
                     let artistWrapper =
-                        new ArtistWrapper(response._embedded.artistSnapshotList[0], true);
+                        new ArtistWrapper(response._embedded.artistSnapshotList[0], [], true, null);
 
                     return addArtistToSelectedSetSuccess({
                         artistWrapper: artistWrapper
@@ -658,7 +676,6 @@ export class PostCreateEffects {
             );
         })
     ));
-
     createMediaSetSourcesSuccess = createEffect(() => this.actions$.pipe(
         ofType(createMediaSetSourcesSuccess),
         tap(() => {
@@ -753,6 +770,197 @@ export class PostCreateEffects {
         })
     ));
 
+    fetchArtistSourcesStart = createEffect(() => this.actions$.pipe(
+        ofType(fetchArtistSourcesStart),
+        switchMap((action) => {
+                return this.httpClient.get<HypermediaResultList<QuerySource>>(GET_ARTIST_SOURCES
+                        .replace(":userId", action.userId)
+                        .replace(":artistId", action.artistId), {
+                        params: new HttpParams()
+                            // TODO probably needs pagination
+                            .append("size", 100),
+                        headers: new HttpHeaders()
+                            .append("Accept", RESPONSE_TYPE)
+                    },
+                ).pipe(
+                    map(sourcesResponse => {
+                        let sources: QuerySource[] = [];
+
+                        if (!!sourcesResponse._embedded) {
+                            sources = sourcesResponse._embedded.sourceSnapshotList;
+                        }
+
+                        return fetchArtistSourcesSuccess({
+                            artistId: action.artistId,
+                            artistSources: sources
+                        });
+                    }),
+                    retryWhen(RETRY_HANDLER),
+                    catchError(error => {
+                        let errorMessage;
+
+                        switch (error.status) {
+                            case 503:
+                                errorMessage = 'No servers available to handle your request. Try again later.'
+                                break;
+                            case 400:
+                                errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
+                                break;
+                            case 404:
+                                errorMessage = 'Artist was not found and sources could not be fetched. Try again in a moment.';
+                                break;
+                            default:
+                                errorMessage = 'Something went wrong. Try again later.';
+                                break;
+                        }
+
+                        return of(fetchArtistSourcesFail({
+                            artistId: action.artistId,
+                            errorMessage: errorMessage
+                        }));
+                    })
+                );
+            }
+        )
+    ));
+
+    addArtistSourceAfterCreationStart = createEffect(() => this.actions$.pipe(
+        ofType(addArtistSourceAfterCreationStart),
+        switchMap((action) => {
+                return this.httpClient.get<QuerySource>(GET_SOURCE
+                    .replace(":userId", action.userId)
+                    .replace(":sourceId", action.sourceId)
+                ).pipe(
+                    map(source => {
+
+                        return addArtistSourceAfterCreationSuccess({
+                            artistId: action.artistId,
+                            source: source
+                        });
+                    }),
+                    retryWhen(RETRY_HANDLER),
+                    catchError(error => {
+                        let errorMessage;
+
+                        switch (error.status) {
+                            case 503:
+                                errorMessage = 'No servers available to handle your request. Try again later.'
+                                break;
+                            case 400:
+                                errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
+                                break;
+                            case 404:
+                                errorMessage = 'Created artist source has not yet been processed. Try again in a moment.';
+                                break;
+                            default:
+                                errorMessage = 'Something went wrong. Try again later.';
+                                break;
+                        }
+
+                        return of(addArtistSourceAfterCreationFail({
+                            artistId: action.artistId,
+                            errorMessage: errorMessage
+                        }));
+                    })
+                );
+            }
+        )
+    ));
+
+    addArtistToSelectedSetSuccess = createEffect(() => this.actions$.pipe(
+        ofType(addArtistToSelectedSetSuccess),
+        map((action) => {
+            // If artist exists, fetch sources
+            if (!!action.artistWrapper.isExisting) {
+                return fetchArtistSourcesStart({
+                    userId: action.artistWrapper.artist.ownerId,
+                    artistId: action.artistWrapper.artist.artistId
+                });
+            }
+
+            // Workaround for typescript weirdness
+            return dummy();
+        })
+    ));
+
+    createArtistSourceStart = createEffect(() => this.actions$.pipe(
+        ofType(createArtistSourceStart),
+        switchMap((action) => {
+            return this.httpClient.post(CREATE_ARTIST_SOURCE
+                    .replace(":userId", action.userId)
+                    .replace(":artistId", action.artistId),
+                action.createSource, {
+                    observe: 'response'
+                }).pipe(
+                map(response => {
+                    return createArtistSourceSuccess({
+                        userId: action.userId,
+                        artistId: action.artistId,
+                        sourceId: response.headers.get("Id")!
+                    });
+                }),
+                catchError(error => {
+                    switch (error.status) {
+                        case 503:
+                            return of(createArtistSourceFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(createArtistSourceFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
+                        default:
+                            return of(createArtistSourceFail({
+                                errorMessage: 'Something went wrong. Try again later.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
+    removeArtistSourceStart = createEffect(() => this.actions$.pipe(
+        ofType(removeArtistSourceStart),
+        switchMap((action) => {
+                return this.httpClient.delete<HypermediaResultList<QuerySource>>(DELETE_SOURCE
+                    .replace(":userId", action.userId)
+                    .replace(":sourceId", action.sourceId)
+                ).pipe(
+                    map(response => {
+                        return removeArtistSourceSuccess({
+                            artistId: action.artistId,
+                            sourceId: action.sourceId
+                        });
+                    }),
+                    retryWhen(RETRY_HANDLER),
+                    catchError(error => {
+                        let errorMessage;
+
+                        switch (error.status) {
+                            case 503:
+                                errorMessage = 'No servers available to handle your request. Try again later.'
+                                break;
+                            case 400:
+                                errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
+                                break;
+                            case 404:
+                                errorMessage = 'Artist source was not found and could not be deleted. Try again in a moment.';
+                                break;
+                            default:
+                                errorMessage = 'Something went wrong. Try again later.';
+                                break;
+                        }
+
+                        return of(removeArtistSourceFail({
+                            artistId: action.artistId,
+                            sourceId: action.sourceId,
+                            errorMessage
+                        }));
+                    })
+                );
+            }
+        )
+    ));
 
     // On last thing created in post
     createAttachmentsSourcesSuccess = createEffect(() => this.actions$.pipe(
@@ -767,13 +975,25 @@ export class PostCreateEffects {
         })
     ), {dispatch: false});
 
-
     artistFetchSuccess = createEffect(() => this.actions$.pipe(
         ofType(fetchArtistAfterCreationSuccess),
         tap(() => {
             this.postCreateService.clearPostCreateSideStepModalEvent.emit();
         })
     ), {dispatch: false});
+
+    createArtistSourceSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createArtistSourceSuccess),
+        map(action => {
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
+
+            return addArtistSourceAfterCreationStart({
+                userId: action.userId,
+                artistId: action.artistId,
+                sourceId: action.sourceId
+            });
+        })
+    ));
 
     addMedia = createEffect(() => this.actions$.pipe(
         ofType(addMedia),

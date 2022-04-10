@@ -25,7 +25,7 @@ export class MediaSourceDeviantArtComponent implements OnInit {
 
     onChange(): void {
         let url = this.mediaSourceForm.controls.deviationUrl.value;
-        // If id is empty set it to null to prevent form from being valid
+        // If url is empty set it to null to prevent form from being valid
         if (url === "") {
             url = null;
         }

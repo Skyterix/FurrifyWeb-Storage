@@ -29,6 +29,14 @@ import {
     AttachmentSourcePatreonComponent
 } from './attachment-source-create/attachment-source-patreon/attachment-source-patreon.component';
 import {MediaSourcePatreonComponent} from './media-source-create/media-source-patreon/media-source-patreon.component';
+import {ArtistSourceItemComponent} from './post-create-info-step/artist-source-item/artist-source-item.component';
+import {ArtistSourceCreateComponent} from './artist-source-create/artist-source-create.component';
+import {
+    ArtistSourceDeviantArtComponent
+} from './artist-source-create/artist-source-deviant-art/artist-source-deviant-art.component';
+import {
+    ArtistSourcePatreonComponent
+} from './artist-source-create/artist-source-patreon/artist-source-patreon.component';
 
 @NgModule({
     declarations: [
@@ -48,7 +56,11 @@ import {MediaSourcePatreonComponent} from './media-source-create/media-source-pa
         AttachmentSourceDeviantArtComponent,
         AttachmentSourceItemComponent,
         AttachmentSourcePatreonComponent,
-        MediaSourcePatreonComponent
+        MediaSourcePatreonComponent,
+        ArtistSourceItemComponent,
+        ArtistSourceCreateComponent,
+        ArtistSourceDeviantArtComponent,
+        ArtistSourcePatreonComponent
     ],
     imports: [
         CommonModule,

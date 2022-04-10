@@ -9,6 +9,7 @@ export const GET_POSTS_BY_QUERY = SERVER_ADDRESS + '/users/:userId/posts/search'
 export const GET_POST = SERVER_ADDRESS + '/users/:userId/posts/:postId';
 export const GET_TAG = SERVER_ADDRESS + '/users/:userId/tags/:value';
 export const GET_ARTIST = SERVER_ADDRESS + '/users/:userId/artists/:artistId';
+export const GET_SOURCE = SERVER_ADDRESS + '/users/:userId/sources/:sourceId';
 export const GET_ARTISTS_BY_PREFERRED_NICKNAME = SERVER_ADDRESS + '/users/:userId/artists';
 
 export const GET_POST_MEDIA_SOURCES = SERVER_ADDRESS + '/users/:userId/posts/:postId/media/:mediaId/sources';
@@ -25,9 +26,12 @@ export const CREATE_AVATAR = SERVER_ADDRESS + '/users/:userId/artists/:artistId/
 
 export const CREATE_MEDIA_SOURCE = SERVER_ADDRESS + '/users/:userId/posts/:postId/media/:mediaId/sources';
 export const CREATE_ATTACHMENT_SOURCE = SERVER_ADDRESS + '/users/:userId/posts/:postId/attachments/:attachmentId/sources';
+export const CREATE_ARTIST_SOURCE = SERVER_ADDRESS + '/users/:userId/artists/:artistId/sources';
 
 export const DELETE_POST = SERVER_ADDRESS + '/users/:userId/posts/:postId';
 export const DELETE_ARTIST = SERVER_ADDRESS + '/users/:userId/artists/:artistId';
+
+export const DELETE_SOURCE = SERVER_ADDRESS + '/users/:userId/sources/:sourceId';
 
 // Fixes not getting hal+json from response
 export const RESPONSE_TYPE = "*";
