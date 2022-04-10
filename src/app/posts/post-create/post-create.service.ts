@@ -28,6 +28,7 @@ export class PostCreateService {
     attachmentCreateOpenEvent: EventEmitter<void> = new EventEmitter<void>();
     mediaSourceCreateOpenEvent: EventEmitter<MediaWrapper> = new EventEmitter<MediaWrapper>();
     attachmentSourceCreateOpenEvent: EventEmitter<AttachmentWrapper> = new EventEmitter<AttachmentWrapper>();
+    artistSourceCreateOpenEvent: EventEmitter<ArtistWrapper> = new EventEmitter<ArtistWrapper>();
 
     postInfoStepOpenEvent: EventEmitter<void> = new EventEmitter<void>();
     postContentStepOpenEvent: EventEmitter<void> = new EventEmitter<void>();

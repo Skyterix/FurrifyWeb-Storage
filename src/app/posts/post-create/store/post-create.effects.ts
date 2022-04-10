@@ -1,6 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {
+    addArtistSourceAfterCreationFail,
+    addArtistSourceAfterCreationStart,
+    addArtistSourceAfterCreationSuccess,
     addArtistToSelectedSetFail,
     addArtistToSelectedSetStart,
     addArtistToSelectedSetSuccess,
@@ -11,6 +14,9 @@ import {
     addTagToSelectedSetSuccess,
     clearPostData,
     createArtistFail,
+    createArtistSourceFail,
+    createArtistSourceStart,
+    createArtistSourceSuccess,
     createArtistStart,
     createArtistUploadAvatarStart,
     createAttachmentsSourcesStart,
@@ -43,6 +49,7 @@ import {catchError, map, retryWhen, switchMap, tap} from "rxjs/operators";
 import {Tag} from "../../../shared/model/tag.model";
 import {
     CREATE_ARTIST,
+    CREATE_ARTIST_SOURCE,
     CREATE_ATTACHMENT,
     CREATE_ATTACHMENT_SOURCE,
     CREATE_AVATAR,
@@ -54,6 +61,7 @@ import {
     GET_ARTIST,
     GET_ARTIST_SOURCES,
     GET_ARTISTS_BY_PREFERRED_NICKNAME,
+    GET_SOURCE,
     GET_TAG,
     RESPONSE_TYPE
 } from "../../../shared/config/api.constants";
@@ -816,6 +824,49 @@ export class PostCreateEffects {
         )
     ));
 
+    addArtistSourceAfterCreationStart = createEffect(() => this.actions$.pipe(
+        ofType(addArtistSourceAfterCreationStart),
+        switchMap((action) => {
+                return this.httpClient.get<QuerySource>(GET_SOURCE
+                    .replace(":userId", action.userId)
+                    .replace(":sourceId", action.sourceId)
+                ).pipe(
+                    map(source => {
+
+                        return addArtistSourceAfterCreationSuccess({
+                            artistId: action.artistId,
+                            source: source
+                        });
+                    }),
+                    retryWhen(RETRY_HANDLER),
+                    catchError(error => {
+                        let errorMessage;
+
+                        switch (error.status) {
+                            case 503:
+                                errorMessage = 'No servers available to handle your request. Try again later.'
+                                break;
+                            case 400:
+                                errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
+                                break;
+                            case 404:
+                                errorMessage = 'Created artist source has not yet been processed. Try again in a moment.';
+                                break;
+                            default:
+                                errorMessage = 'Something went wrong. Try again later.';
+                                break;
+                        }
+
+                        return of(addArtistSourceAfterCreationFail({
+                            artistId: action.artistId,
+                            errorMessage: errorMessage
+                        }));
+                    })
+                );
+            }
+        )
+    ));
+
     addArtistToSelectedSetSuccess = createEffect(() => this.actions$.pipe(
         ofType(addArtistToSelectedSetSuccess),
         map((action) => {
@@ -832,40 +883,41 @@ export class PostCreateEffects {
         })
     ));
 
-    // On last thing created in post
-    createAttachmentsSourcesSuccess = createEffect(() => this.actions$.pipe(
-        ofType(createAttachmentsSourcesSuccess),
-        tap(() => {
-            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_SOURCES_CREATED);
-            setTimeout(() => {
-                this.postCreateService.clearPostCreateModalEvent.emit();
-                this.store.dispatch(clearPostData());
-                this.postsService.triggerSearch()
-            }, 50)
+    createArtistSourceStart = createEffect(() => this.actions$.pipe(
+        ofType(createArtistSourceStart),
+        switchMap((action) => {
+            return this.httpClient.post(CREATE_ARTIST_SOURCE
+                    .replace(":userId", action.userId)
+                    .replace(":artistId", action.artistId),
+                action.createSource, {
+                    observe: 'response'
+                }).pipe(
+                map(response => {
+                    return createArtistSourceSuccess({
+                        userId: action.userId,
+                        artistId: action.artistId,
+                        sourceId: response.headers.get("Id")!
+                    });
+                }),
+                catchError(error => {
+                    switch (error.status) {
+                        case 503:
+                            return of(createArtistSourceFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 400:
+                            return of(createArtistSourceFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
+                        default:
+                            return of(createArtistSourceFail({
+                                errorMessage: 'Something went wrong. Try again later.'
+                            }));
+                    }
+                })
+            );
         })
-    ), {dispatch: false});
-
-
-    artistFetchSuccess = createEffect(() => this.actions$.pipe(
-        ofType(fetchArtistAfterCreationSuccess),
-        tap(() => {
-            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
-        })
-    ), {dispatch: false});
-
-    addMedia = createEffect(() => this.actions$.pipe(
-        ofType(addMedia),
-        tap(() => {
-            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
-        })
-    ), {dispatch: false});
-
-    addAttachment = createEffect(() => this.actions$.pipe(
-        ofType(addAttachment),
-        tap(() => {
-            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
-        })
-    ), {dispatch: false});
+    ));
 
     removeArtistSourceStart = createEffect(() => this.actions$.pipe(
         ofType(removeArtistSourceStart),
@@ -909,6 +961,53 @@ export class PostCreateEffects {
             }
         )
     ));
+
+    // On last thing created in post
+    createAttachmentsSourcesSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createAttachmentsSourcesSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_SOURCES_CREATED);
+            setTimeout(() => {
+                this.postCreateService.clearPostCreateModalEvent.emit();
+                this.store.dispatch(clearPostData());
+                this.postsService.triggerSearch()
+            }, 50)
+        })
+    ), {dispatch: false});
+
+    artistFetchSuccess = createEffect(() => this.actions$.pipe(
+        ofType(fetchArtistAfterCreationSuccess),
+        tap(() => {
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
+        })
+    ), {dispatch: false});
+
+    createArtistSourceSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createArtistSourceSuccess),
+        map(action => {
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
+
+            return addArtistSourceAfterCreationStart({
+                userId: action.userId,
+                artistId: action.artistId,
+                sourceId: action.sourceId
+            });
+        })
+    ));
+
+    addMedia = createEffect(() => this.actions$.pipe(
+        ofType(addMedia),
+        tap(() => {
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
+        })
+    ), {dispatch: false});
+
+    addAttachment = createEffect(() => this.actions$.pipe(
+        ofType(addAttachment),
+        tap(() => {
+            this.postCreateService.clearPostCreateSideStepModalEvent.emit();
+        })
+    ), {dispatch: false});
 
     constructor(
         private store: Store<fromApp.AppState>,

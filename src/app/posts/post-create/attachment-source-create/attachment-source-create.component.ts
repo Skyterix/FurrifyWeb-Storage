@@ -26,7 +26,6 @@ export class AttachmentSourceCreateComponent implements OnInit {
     @Input() attachment!: AttachmentWrapper;
     attachments!: AttachmentWrapper[];
 
-    errorMessage!: string | null;
     isFetching!: boolean;
 
     data: any = null;
@@ -44,7 +43,6 @@ export class AttachmentSourceCreateComponent implements OnInit {
     ngOnInit(): void {
         this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
             this.isFetching = state.isFetching;
-            this.errorMessage = state.artistErrorMessage;
             this.attachments = state.attachments;
             this.data = state.createSourceData;
         });

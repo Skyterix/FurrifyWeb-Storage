@@ -291,3 +291,37 @@ export const removeArtistSourceSuccess = createAction(
     '[PostCreate] Remove artist source success',
     props<{ artistId: string, sourceId: string }>()
 );
+
+export const createArtistSourceStart = createAction(
+    '[PostCreate] Create artist source start',
+    props<{
+        userId: string,
+        artistId: string,
+        createSource: CreateSource
+    }>()
+);
+
+export const createArtistSourceFail = createAction(
+    '[PostCreate] Create artist source fail',
+    props<{ errorMessage: string }>()
+);
+
+export const createArtistSourceSuccess = createAction(
+    '[PostCreate] Create artist source success',
+    props<{ userId: string, artistId: string, sourceId: string }>()
+);
+
+export const addArtistSourceAfterCreationStart = createAction(
+    '[PostCreate] Add artist source after creation start',
+    props<{ userId: string, artistId: string, sourceId: string }>()
+);
+
+export const addArtistSourceAfterCreationFail = createAction(
+    '[PostCreate] Add artist source after creation fail',
+    props<{ artistId: string, errorMessage: string }>()
+);
+
+export const addArtistSourceAfterCreationSuccess = createAction(
+    '[PostCreate] Add artist source after creation success',
+    props<{ artistId: string, source: QuerySource }>()
+);

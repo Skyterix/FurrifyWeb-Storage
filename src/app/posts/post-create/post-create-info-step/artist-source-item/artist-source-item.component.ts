@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../../store/app.reducer";
 import {removeArtistSourceStart} from "../../store/post-create.actions";
@@ -13,7 +13,7 @@ import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
     templateUrl: './artist-source-item.component.html',
     styleUrls: ['./artist-source-item.component.css']
 })
-export class ArtistSourceItemComponent implements OnInit {
+export class ArtistSourceItemComponent implements OnInit, OnDestroy {
 
     rightIcon = faTimes;
 
@@ -38,6 +38,10 @@ export class ArtistSourceItemComponent implements OnInit {
         });
 
         this.rightIcon = (this.source.isFetching) ? faCircleNotch : faTimes;
+    }
+
+    ngOnDestroy(): void {
+        this.authenticationStoreSubscription.unsubscribe();
     }
 
     onRemove(): void {

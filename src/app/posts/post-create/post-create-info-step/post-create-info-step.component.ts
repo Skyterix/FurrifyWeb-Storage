@@ -201,6 +201,6 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     loadCreateArtistSourceForm(artistWrapper: ArtistWrapper): void {
-        alert("Not implemented yet.");
+        this.postCreateService.artistSourceCreateOpenEvent.emit(artistWrapper);
     }
 }

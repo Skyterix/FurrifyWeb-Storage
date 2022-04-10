@@ -1,5 +1,8 @@
 import {createReducer, on} from "@ngrx/store";
 import {
+    addArtistSourceAfterCreationFail,
+    addArtistSourceAfterCreationStart,
+    addArtistSourceAfterCreationSuccess,
     addArtistToSelectedSetFail,
     addArtistToSelectedSetStart,
     addArtistToSelectedSetSuccess,
@@ -13,6 +16,9 @@ import {
     clearPostData,
     clearSourceData,
     createArtistFail,
+    createArtistSourceFail,
+    createArtistSourceStart,
+    createArtistSourceSuccess,
     createArtistStart,
     createAttachmentsSourcesSuccess,
     createAttachmentsSuccess,
@@ -99,6 +105,7 @@ export interface State {
     mediaSet: MediaWrapper[];
     attachments: AttachmentWrapper[];
     postCreateErrorMessage: string | null;
+    artistSourceCreateErrorMessage: string | null;
     createSourceData: any;
     createdPostId: string;
 }
@@ -115,6 +122,7 @@ const initialState: State = {
     mediaSet: [],
     attachments: [],
     postCreateErrorMessage: null,
+    artistSourceCreateErrorMessage: null,
     createSourceData: {},
     createdPostId: ""
 };
@@ -536,8 +544,8 @@ export const postCreateReducer = createReducer(
             const newArtists = [...state.selectedArtists];
 
             const newArtist = {...newArtists[artistIndex]};
-            newArtist.sources = [];
-            newArtist.areSourcesFetching = false;
+        newArtist.sources = [];
+        newArtist.areSourcesFetching = true;
 
 
             newArtists[artistIndex] = newArtist;
@@ -666,6 +674,88 @@ export const postCreateReducer = createReducer(
             newArtist.sources = newSources;
 
             // Overwrite old artist with new one
+            newArtists[artistIndex] = newArtist;
+
+            return {
+                ...state,
+                selectedArtists: newArtists
+            };
+        }
+    ),
+    on(createArtistSourceStart, (state, action) => {
+            return {
+                ...state,
+                isFetching: true,
+                artistSourceCreateErrorMessage: null
+            };
+        }
+    ),
+    on(createArtistSourceSuccess, (state, action) => {
+            return {
+                ...state,
+                isFetching: false
+            };
+        }
+    ),
+    on(createArtistSourceFail, (state, action) => {
+            return {
+                ...state,
+                isFetching: false,
+                artistSourceCreateErrorMessage: action.errorMessage
+            };
+        }
+    ),
+    on(addArtistSourceAfterCreationStart, (state, action) => {
+            const artistIndex = state.selectedArtists.findIndex((artistWrapper) => {
+                return artistWrapper.artist.artistId === action.artistId;
+            });
+
+            const newArtists = [...state.selectedArtists];
+
+            const newArtist = {...newArtists[artistIndex]};
+            newArtist.areSourcesFetching = true;
+
+
+            newArtists[artistIndex] = newArtist;
+
+            return {
+                ...state,
+                selectedArtists: newArtists,
+                postCreateErrorMessage: null
+            };
+        }
+    ),
+    on(addArtistSourceAfterCreationFail, (state, action) => {
+            const artistIndex = state.selectedArtists.findIndex((artistWrapper) => {
+                return artistWrapper.artist.artistId === action.artistId;
+            });
+
+            const newArtists = [...state.selectedArtists];
+
+            const newArtist = {...newArtists[artistIndex]};
+            newArtist.areSourcesFetching = false;
+
+            newArtists[artistIndex] = newArtist;
+
+            return {
+                ...state,
+                selectedArtists: newArtists,
+                postCreateErrorMessage: action.errorMessage
+            };
+        }
+    ),
+    on(addArtistSourceAfterCreationSuccess, (state, action) => {
+            const artistIndex = state.selectedArtists.findIndex((artistWrapper) => {
+                return artistWrapper.artist.artistId === action.artistId;
+            });
+
+            const newArtists = [...state.selectedArtists];
+
+            const newArtist = {...newArtists[artistIndex]};
+
+            newArtist.sources = [...newArtist.sources, action.source];
+            newArtist.areSourcesFetching = false;
+
             newArtists[artistIndex] = newArtist;
 
             return {

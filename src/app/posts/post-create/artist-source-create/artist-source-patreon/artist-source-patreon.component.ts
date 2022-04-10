@@ -6,25 +6,25 @@ import {URL_REGEX} from "../../../../shared/config/common.constats";
 import {updateSourceData} from "../../store/post-create.actions";
 
 @Component({
-    selector: 'app-media-source-patreon',
-    templateUrl: './media-source-patreon.component.html',
-    styleUrls: ['./media-source-patreon.component.css']
+    selector: 'app-artist-source-patreon',
+    templateUrl: './artist-source-patreon.component.html',
+    styleUrls: ['./artist-source-patreon.component.css']
 })
-export class MediaSourcePatreonComponent implements OnInit {
+export class ArtistSourcePatreonComponent implements OnInit {
 
-    mediaSourceForm!: FormGroup;
+    artistSourceForm!: FormGroup;
 
     constructor(private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit(): void {
-        this.mediaSourceForm = new FormGroup({
-            postUrl: new FormControl(null, [Validators.pattern(URL_REGEX)])
+        this.artistSourceForm = new FormGroup({
+            campaignUrl: new FormControl(null, [Validators.pattern(URL_REGEX)])
         });
     }
 
     onChange(): void {
-        let url = this.mediaSourceForm.controls.postUrl.value;
+        let url = this.artistSourceForm.controls.campaignUrl.value;
         // If url is empty set it to null to prevent form from being valid
         if (url === "") {
             url = null;
@@ -36,5 +36,6 @@ export class MediaSourcePatreonComponent implements OnInit {
             }
         }));
     }
+
 
 }

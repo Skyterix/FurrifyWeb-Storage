@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AttachmentWrapper, MediaWrapper} from "./store/post-create.reducer";
+import {ArtistWrapper, AttachmentWrapper, MediaWrapper} from "./store/post-create.reducer";
 
 @Injectable({
     providedIn: 'root'
@@ -8,6 +8,7 @@ export class SourceCreateService {
 
     lastMediaSourceStrategy: string | undefined;
     lastAttachmentSourceStrategy: string | undefined;
+    lastArtistSourceStrategy: string | undefined;
 
     constructor() {
     }
@@ -27,4 +28,13 @@ export class SourceCreateService {
 
         return !!result;
     }
+
+    isArtistSourceDuplicate(strategy: string, data: any, artist: ArtistWrapper): boolean {
+        const result = artist.sources.find(source => {
+            return source.strategy === strategy && JSON.stringify(source.data) === JSON.stringify(data);
+        });
+
+        return !!result;
+    }
+
 }

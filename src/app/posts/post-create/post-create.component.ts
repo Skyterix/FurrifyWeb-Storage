@@ -22,6 +22,7 @@ import {Store} from "@ngrx/store";
 import * as fromApp from "../../store/app.reducer";
 import {MediaSourceCreateComponent} from "./media-source-create/media-source-create.component";
 import {AttachmentSourceCreateComponent} from "./attachment-source-create/attachment-source-create.component";
+import {ArtistSourceCreateComponent} from "./artist-source-create/artist-source-create.component";
 
 @Component({
     selector: 'app-post-create',
@@ -49,7 +50,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     private artistCreateOpenEventSubscription!: Subscription;
 
     private mediaSourceCreateOpenEventSubscription!: Subscription;
-
+    private artistSourceCreateOpenEventSubscription!: Subscription;
     private attachmentSourceCreateOpenEventSubscription!: Subscription;
 
     private mediaCreateOpenEventSubscription!: Subscription;
@@ -95,6 +96,11 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         this.attachmentSourceCreateOpenEventSubscription = this.postCreateService.attachmentSourceCreateOpenEvent.subscribe(attachment => {
             const componentRef = this.loadSideStep<AttachmentSourceCreateComponent>(AttachmentSourceCreateComponent);
             componentRef.instance.attachment = attachment;
+        });
+
+        this.artistSourceCreateOpenEventSubscription = this.postCreateService.artistSourceCreateOpenEvent.subscribe(artist => {
+            const componentRef = this.loadSideStep<ArtistSourceCreateComponent>(ArtistSourceCreateComponent);
+            componentRef.instance.artist = artist;
         });
 
         this.mediaCreateOpenEventSubscription = this.postCreateService.mediaCreateOpenEvent.subscribe(() => {
