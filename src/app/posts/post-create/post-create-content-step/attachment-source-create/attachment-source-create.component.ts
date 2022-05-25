@@ -3,13 +3,13 @@ import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
-import * as fromApp from "../../../store/app.reducer";
-import {PostCreateService} from "../post-create.service";
-import {SourceCreateService} from "../source-create.service";
-import {CreateSource} from "../../../shared/model/request/create-source.model";
-import {AttachmentSourceStrategyConfig} from "../../../shared/config/attchment-source-strategy.config";
-import {addAttachmentSource, clearSourceData} from "../store/post-create.actions";
-import {AttachmentWrapper} from "../store/post-create.reducer";
+import * as fromApp from "../../../../store/app.reducer";
+import {PostCreateService} from "../../post-create.service";
+import {SourceCreateService} from "../../source-create.service";
+import {CreateSource} from "../../../../shared/model/request/create-source.model";
+import {AttachmentSourceStrategyConfig} from "../../../../shared/config/attchment-source-strategy.config";
+import {addAttachmentSource, clearSourceData} from "../../store/post-create.actions";
+import {AttachmentWrapper} from "../../store/post-create.reducer";
 
 @Component({
     selector: 'app-attachment-source-create',

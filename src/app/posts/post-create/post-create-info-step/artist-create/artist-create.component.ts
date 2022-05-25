@@ -4,15 +4,15 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {KeycloakProfile} from "keycloak-js";
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
-import * as fromApp from "../../../store/app.reducer";
-import {PostCreateService} from "../post-create.service";
-import {Artist} from "../../../shared/model/artist.model";
-import {Source} from "../../../shared/model/source.model";
+import * as fromApp from "../../../../store/app.reducer";
+import {PostCreateService} from "../../post-create.service";
+import {Artist} from "../../../../shared/model/artist.model";
+import {Source} from "../../../../shared/model/source.model";
 import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
-import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../shared/config/common.constats";
-import {AvatarExtensionsConfig} from "../../../shared/config/avatar-extensions.config";
+import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../../shared/config/common.constats";
+import {AvatarExtensionsConfig} from "../../../../shared/config/avatar-extensions.config";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
-import {createArtistStart} from "../store/post-create.actions";
+import {createArtistStart} from "../../store/post-create.actions";
 
 @Component({
     selector: 'app-artist-create',

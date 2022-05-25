@@ -1,4 +1,4 @@
-export const KEYCLOAK_AUTH_URL = "http://192.168.0.200:6565/auth";
+export const KEYCLOAK_AUTH_URL = "http://10.8.0.200:6565/auth";
 export const KEYCLOAK_REALM = "dev";
 export const KEYCLOAK_CLIENT_ID = "furrifyws-storage";
 export const KEYCLOAK_PROVIDER_LINK = "/realms/" + KEYCLOAK_REALM + "/broker/:provider/link";

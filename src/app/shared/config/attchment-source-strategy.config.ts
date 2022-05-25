@@ -1,9 +1,9 @@
 import {
     AttachmentSourceDeviantArtComponent
-} from "../../posts/post-create/attachment-source-create/attachment-source-deviant-art/attachment-source-deviant-art.component";
+} from "../../posts/post-create/post-create-content-step/attachment-source-create/attachment-source-deviant-art/attachment-source-deviant-art.component";
 import {
     AttachmentSourcePatreonComponent
-} from "../../posts/post-create/attachment-source-create/attachment-source-patreon/attachment-source-patreon.component";
+} from "../../posts/post-create/post-create-content-step/attachment-source-create/attachment-source-patreon/attachment-source-patreon.component";
 
 export class AttachmentSourceStrategyConfig {
     static getTemplateComponent(strategy: string): any {

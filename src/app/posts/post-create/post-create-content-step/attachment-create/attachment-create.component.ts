@@ -1,14 +1,14 @@
 import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {PostCreateService} from "../post-create.service";
+import {PostCreateService} from "../../post-create.service";
 import {Store} from "@ngrx/store";
-import * as fromApp from "../../../store/app.reducer";
-import {CreateAttachment} from "../../../shared/model/request/create-attachment.model";
+import * as fromApp from "../../../../store/app.reducer";
+import {CreateAttachment} from "../../../../shared/model/request/create-attachment.model";
 import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
-import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../shared/config/common.constats";
-import {AttachmentExtensionsConfig} from "../../../shared/config/attachment-extensions.config";
-import {AttachmentWrapper} from "../store/post-create.reducer";
-import {addAttachment} from "../store/post-create.actions";
+import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../../shared/config/common.constats";
+import {AttachmentExtensionsConfig} from "../../../../shared/config/attachment-extensions.config";
+import {AttachmentWrapper} from "../../store/post-create.reducer";
+import {addAttachment} from "../../store/post-create.actions";
 
 @Component({
     selector: 'app-attachment-create',
