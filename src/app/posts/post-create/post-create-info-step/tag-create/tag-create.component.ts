@@ -2,13 +2,13 @@ import {Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild} f
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
-import {PostCreateService} from "../post-create.service";
-import * as fromApp from '../../../store/app.reducer';
-import {TagTypesConfig} from "../../../shared/config/tag-types.config";
-import {Tag} from "../../../shared/model/tag.model";
+import {PostCreateService} from "../../post-create.service";
+import * as fromApp from '../../../../store/app.reducer';
+import {TagTypesConfig} from "../../../../shared/config/tag-types.config";
+import {Tag} from "../../../../shared/model/tag.model";
 import {KeycloakProfile} from "keycloak-js";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
-import {createTagStart} from "../store/post-create.actions";
+import {createTagStart} from "../../store/post-create.actions";
 
 @Component({
     selector: 'app-tag-create',

@@ -1,29 +1,30 @@
 import {Component, ElementRef, Input, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
-import {ArtistWrapper} from "../store/post-create.reducer";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {Store} from "@ngrx/store";
-import * as fromApp from "../../../store/app.reducer";
-import {PostCreateService} from "../post-create.service";
-import {SourceCreateService} from "../source-create.service";
-import {clearSourceData, createArtistSourceStart} from "../store/post-create.actions";
-import {CreateSource} from "../../../shared/model/request/create-source.model";
-import {ArtistSourceStrategyConfig} from "../../../shared/config/artist-source-strategy.config";
-import {KeycloakProfile} from "keycloak-js";
+import * as fromApp from "../../../../store/app.reducer";
+import {PostCreateService} from "../../post-create.service";
+import {MediaSourceStrategyConfig} from "../../../../shared/config/media-source-strategy.config";
+import {CreateSource} from "../../../../shared/model/request/create-source.model";
+import {SourceCreateService} from "../../source-create.service";
+import {MediaWrapper} from "../../store/post-create.reducer";
+import {addMediaSource, clearSourceData} from "../../store/post-create.actions";
 
 @Component({
-    selector: 'app-artist-source-create',
-    templateUrl: './artist-source-create.component.html',
-    styleUrls: ['./artist-source-create.component.css']
+    selector: 'app-media-source-create',
+    templateUrl: './media-source-create.component.html',
+    styleUrls: ['./media-source-create.component.css']
 })
-export class ArtistSourceCreateComponent implements OnInit {
+export class MediaSourceCreateComponent implements OnInit {
+
     spinnerIcon = faCircleNotch;
 
     @ViewChild('source', {read: ElementRef}) sourceRef!: ElementRef;
     @ViewChild('dataTemplate', {read: ViewContainerRef}) dataTemplateRef!: ViewContainerRef;
 
-    @Input() artist!: ArtistWrapper;
+    @Input() media!: MediaWrapper;
+    mediaSet!: MediaWrapper[];
 
     errorMessage!: string | null;
     isFetching!: boolean;
@@ -33,8 +34,6 @@ export class ArtistSourceCreateComponent implements OnInit {
     sourceCreateForm!: FormGroup;
 
     private postCreateStoreSubscription!: Subscription;
-    private authenticationStoreSubscription!: Subscription;
-    private currentUser!: KeycloakProfile | null;
 
     constructor(private store: Store<fromApp.AppState>,
                 private postCreateService: PostCreateService,
@@ -45,16 +44,13 @@ export class ArtistSourceCreateComponent implements OnInit {
     ngOnInit(): void {
         this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
             this.isFetching = state.isFetching;
-            this.errorMessage = state.artistSourceCreateErrorMessage;
+            this.mediaSet = state.mediaSet;
             this.data = state.createSourceData;
-        });
-        this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
-            this.currentUser = state.currentUser;
         });
 
         this.sourceCreateForm = new FormGroup({
             strategy: new FormControl(
-                this.sourceCreateService.lastArtistSourceStrategy,
+                this.sourceCreateService.lastMediaSourceStrategy,
                 [Validators.required]
             )
         });
@@ -65,31 +61,33 @@ export class ArtistSourceCreateComponent implements OnInit {
         setTimeout(() => {
             // If strategy selected load template
             this.loadDataTemplate();
-        });
+        })
     }
 
     ngOnDestroy(): void {
         this.postCreateStoreSubscription.unsubscribe();
-        this.authenticationStoreSubscription.unsubscribe();
     }
 
     onSubmit(): void {
         // If data is null or source is duplicate
         if (this.data === null ||
-            this.sourceCreateService.isArtistSourceDuplicate(
-                this.sourceCreateForm.controls.strategy.value, this.data, this.artist
+            this.sourceCreateService.isMediaSourceDuplicate(
+                this.sourceCreateForm.controls.strategy.value, this.data, this.media
             )) {
             return;
         }
 
-        this.store.dispatch(createArtistSourceStart({
-            userId: this.currentUser?.id!,
-            artistId: this.artist.artist.artistId,
-            createSource: new CreateSource(
+        const mediaIndex = this.mediaSet.indexOf(this.media);
+
+        this.store.dispatch(addMediaSource({
+            mediaIndex,
+            source: new CreateSource(
                 this.sourceCreateForm.controls.strategy.value,
                 this.data
             )
         }));
+
+        this.postCreateService.clearPostCreateSideStepModalEvent.emit();
     }
 
     onClose(): void {
@@ -108,11 +106,10 @@ export class ArtistSourceCreateComponent implements OnInit {
             return;
         }
 
-        this.sourceCreateService.lastArtistSourceStrategy = strategy;
+        this.sourceCreateService.lastMediaSourceStrategy = strategy;
         this.store.dispatch(clearSourceData());
 
         this.dataTemplateRef!.clear();
-        this.dataTemplateRef!.createComponent(ArtistSourceStrategyConfig.getTemplateComponent(strategy));
+        this.dataTemplateRef!.createComponent(MediaSourceStrategyConfig.getTemplateComponent(strategy));
     }
-
 }

@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
-import * as fromApp from "../../../../store/app.reducer";
-import {URL_REGEX} from "../../../../shared/config/common.constats";
-import {updateSourceData} from "../../store/post-create.actions";
+import * as fromApp from "../../../../../store/app.reducer";
+import {URL_REGEX} from "../../../../../shared/config/common.constats";
+import {updateSourceData} from "../../../store/post-create.actions";
 
 @Component({
     selector: 'app-artist-source-patreon',

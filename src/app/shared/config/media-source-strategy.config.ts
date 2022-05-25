@@ -1,9 +1,9 @@
 import {
     MediaSourceDeviantArtComponent
-} from "../../posts/post-create/media-source-create/media-source-deviantart/media-source-deviant-art.component";
+} from "../../posts/post-create/post-create-content-step/media-source-create/media-source-deviantart/media-source-deviant-art.component";
 import {
     MediaSourcePatreonComponent
-} from "../../posts/post-create/media-source-create/media-source-patreon/media-source-patreon.component";
+} from "../../posts/post-create/post-create-content-step/media-source-create/media-source-patreon/media-source-patreon.component";
 
 export class MediaSourceStrategyConfig {
     static getTemplateComponent(strategy: string): any {

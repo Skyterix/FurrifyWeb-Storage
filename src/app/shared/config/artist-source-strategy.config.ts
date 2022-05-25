@@ -1,9 +1,9 @@
 import {
     ArtistSourceDeviantArtComponent
-} from "../../posts/post-create/artist-source-create/artist-source-deviant-art/artist-source-deviant-art.component";
+} from "../../posts/post-create/post-create-info-step/artist-source-create/artist-source-deviant-art/artist-source-deviant-art.component";
 import {
     ArtistSourcePatreonComponent
-} from "../../posts/post-create/artist-source-create/artist-source-patreon/artist-source-patreon.component";
+} from "../../posts/post-create/post-create-info-step/artist-source-create/artist-source-patreon/artist-source-patreon.component";
 
 export class ArtistSourceStrategyConfig {
     static getTemplateComponent(strategy: string): any {

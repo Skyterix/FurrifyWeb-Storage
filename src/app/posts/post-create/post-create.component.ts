@@ -14,15 +14,17 @@ import {PostCreateInfoStepComponent} from "./post-create-info-step/post-create-i
 import {PostCreateContentStepComponent} from "./post-create-content-step/post-create-content-step.component";
 import {PostCreateUploadStepComponent} from "./post-create-upload-step/post-create-upload-step.component";
 import {Subscription} from "rxjs";
-import {TagCreateComponent} from "./tag-create/tag-create.component";
-import {ArtistCreateComponent} from "./artist-create/artist-create.component";
-import {MediaCreateComponent} from "./media-create/media-create.component";
-import {AttachmentCreateComponent} from "./attachment-create/attachment-create.component";
+import {TagCreateComponent} from "./post-create-info-step/tag-create/tag-create.component";
+import {ArtistCreateComponent} from "./post-create-info-step/artist-create/artist-create.component";
+import {MediaCreateComponent} from "./post-create-content-step/media-create/media-create.component";
+import {AttachmentCreateComponent} from "./post-create-content-step/attachment-create/attachment-create.component";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../store/app.reducer";
-import {MediaSourceCreateComponent} from "./media-source-create/media-source-create.component";
-import {AttachmentSourceCreateComponent} from "./attachment-source-create/attachment-source-create.component";
-import {ArtistSourceCreateComponent} from "./artist-source-create/artist-source-create.component";
+import {MediaSourceCreateComponent} from "./post-create-content-step/media-source-create/media-source-create.component";
+import {
+    AttachmentSourceCreateComponent
+} from "./post-create-content-step/attachment-source-create/attachment-source-create.component";
+import {ArtistSourceCreateComponent} from "./post-create-info-step/artist-source-create/artist-source-create.component";
 
 @Component({
     selector: 'app-post-create',
