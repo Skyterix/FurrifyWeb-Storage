@@ -2,7 +2,7 @@
     user-select: none;
 }
 
-.artist.bg-red {
+.bg-red {
     cursor: pointer;
     background: red !important;
 }

@@ -183,7 +183,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
 
         // Check if artist already exists
         const isDuplicate = this.selectedArtists.find((artistWrapper) => {
-            return artistWrapper.artist.preferredNickname === artistNickname;
+            return artistWrapper.artist.preferredNickname.toLowerCase() === artistNickname.toLowerCase();
         });
 
         if (!isDuplicate) {

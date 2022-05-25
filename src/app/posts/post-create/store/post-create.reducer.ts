@@ -281,7 +281,7 @@ export const postCreateReducer = createReducer(
 
             // Find artist with same value
             const oldSelectedArtistIndex = newSelectedArtists.findIndex((artistWrapper) => {
-                return artistWrapper.artist.preferredNickname === action.artistWrapper.artist.preferredNickname;
+                return artistWrapper.artist.preferredNickname.toLowerCase() === action.artistWrapper.artist.preferredNickname.toLowerCase();
             });
 
             // Replace old artist with new one
