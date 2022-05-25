@@ -1,6 +1,6 @@
 export class TagTypesConfig {
 
-    public static TYPES = [
+    public static readonly TYPES = [
         'ACTION',
         'AGE',
         'AMOUNT',

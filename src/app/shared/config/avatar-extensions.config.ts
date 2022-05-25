@@ -2,9 +2,9 @@ import {AvatarType} from "../enum/avatar-type.enum";
 
 export class AvatarExtensionsConfig {
 
-    public static PREFIX = "EXTENSION_";
+    public static readonly PREFIX = "EXTENSION_";
 
-    public static IMAGES = [
+    public static readonly IMAGES = [
         'png',
         'jpg',
         'jpeg'

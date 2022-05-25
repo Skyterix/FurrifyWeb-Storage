@@ -1,8 +1,8 @@
 export class AttachmentExtensionsConfig {
 
-    public static PREFIX = "EXTENSION_";
+    public static readonly PREFIX = "EXTENSION_";
 
-    public static EXTENSIONS = [
+    public static readonly EXTENSIONS = [
         'mid',
         'midi',
         'exe',

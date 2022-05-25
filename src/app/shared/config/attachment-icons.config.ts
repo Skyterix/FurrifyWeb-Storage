@@ -1,11 +1,11 @@
 export class AttachmentIconsConfig {
-    private static epub = 'assets/icons/epub.png';
-    private static pdf = 'assets/icons/pdf.png';
-    private static xcf = 'assets/icons/xcf.png';
-    private static zip = 'assets/icons/zip.png';
-    private static psd = 'assets/icons/psd.png';
-    private static sai = 'assets/icons/sai.png';
-    private static unknown = 'assets/icons/unknown.png';
+    private static readonly epub = 'assets/icons/epub.png';
+    private static readonly pdf = 'assets/icons/pdf.png';
+    private static readonly xcf = 'assets/icons/xcf.png';
+    private static readonly zip = 'assets/icons/zip.png';
+    private static readonly psd = 'assets/icons/psd.png';
+    private static readonly sai = 'assets/icons/sai.png';
+    private static readonly unknown = 'assets/icons/unknown.png';
 
     public static getAttachmentIcon(extension: string): string {
         switch (extension.toLowerCase()) {

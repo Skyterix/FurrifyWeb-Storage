@@ -2,9 +2,12 @@ import {MediaType} from "../enum/media-type.enum";
 
 export class MediaExtensionsConfig {
 
-    public static PREFIX = "EXTENSION_";
-
-    private static IMAGES = [
+    public static readonly PREFIX = "EXTENSION_";
+    public static readonly ANIMATIONS = [
+        'gif'
+    ];
+    public static readonly EXTENSIONS = [...this.IMAGES, ...this.VIDEOS, ...this.ANIMATIONS, ...this.AUDIO];
+    private static readonly IMAGES = [
         'webp',
         'ico',
         'svg',
@@ -18,15 +21,13 @@ export class MediaExtensionsConfig {
         'jpeg',
         'jpg'
     ];
-
-    private static AUDIO = [
+    private static readonly AUDIO = [
         'ogg',
         'flac',
         'mp3',
         'wav'
     ];
-
-    private static VIDEOS = [
+    private static readonly VIDEOS = [
         'ts',
         'mov',
         'flv',
@@ -37,12 +38,6 @@ export class MediaExtensionsConfig {
         'mp4',
         'mpeg'
     ];
-
-    public static ANIMATIONS = [
-        'gif'
-    ];
-
-    public static EXTENSIONS = [...this.IMAGES, ...this.VIDEOS, ...this.ANIMATIONS, ...this.AUDIO];
 
     public static getExtensionsByType(type: MediaType): string[] {
         switch (type) {

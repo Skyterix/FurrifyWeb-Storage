@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {KeycloakService} from "keycloak-angular";
+import {ProvidersConfig} from 'src/app/shared/config/providers.config';
 
 @Component({
     selector: 'app-account',
@@ -11,30 +12,9 @@ export class AccountComponent implements OnInit {
     username!: string;
     accountRoles!: string[];
 
-    readonly PROVIDER_PREFIX: string = 'provider_';
+    readonly PROVIDER_PREFIX: string = ProvidersConfig.PROVIDER_PREFIX;
 
-    providers: {
-        name: string,
-        id: string,
-        color: string,
-        accent: string,
-        logoUrl: string
-    }[] = [
-        {
-            name: "DeviantArt",
-            id: 'deviantart',
-            color: "#06070d",
-            accent: "#fff",
-            logoUrl: "./assets/providers/deviantart.png"
-        },
-        {
-            name: "Patreon",
-            id: 'patreon',
-            color: "#fff",
-            accent: "#052d49",
-            logoUrl: "./assets/providers/patreon.png"
-        }
-    ];
+    readonly PROVIDERS = ProvidersConfig.PROVIDERS;
 
     constructor(private keycloakService: KeycloakService) {
     }

@@ -1,6 +1,6 @@
 export class ThumbnailExtensionsConfig {
 
-    public static EXTENSIONS = [
+    public static readonly EXTENSIONS = [
         'jpg',
         'jpeg'
     ];
