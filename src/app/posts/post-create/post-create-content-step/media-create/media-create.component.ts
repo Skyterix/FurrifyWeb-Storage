@@ -94,6 +94,8 @@ export class MediaCreateComponent implements OnInit {
             this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
 
             this.mediaFileForm.reset();
+
+            return;
         }
 
         const extension = EXTENSION_EXTRACT_REGEX.exec(event.target.files[0].name);
@@ -104,6 +106,8 @@ export class MediaCreateComponent implements OnInit {
             this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as media."
 
             this.mediaFileForm.reset();
+
+            return;
         }
 
         this.selectedMediaFile = event.target.files[0];

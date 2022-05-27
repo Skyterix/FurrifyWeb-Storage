@@ -155,6 +155,8 @@ export class ArtistCreateComponent implements OnInit {
             this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
 
             this.artistAvatarFileForm.reset();
+
+            return;
         }
 
         const extension = EXTENSION_EXTRACT_REGEX.exec(event.target.files[0].name);
@@ -165,6 +167,8 @@ export class ArtistCreateComponent implements OnInit {
             this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as avatar."
 
             this.artistAvatarFileForm.reset();
+
+            return;
         }
 
         this.selectedFile = event.target.files[0];
