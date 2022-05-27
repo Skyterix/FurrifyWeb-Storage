@@ -79,7 +79,14 @@ import {PostsService} from "../../posts.service";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {Router} from "@angular/router";
-import {ArtistWrapper, TagWrapper, MediaWrapper, WrapperSourcesFetchingStatus, WrapperStatus} from "./post-create.reducer";
+import {
+    ArtistWrapper,
+    AttachmentWrapper,
+    MediaWrapper,
+    TagWrapper,
+    WrapperSourcesFetchingStatus,
+    WrapperStatus
+} from "./post-create.reducer";
 import {QuerySource} from "../../../shared/model/query/query-source.model";
 import {dummy} from "../../../shared/store/shared.actions";
 
