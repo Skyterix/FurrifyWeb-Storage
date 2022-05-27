@@ -307,6 +307,10 @@ export class PostCreateEffects {
                             return of(createArtistFail({
                                 errorMessage: 'No servers available to handle your request. Try again later.'
                             }));
+                        case 409:
+                            return of(createArtistFail({
+                                errorMessage: 'Artist with this preferred nickname already exists.'
+                            }));
                         case 400:
                             return of(createArtistFail({
                                 errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
