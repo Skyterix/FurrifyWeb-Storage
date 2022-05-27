@@ -65,14 +65,14 @@ import {QuerySource} from "../../../shared/model/query/query-source.model";
 export class ArtistWrapper {
     constructor(public artist: Artist,
                 public sources: QuerySource[],
-                public isExisting: boolean | null,
-                public areSourcesFetching: boolean | null) {
+                public status: WrapperStatus,
+                public sourcesFetchingStatus: WrapperSourcesFetchingStatus) {
     }
 }
 
 export class TagWrapper {
     constructor(public tag: Tag,
-                public isExisting: boolean | null) {
+                public status: WrapperStatus) {
     }
 }
 
@@ -95,6 +95,20 @@ export class AttachmentWrapper {
                 public file: File) {
         this.attachmentId = "";
     }
+}
+
+export enum WrapperStatus {
+    // Request to backend not yet send
+    NOT_QUERIED,
+    FOUND,
+    NOT_FOUND
+}
+
+export enum WrapperSourcesFetchingStatus {
+    // Request to backend not yet send
+    NOT_QUERIED,
+    IN_PROGRESS,
+    COMPLETED
 }
 
 export interface State {
@@ -168,7 +182,7 @@ export const postCreateReducer = createReducer(
                 isFetching: true,
                 postCreateErrorMessage: null,
                 // Set temporarily isExisting value to null to show loading spinner
-                selectedTags: [...state.selectedTags, new TagWrapper(tag, null)]
+                selectedTags: [...state.selectedTags, new TagWrapper(tag, WrapperStatus.NOT_QUERIED)]
             };
         }
     ),
@@ -240,7 +254,7 @@ export const postCreateReducer = createReducer(
             });
 
             // Replace old tag with new one
-            newTags[oldTagIndex] = new TagWrapper(action.tag, true);
+            newTags[oldTagIndex] = new TagWrapper(action.tag, WrapperStatus.FOUND);
 
             return {
                 ...state,
@@ -272,7 +286,7 @@ export const postCreateReducer = createReducer(
                 isFetching: true,
                 postCreateErrorMessage: null,
                 // Set temporarily isExisting value to null to show loading spinner
-                selectedArtists: [...state.selectedArtists, new ArtistWrapper(artist, [], null, null)]
+                selectedArtists: [...state.selectedArtists, new ArtistWrapper(artist, [], WrapperStatus.NOT_QUERIED, WrapperSourcesFetchingStatus.NOT_QUERIED)]
             };
         }
     ),
@@ -366,7 +380,7 @@ export const postCreateReducer = createReducer(
             });
 
             // Replace old tag with new one
-        newArtists[oldArtistIndex] = new ArtistWrapper(action.artist, [], true, null);
+        newArtists[oldArtistIndex] = new ArtistWrapper(action.artist, [], WrapperStatus.FOUND, WrapperSourcesFetchingStatus.NOT_QUERIED);
 
             return {
                 ...state,
@@ -483,8 +497,8 @@ export const postCreateReducer = createReducer(
         }
     ),
     on(createAttachmentsSourcesSuccess, (state, action) => {
-        return {
-            ...state,
+            return {
+                ...state,
                 isFetching: false
             };
         }
@@ -596,8 +610,8 @@ export const postCreateReducer = createReducer(
             const newArtists = [...state.selectedArtists];
 
             const newArtist = {...newArtists[artistIndex]};
-        newArtist.sources = [];
-        newArtist.areSourcesFetching = true;
+            newArtist.sources = [];
+            newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.IN_PROGRESS;
 
 
             newArtists[artistIndex] = newArtist;
@@ -617,7 +631,7 @@ export const postCreateReducer = createReducer(
             const newArtists = [...state.selectedArtists];
 
             const newArtist = {...newArtists[artistIndex]};
-            newArtist.areSourcesFetching = false;
+        newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
 
             newArtists[artistIndex] = newArtist;
 
@@ -637,7 +651,7 @@ export const postCreateReducer = createReducer(
 
             const newArtist = {...newArtists[artistIndex]};
             newArtist.sources = action.artistSources;
-            newArtist.areSourcesFetching = false;
+            newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
 
             newArtists[artistIndex] = newArtist;
 
@@ -765,7 +779,7 @@ export const postCreateReducer = createReducer(
             const newArtists = [...state.selectedArtists];
 
             const newArtist = {...newArtists[artistIndex]};
-            newArtist.areSourcesFetching = true;
+        newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.IN_PROGRESS;
 
 
             newArtists[artistIndex] = newArtist;
@@ -785,7 +799,7 @@ export const postCreateReducer = createReducer(
             const newArtists = [...state.selectedArtists];
 
             const newArtist = {...newArtists[artistIndex]};
-            newArtist.areSourcesFetching = false;
+        newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
 
             newArtists[artistIndex] = newArtist;
 
@@ -806,7 +820,7 @@ export const postCreateReducer = createReducer(
             const newArtist = {...newArtists[artistIndex]};
 
             newArtist.sources = [...newArtist.sources, action.source];
-            newArtist.areSourcesFetching = false;
+            newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
 
             newArtists[artistIndex] = newArtist;
 

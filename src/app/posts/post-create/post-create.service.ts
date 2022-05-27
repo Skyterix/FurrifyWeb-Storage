@@ -98,7 +98,7 @@ export class PostCreateService {
         }
 
         // If some tag is not created
-        if (!!this.tags.find(tag => !tag.isExisting)) {
+        if (!!this.tags.find(tag => !tag.status)) {
             return false;
         }
 
@@ -108,7 +108,7 @@ export class PostCreateService {
         }
 
         // If some tag is not created
-        if (!!this.artists.find(artist => !artist.isExisting)) {
+        if (!!this.artists.find(artist => !artist.status)) {
             return false;
         }
 
