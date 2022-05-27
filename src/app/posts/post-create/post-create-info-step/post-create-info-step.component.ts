@@ -7,7 +7,7 @@ import * as fromApp from '../../../store/app.reducer';
 import {Subscription} from "rxjs";
 import {take} from "rxjs/operators";
 import {KeycloakProfile} from "keycloak-js";
-import {ArtistWrapper, TagWrapper} from "../store/post-create.reducer";
+import {ArtistWrapper, TagWrapper, WrapperSourcesFetchingStatus, WrapperStatus} from "../store/post-create.reducer";
 import {
     addArtistToSelectedSetStart,
     addTagToSelectedSetStart,
@@ -36,8 +36,10 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     selectedTags!: TagWrapper[];
     selectedArtists!: ArtistWrapper[];
 
-    private currentUser!: KeycloakProfile | null;
+    readonly WrapperStatus = WrapperStatus;
+    readonly WrapperSourcesFetchingStatus = WrapperSourcesFetchingStatus;
 
+    private currentUser!: KeycloakProfile | null;
     private postCreateStoreSubscription!: Subscription;
     private authenticationStoreSubscription!: Subscription;
 
@@ -108,7 +110,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     loadCreateTagForm(tagWrapper: TagWrapper): void {
-        if (this.isFetching || !!tagWrapper.isExisting) {
+        if (this.isFetching || !!tagWrapper.status) {
             return;
         }
 
@@ -116,7 +118,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     loadCreateArtistForm(artistWrapper: ArtistWrapper): void {
-        if (this.isFetching || !!artistWrapper.isExisting) {
+        if (this.isFetching || !!artistWrapper.status) {
             return;
         }
 
@@ -173,11 +175,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         const artistNickname: string = this.artistSelectForm.controls.artist.value
             .trim();
 
-        if (!artistNickname) {
-            return;
-        }
-
-        if (!artistNickname.match("^[A-Za-z0-9_-]*$")) {
+        if (!artistNickname || !artistNickname.match("^[A-Za-z0-9_-]*$")) {
             return;
         }
 

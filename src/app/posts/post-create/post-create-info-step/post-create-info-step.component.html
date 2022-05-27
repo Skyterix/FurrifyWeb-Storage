@@ -16,10 +16,11 @@
 
                 <span (click)="loadCreateTagForm(tagWrapper)" *ngFor="let tagWrapper of selectedTags"
                       [appColoredTag]="tagWrapper.tag.type"
-                      [ngClass]="tagWrapper.isExisting != null && !tagWrapper.isExisting ? 'bg-red' : ''"
+                      [ngClass]="tagWrapper.status !== WrapperStatus.NOT_QUERIED && tagWrapper.status === WrapperStatus.NOT_FOUND ? 'bg-red' : ''"
                       class="tag badge badge-dark me-1">
 
-                        <fa-icon *ngIf="tagWrapper.isExisting == null" [icon]="spinnerIcon" [spin]="true"
+                        <fa-icon *ngIf="tagWrapper.status === WrapperStatus.NOT_QUERIED" [icon]="spinnerIcon"
+                                 [spin]="true"
                                  class="me-1"></fa-icon>
 
                         <a class="text-white">{{ tagWrapper.tag.value }}</a>
@@ -49,11 +50,12 @@
                     <li *ngFor="let artistWrapper of selectedArtists" class="mt-1 text-end">
                         <!-- Artist -->
                         <span (click)="loadCreateArtistForm(artistWrapper)"
-                              [ngClass]="artistWrapper.isExisting != null && !artistWrapper.isExisting ? 'bg-red' : ''"
+                              [ngClass]="artistWrapper.status !== WrapperStatus.NOT_QUERIED && artistWrapper.status === WrapperStatus.NOT_FOUND ? 'bg-red' : ''"
                               class="artist badge badge-dark me-1 mt-1 p-2 float-start">
 
                             <!-- Spinner -->
-                            <fa-icon *ngIf="artistWrapper.isExisting == null" [icon]="spinnerIcon" [spin]="true"
+                            <fa-icon *ngIf="artistWrapper.status === WrapperStatus.NOT_QUERIED" [icon]="spinnerIcon"
+                                     [spin]="true"
                                      class="me-1" size="sm"></fa-icon>
 
                             <span class="filename">{{ artistWrapper.artist.preferredNickname }}</span>
@@ -62,7 +64,7 @@
 
                         <div class="options">
                             <span (click)="loadCreateArtistSourceForm(artistWrapper)"
-                                  *ngIf="!!artistWrapper.isExisting"
+                                  *ngIf="artistWrapper.status === WrapperStatus.FOUND"
                                   class="badge bg-dark badge-pill add-source me-2">Add source</span>
 
                             <span (click)="onArtistRemove(artistWrapper)" class="badge badge-pill remove">x</span>
@@ -71,7 +73,8 @@
 
 
                         <!-- Sources Spinner -->
-                        <div *ngIf="!!artistWrapper.areSourcesFetching" class="text-center">
+                        <div *ngIf="artistWrapper.sourcesFetchingStatus === WrapperSourcesFetchingStatus.COMPLETED"
+                             class="text-center">
                             <fa-icon [icon]="spinnerIcon" [spin]="true"
                                      class="me-1" size="sm"></fa-icon>
                         </div>
