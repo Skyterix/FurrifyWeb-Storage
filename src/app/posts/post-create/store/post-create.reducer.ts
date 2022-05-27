@@ -254,7 +254,7 @@ export const postCreateReducer = createReducer(
             });
 
             // Replace old tag with new one
-        newTags[oldTagIndex] = new TagWrapper(action.tag, WrapperStatus.FOUND);
+            newTags[oldTagIndex] = new TagWrapper(action.tag, WrapperStatus.FOUND);
 
             return {
                 ...state,
@@ -497,8 +497,8 @@ export const postCreateReducer = createReducer(
         }
     ),
     on(createAttachmentsSourcesSuccess, (state, action) => {
-        return {
-            ...state,
+            return {
+                ...state,
                 isFetching: false
             };
         }
@@ -610,8 +610,8 @@ export const postCreateReducer = createReducer(
             const newArtists = [...state.selectedArtists];
 
             const newArtist = {...newArtists[artistIndex]};
-        newArtist.sources = [];
-        newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.IN_PROGRESS;
+            newArtist.sources = [];
+            newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.IN_PROGRESS;
 
 
             newArtists[artistIndex] = newArtist;
@@ -650,8 +650,8 @@ export const postCreateReducer = createReducer(
             const newArtists = [...state.selectedArtists];
 
             const newArtist = {...newArtists[artistIndex]};
-        newArtist.sources = action.artistSources;
-        newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
+            newArtist.sources = action.artistSources;
+            newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
 
             newArtists[artistIndex] = newArtist;
 
@@ -819,8 +819,8 @@ export const postCreateReducer = createReducer(
 
             const newArtist = {...newArtists[artistIndex]};
 
-        newArtist.sources = [...newArtist.sources, action.source];
-        newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
+            newArtist.sources = [...newArtist.sources, action.source];
+            newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
 
             newArtists[artistIndex] = newArtist;
 

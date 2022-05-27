@@ -110,7 +110,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     loadCreateTagForm(tagWrapper: TagWrapper): void {
-        if (this.isFetching || !!tagWrapper.status) {
+        if (this.isFetching || tagWrapper.status !== WrapperStatus.NOT_FOUND) {
             return;
         }
 
@@ -118,7 +118,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     loadCreateArtistForm(artistWrapper: ArtistWrapper): void {
-        if (this.isFetching || !!artistWrapper.status) {
+        if (this.isFetching || artistWrapper.status !== WrapperStatus.NOT_FOUND) {
             return;
         }
 
