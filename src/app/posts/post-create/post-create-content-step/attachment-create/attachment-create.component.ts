@@ -9,6 +9,7 @@ import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../../shared/config
 import {AttachmentExtensionsConfig} from "../../../../shared/config/attachment-extensions.config";
 import {AttachmentWrapper} from "../../store/post-create.reducer";
 import {addAttachment} from "../../store/post-create.actions";
+import {MAX_FILENAME_LENGTH} from "../../../../shared/config/files.constants";
 
 @Component({
     selector: 'app-attachment-create',
@@ -57,6 +58,14 @@ export class AttachmentCreateComponent implements OnInit {
         // Is filename is invalid
         if (!FILENAME_REGEX.test(event.target.files[0].name)) {
             this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
+
+            this.addFileForm.reset();
+
+            return;
+        }
+
+        if (event.target.files[0].name.length > MAX_FILENAME_LENGTH) {
+            this.errorMessage = "File \"" + event.target.files[0].name + "\" has too long filename."
 
             this.addFileForm.reset();
 

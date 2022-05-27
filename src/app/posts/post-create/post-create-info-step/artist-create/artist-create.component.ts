@@ -13,6 +13,7 @@ import {EXTENSION_EXTRACT_REGEX, FILENAME_REGEX} from "../../../../shared/config
 import {AvatarExtensionsConfig} from "../../../../shared/config/avatar-extensions.config";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {createArtistStart} from "../../store/post-create.actions";
+import {MAX_FILENAME_LENGTH} from "../../../../shared/config/files.constants";
 
 @Component({
     selector: 'app-artist-create',
@@ -153,6 +154,14 @@ export class ArtistCreateComponent implements OnInit {
         // Is filename is invalid
         if (!FILENAME_REGEX.test(event.target.files[0].name)) {
             this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
+
+            this.artistAvatarFileForm.reset();
+
+            return;
+        }
+
+        if (event.target.files[0].name.length > MAX_FILENAME_LENGTH) {
+            this.errorMessage = "File \"" + event.target.files[0].name + "\" has too long filename."
 
             this.artistAvatarFileForm.reset();
 
