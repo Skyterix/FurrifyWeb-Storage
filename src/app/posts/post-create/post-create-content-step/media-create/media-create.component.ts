@@ -10,6 +10,7 @@ import {MediaExtensionsConfig} from "../../../../shared/config/media-extensions.
 import {ThumbnailExtensionsConfig} from "../../../../shared/config/thumbnail-extensions.config";
 import {addMedia} from "../../store/post-create.actions";
 import {MediaWrapper} from "../../store/post-create.reducer";
+import {MAX_FILENAME_LENGTH} from "../../../../shared/config/files.constants";
 
 @Component({
     selector: 'app-media-create',
@@ -94,6 +95,16 @@ export class MediaCreateComponent implements OnInit {
             this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
 
             this.mediaFileForm.reset();
+
+            return;
+        }
+
+        if (event.target.files[0].name.length > MAX_FILENAME_LENGTH) {
+            this.errorMessage = "File \"" + event.target.files[0].name + "\" has too long filename."
+
+            this.mediaFileForm.reset();
+
+            return;
         }
 
         const extension = EXTENSION_EXTRACT_REGEX.exec(event.target.files[0].name);
@@ -104,6 +115,8 @@ export class MediaCreateComponent implements OnInit {
             this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as media."
 
             this.mediaFileForm.reset();
+
+            return;
         }
 
         this.selectedMediaFile = event.target.files[0];

@@ -79,7 +79,7 @@ import {PostsService} from "../../posts.service";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {Router} from "@angular/router";
-import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper} from "./post-create.reducer";
+import {ArtistWrapper, TagWrapper, MediaWrapper, WrapperSourcesFetchingStatus, WrapperStatus} from "./post-create.reducer";
 import {QuerySource} from "../../../shared/model/query/query-source.model";
 import {dummy} from "../../../shared/store/shared.actions";
 
@@ -96,7 +96,7 @@ export class PostCreateEffects {
                 map(response => {
 
                     let tagWrapper =
-                        new TagWrapper(response, true);
+                        new TagWrapper(response, WrapperStatus.FOUND);
 
                     return addTagToSelectedSetSuccess({
                         tagWrapper: tagWrapper
@@ -115,7 +115,7 @@ export class PostCreateEffects {
                             };
 
                             return of(addTagToSelectedSetSuccess({
-                                tagWrapper: new TagWrapper(tag, false)
+                                tagWrapper: new TagWrapper(tag, WrapperStatus.NOT_FOUND)
                             }));
                         case 503:
                             return of(addTagToSelectedSetFail({
@@ -245,12 +245,12 @@ export class PostCreateEffects {
                         };
 
                         return addArtistToSelectedSetSuccess({
-                            artistWrapper: new ArtistWrapper(artist, [], false, null)
+                            artistWrapper: new ArtistWrapper(artist, [], WrapperStatus.NOT_FOUND, WrapperSourcesFetchingStatus.NOT_QUERIED)
                         });
                     }
 
                     let artistWrapper =
-                        new ArtistWrapper(response._embedded.artistSnapshotList[0], [], true, null);
+                        new ArtistWrapper(response._embedded.artistSnapshotList[0], [], WrapperStatus.FOUND, WrapperSourcesFetchingStatus.NOT_QUERIED);
 
                     return addArtistToSelectedSetSuccess({
                         artistWrapper: artistWrapper
@@ -306,6 +306,10 @@ export class PostCreateEffects {
                         case 503:
                             return of(createArtistFail({
                                 errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 409:
+                            return of(createArtistFail({
+                                errorMessage: 'Artist with this preferred nickname already exists.'
                             }));
                         case 400:
                             return of(createArtistFail({
@@ -871,7 +875,7 @@ export class PostCreateEffects {
         ofType(addArtistToSelectedSetSuccess),
         map((action) => {
             // If artist exists, fetch sources
-            if (!!action.artistWrapper.isExisting) {
+            if (action.artistWrapper.status === WrapperStatus.FOUND) {
                 return fetchArtistSourcesStart({
                     userId: action.artistWrapper.artist.ownerId,
                     artistId: action.artistWrapper.artist.artistId
