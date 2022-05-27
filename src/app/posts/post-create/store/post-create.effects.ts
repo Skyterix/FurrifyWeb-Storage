@@ -79,7 +79,14 @@ import {PostsService} from "../../posts.service";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {Router} from "@angular/router";
-import {ArtistWrapper, TagWrapper, WrapperSourcesFetchingStatus, WrapperStatus} from "./post-create.reducer";
+import {
+    ArtistWrapper,
+    AttachmentWrapper,
+    MediaWrapper,
+    TagWrapper,
+    WrapperSourcesFetchingStatus,
+    WrapperStatus
+} from "./post-create.reducer";
 import {QuerySource} from "../../../shared/model/query/query-source.model";
 import {dummy} from "../../../shared/store/shared.actions";
 
@@ -459,7 +466,7 @@ export class PostCreateEffects {
             const data = new FormData();
 
             const mediaSet = [...action.mediaSet];
-            const mediaWrapper = {...mediaSet[action.currentIndex]};
+            const mediaWrapper: MediaWrapper = {...mediaSet[action.currentIndex]};
             const media = {...mediaWrapper.media};
 
             // Overwrite priority based on index given by user
@@ -539,7 +546,7 @@ export class PostCreateEffects {
 
             const data = new FormData();
             const attachments = [...action.attachments];
-            const attachmentWrapper = {...attachments[action.currentIndex]};
+            const attachmentWrapper: AttachmentWrapper = {...attachments[action.currentIndex]};
 
             data.append("attachment", new Blob([JSON.stringify(attachmentWrapper.attachment)], {
                 type: "application/json"
