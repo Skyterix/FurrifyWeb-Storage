@@ -111,5 +111,8 @@
             }
         }
     },
-    "defaultProject": "FurrifyWeb-Storage"
+    "defaultProject": "FurrifyWeb-Storage",
+    "cli": {
+        "analytics": false
+    }
 }
