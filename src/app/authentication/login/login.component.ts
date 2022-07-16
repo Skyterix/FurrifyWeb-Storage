@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {Router} from "@angular/router";
 import {KeycloakService} from "keycloak-angular";
+import {PlatformLocation} from "@angular/common";
 
 @Component({
     selector: 'app-authentication-login',
@@ -9,19 +9,21 @@ import {KeycloakService} from "keycloak-angular";
 })
 export class LoginComponent {
 
-    constructor(private router: Router,
+    constructor(private pLocation: PlatformLocation,
                 private readonly keycloak: KeycloakService) {
     }
 
     signIn(): void {
         this.keycloak.login({
-            redirectUri: window.location.origin + this.router.routerState.snapshot.url
+            // Fix for use_hash strategy
+            redirectUri: (this.pLocation as any).location.href
         });
     }
 
     signUp(): void {
         this.keycloak.register({
-            redirectUri: window.location.origin + this.router.routerState.snapshot.url
+            // Fix for use_hash strategy
+            redirectUri: (this.pLocation as any).location.href
         });
     }
 
