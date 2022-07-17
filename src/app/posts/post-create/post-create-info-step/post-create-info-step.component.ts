@@ -146,6 +146,10 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             return;
         }
 
+        if (tagValue.length > 64) {
+            return;
+        }
+
         // Check if tag already exists
         const isDuplicate = this.selectedTags.find((tagWrapper) => {
             return tagWrapper.tag.value === tagValue;
@@ -175,7 +179,16 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         const artistNickname: string = this.artistSelectForm.controls.artist.value
             .trim();
 
-        if (!artistNickname || !artistNickname.match("^[A-Za-z0-9_-]*$")) {
+        if (!artistNickname) {
+            return;
+        }
+
+        if (!artistNickname.match("^[a-zA-Z0-9_-]*$")) {
+            return;
+        }
+
+
+        if (artistNickname.length > 256) {
             return;
         }
 
