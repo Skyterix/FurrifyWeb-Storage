@@ -45,7 +45,7 @@ import {
     removeArtistSourceStart,
     removeArtistSourceSuccess
 } from "./post-create.actions";
-import {catchError, map, retryWhen, switchMap, tap} from "rxjs/operators";
+import {catchError, map, mergeMap, retryWhen, tap} from "rxjs/operators";
 import {Tag} from "../../../shared/model/tag.model";
 import {
     CREATE_ARTIST,
@@ -95,13 +95,12 @@ export class PostCreateEffects {
 
     selectedTagsAddStart = createEffect(() => this.actions$.pipe(
         ofType(addTagToSelectedSetStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.get<Tag>(
                 GET_TAG
                     .replace(":userId", action.userId)
                     .replace(":value", action.value)).pipe(
                 map(response => {
-
                     let tagWrapper =
                         new TagWrapper(response, WrapperStatus.FOUND);
 
@@ -147,7 +146,7 @@ export class PostCreateEffects {
 
     createTagStart = createEffect(() => this.actions$.pipe(
         ofType(createTagStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.post(CREATE_TAG
                     .replace(":userId", action.userId),
                 action.tag, {
@@ -185,7 +184,7 @@ export class PostCreateEffects {
 
     fetchTagAfterCreationStart = createEffect(() => this.actions$.pipe(
         ofType(fetchTagAfterCreationStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.get<Tag>(GET_TAG
                 .replace(":userId", action.userId)
                 .replace(":value", action.value),
@@ -231,7 +230,7 @@ export class PostCreateEffects {
 
     selectedArtistsAddStart = createEffect(() => this.actions$.pipe(
         ofType(addArtistToSelectedSetStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.get<HypermediaResultList<Artist>>(
                 GET_ARTISTS_BY_PREFERRED_NICKNAME
                     .replace(":userId", action.userId), {
@@ -292,7 +291,7 @@ export class PostCreateEffects {
 
     createArtistStart = createEffect(() => this.actions$.pipe(
         ofType(createArtistStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.post(CREATE_ARTIST
                     .replace(":userId", action.userId),
                 action.artist, {
@@ -338,7 +337,7 @@ export class PostCreateEffects {
 
     createArtistUploadAvatarStart = createEffect(() => this.actions$.pipe(
         ofType(createArtistUploadAvatarStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             const data = new FormData();
 
             const avatarCreateCommand = new CreateAvatar(
@@ -386,17 +385,17 @@ export class PostCreateEffects {
 
     fetchArtistAfterCreationStart = createEffect(() => this.actions$.pipe(
         ofType(fetchArtistAfterCreationStart),
-        switchMap((action) => {
-                return this.httpClient.get<Artist>(GET_ARTIST
-                    .replace(":userId", action.userId)
-                    .replace(":artistId", action.artistId),
-                ).pipe(
-                    map(artist => {
-                        return fetchArtistAfterCreationSuccess({
-                            artist: artist
-                        });
-                    }),
-                    retryWhen(RETRY_HANDLER),
+        mergeMap((action) => {
+            return this.httpClient.get<Artist>(GET_ARTIST
+                .replace(":userId", action.userId)
+                .replace(":artistId", action.artistId),
+            ).pipe(
+                map(artist => {
+                    return fetchArtistAfterCreationSuccess({
+                        artist: artist
+                    });
+                }),
+                retryWhen(RETRY_HANDLER),
                     catchError(error => {
                         let errorMessage;
 
@@ -426,7 +425,7 @@ export class PostCreateEffects {
 
     createPostStart = createEffect(() => this.actions$.pipe(
         ofType(createPostStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.post(CREATE_POST
                     .replace(":userId", action.userId),
                 action.createPost, {
@@ -466,7 +465,7 @@ export class PostCreateEffects {
 
     createMediaSetStart = createEffect(() => this.actions$.pipe(
         ofType(createMediaSetStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             const data = new FormData();
 
             const mediaSet = [...action.mediaSet];
@@ -540,7 +539,7 @@ export class PostCreateEffects {
 
     createAttachmentsStart = createEffect(() => this.actions$.pipe(
         ofType(createAttachmentsStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             // If no attachments to upload
             if (action.attachments.length === 0) {
                 return of(createAttachmentsSuccess({
@@ -612,7 +611,7 @@ export class PostCreateEffects {
 
     createMediaSetSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(createMediaSetSourcesStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             const media = action.mediaSet[action.currentMediaIndex];
 
             // If no sources in media and it's last media in set
@@ -700,7 +699,7 @@ export class PostCreateEffects {
 
     createAttachmentsSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(createAttachmentsSourcesStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             // If no attachments created
             if (action.attachments.length === 0) {
                 return of(createAttachmentsSourcesSuccess());
@@ -787,17 +786,17 @@ export class PostCreateEffects {
 
     fetchArtistSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(fetchArtistSourcesStart),
-        switchMap((action) => {
-                return this.httpClient.get<HypermediaResultList<QuerySource>>(GET_ARTIST_SOURCES
-                        .replace(":userId", action.userId)
-                        .replace(":artistId", action.artistId), {
-                        params: new HttpParams()
-                            // TODO probably needs pagination
-                            .append("size", 100),
-                        headers: new HttpHeaders()
-                            .append("Accept", RESPONSE_TYPE)
-                    },
-                ).pipe(
+        mergeMap((action) => {
+            return this.httpClient.get<HypermediaResultList<QuerySource>>(GET_ARTIST_SOURCES
+                    .replace(":userId", action.userId)
+                    .replace(":artistId", action.artistId), {
+                    params: new HttpParams()
+                        // TODO probably needs pagination
+                        .append("size", 100),
+                    headers: new HttpHeaders()
+                        .append("Accept", RESPONSE_TYPE)
+                },
+            ).pipe(
                     map(sourcesResponse => {
                         let sources: QuerySource[] = [];
 
@@ -841,17 +840,17 @@ export class PostCreateEffects {
 
     addArtistSourceAfterCreationStart = createEffect(() => this.actions$.pipe(
         ofType(addArtistSourceAfterCreationStart),
-        switchMap((action) => {
-                return this.httpClient.get<QuerySource>(GET_SOURCE
-                    .replace(":userId", action.userId)
-                    .replace(":sourceId", action.sourceId)
-                ).pipe(
-                    map(source => {
+        mergeMap((action) => {
+            return this.httpClient.get<QuerySource>(GET_SOURCE
+                .replace(":userId", action.userId)
+                .replace(":sourceId", action.sourceId)
+            ).pipe(
+                map(source => {
 
-                        return addArtistSourceAfterCreationSuccess({
-                            artistId: action.artistId,
-                            source: source
-                        });
+                    return addArtistSourceAfterCreationSuccess({
+                        artistId: action.artistId,
+                        source: source
+                    });
                     }),
                     retryWhen(RETRY_HANDLER),
                     catchError(error => {
@@ -900,7 +899,7 @@ export class PostCreateEffects {
 
     createArtistSourceStart = createEffect(() => this.actions$.pipe(
         ofType(createArtistSourceStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.post(CREATE_ARTIST_SOURCE
                     .replace(":userId", action.userId)
                     .replace(":artistId", action.artistId),
@@ -936,17 +935,17 @@ export class PostCreateEffects {
 
     removeArtistSourceStart = createEffect(() => this.actions$.pipe(
         ofType(removeArtistSourceStart),
-        switchMap((action) => {
-                return this.httpClient.delete<HypermediaResultList<QuerySource>>(DELETE_SOURCE
-                    .replace(":userId", action.userId)
-                    .replace(":sourceId", action.sourceId)
-                ).pipe(
-                    map(response => {
-                        return removeArtistSourceSuccess({
-                            artistId: action.artistId,
-                            sourceId: action.sourceId
-                        });
-                    }),
+        mergeMap((action) => {
+            return this.httpClient.delete<HypermediaResultList<QuerySource>>(DELETE_SOURCE
+                .replace(":userId", action.userId)
+                .replace(":sourceId", action.sourceId)
+            ).pipe(
+                map(response => {
+                    return removeArtistSourceSuccess({
+                        artistId: action.artistId,
+                        sourceId: action.sourceId
+                    });
+                }),
                     retryWhen(RETRY_HANDLER),
                     catchError(error => {
                         let errorMessage;

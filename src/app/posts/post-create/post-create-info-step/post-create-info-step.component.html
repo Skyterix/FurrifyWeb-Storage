@@ -50,8 +50,9 @@
                     <li *ngFor="let artistWrapper of selectedArtists" class="mt-1 text-end">
                         <!-- Artist -->
                         <span (click)="loadCreateArtistForm(artistWrapper)"
-                              [ngClass]="artistWrapper.status !== WrapperStatus.NOT_QUERIED && artistWrapper.status === WrapperStatus.NOT_FOUND ? 'bg-red' : ''"
-                              class="artist badge badge-dark me-1 mt-1 p-2 float-start">
+                              [class.artist]="artistWrapper.status === WrapperStatus.FOUND"
+                              [class.bg-red]="artistWrapper.status !== WrapperStatus.NOT_QUERIED && artistWrapper.status === WrapperStatus.NOT_FOUND ? 'bg-red' : ''"
+                              class="badge badge-dark bg-gray me-1 mt-1 p-2 float-start">
 
                             <!-- Spinner -->
                             <fa-icon *ngIf="artistWrapper.status === WrapperStatus.NOT_QUERIED" [icon]="spinnerIcon"

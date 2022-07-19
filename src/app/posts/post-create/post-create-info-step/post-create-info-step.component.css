@@ -11,6 +11,10 @@
     text-decoration: none;
 }
 
+.bg-gray {
+    background: #636363;
+}
+
 .artist {
     background: #37115a;
 }
