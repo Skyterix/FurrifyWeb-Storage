@@ -51,7 +51,6 @@ export class TagCreateComponent implements OnInit, OnDestroy {
 
         this.createTagForm = new FormGroup({
             value: new FormControl({value: this.value, disabled: true}),
-            title: new FormControl(null, [Validators.required, Validators.maxLength(255)]),
             type: new FormControl(this.types[0], [Validators.required])
         });
     }
@@ -63,7 +62,6 @@ export class TagCreateComponent implements OnInit, OnDestroy {
 
     onSubmit(): void {
         const newTag: Tag = {
-            title: this.createTagForm.controls.title.value,
             value: this.value,
             type: this.createTagForm.controls.type.value,
             ownerId: "",
