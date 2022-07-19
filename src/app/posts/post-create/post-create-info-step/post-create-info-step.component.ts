@@ -132,37 +132,15 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     onTagSelectSubmit(): void {
-        const tagValue: string = this.tagSelectForm.controls.tag.value
-            .trim()
-            .toLowerCase()
-            // Replace spaces with underscore
-            .replace(/ /g, "_");
+        const tagValues: string[] = this.tagSelectForm.controls.tag.value
+            .split(",");
+        tagValues.forEach(value => setTimeout(() => {
+            this.addTagToSelected(value)
+        }, 1000));
 
-        if (!tagValue) {
-            return;
-        }
-
-        if (!tagValue.match("^[a-zA-Z0-9_-]*$")) {
-            return;
-        }
-
-        // Check if tag already exists
-        const isDuplicate = this.selectedTags.find((tagWrapper) => {
-            return tagWrapper.tag.value === tagValue;
+        this.tagSelectForm.setValue({
+            tag: ''
         });
-
-        if (!isDuplicate) {
-            this.store.dispatch(addTagToSelectedSetStart(
-                {
-                    userId: this.currentUser!.id!,
-                    value: tagValue
-                }
-            ));
-
-            this.tagSelectForm.setValue({
-                tag: ''
-            });
-        }
     }
 
     onArtistRemove(artistWrapper: ArtistWrapper): void {
@@ -172,7 +150,23 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     }
 
     onArtistSelectSubmit(): void {
-        const artistNickname: string = this.artistSelectForm.controls.artist.value
+        const artistNicknames: string[] = this.artistSelectForm.controls.artist.value
+            .split(",");
+        artistNicknames.forEach(value => setTimeout(() => {
+            this.addArtistToSelected(value)
+        }, 1000));
+
+        this.artistSelectForm.setValue({
+            artist: ''
+        });
+    }
+
+    loadCreateArtistSourceForm(artistWrapper: ArtistWrapper): void {
+        this.postCreateService.artistSourceCreateOpenEvent.emit(artistWrapper);
+    }
+
+    private addArtistToSelected(artistNickname: string) {
+        artistNickname = artistNickname
             .trim();
 
         if (!artistNickname || !artistNickname.match("^[A-Za-z0-9_-]*$")) {
@@ -198,7 +192,33 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         }
     }
 
-    loadCreateArtistSourceForm(artistWrapper: ArtistWrapper): void {
-        this.postCreateService.artistSourceCreateOpenEvent.emit(artistWrapper);
+    private addTagToSelected(tagValue: string) {
+        tagValue = tagValue
+            .trim()
+            .toLowerCase()
+            // Replace spaces with underscore
+            .replace(/ /g, "_");
+
+        if (!tagValue) {
+            return;
+        }
+
+        if (!tagValue.match("^[a-zA-Z0-9_-]*$")) {
+            return;
+        }
+
+        // Check if tag already exists
+        const isDuplicate = this.selectedTags.find((tagWrapper) => {
+            return tagWrapper.tag.value === tagValue;
+        });
+
+        if (!isDuplicate) {
+            this.store.dispatch(addTagToSelectedSetStart(
+                {
+                    userId: this.currentUser!.id!,
+                    value: tagValue
+                }
+            ));
+        }
     }
 }

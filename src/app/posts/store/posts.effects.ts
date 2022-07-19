@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {catchError, map, switchMap, tap} from 'rxjs/operators';
+import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {
     DELETE_POST,
     GET_POST,
@@ -40,7 +40,7 @@ export class PostsEffects {
 
     searchStart = createEffect(() => this.actions$.pipe(
         ofType(startSearch),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.get<HypermediaResultList<QueryPost>>(
                 GET_POSTS_BY_QUERY.replace(":userId", action.userId), {
                     headers: new HttpHeaders()
@@ -86,7 +86,7 @@ export class PostsEffects {
 
     getPostStart = createEffect(() => this.actions$.pipe(
         ofType(getPostStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.get<QueryPost>(
                 GET_POST
                     .replace(":userId", action.userId)
@@ -125,7 +125,7 @@ export class PostsEffects {
 
     getPostMediaSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(getPostMediaSourcesStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.get<HypermediaResultList<QuerySource>>(
                 GET_POST_MEDIA_SOURCES
                     .replace(":userId", action.userId)
@@ -168,7 +168,7 @@ export class PostsEffects {
 
     getPostAttachmentsSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(getPostAttachmentsSourcesStart),
-        switchMap((action) => {
+        mergeMap((action) => {
 
             // If no attachments
             if (action.attachments.length === 0) {
@@ -236,7 +236,7 @@ export class PostsEffects {
 
     deletePostStart = createEffect(() => this.actions$.pipe(
         ofType(deletePostStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.delete(DELETE_POST
                 .replace(":userId", action.userId)
                 .replace(":postId", action.postId), {

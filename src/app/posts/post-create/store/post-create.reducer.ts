@@ -331,14 +331,6 @@ export const postCreateReducer = createReducer(
             };
         }
     ),
-    on(createTagStart, (state, action) => {
-            return {
-                ...state,
-                isFetching: true,
-                artistErrorMessage: null
-            };
-        }
-    ),
     on(createArtistStart, (state, action) => {
             return {
                 ...state,

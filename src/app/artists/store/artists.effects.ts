@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {catchError, map, switchMap, tap} from 'rxjs/operators';
+import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {DELETE_ARTIST, GET_ARTIST, GET_ARTIST_SOURCES, RESPONSE_TYPE} from '../../shared/config/api.constants';
 import {of} from 'rxjs';
 import {
@@ -27,7 +27,7 @@ export class ArtistsEffects {
 
     getArtistStart = createEffect(() => this.actions$.pipe(
         ofType(getArtistStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.get<QueryArtist>(
                 GET_ARTIST
                     .replace(":userId", action.userId)
@@ -66,7 +66,7 @@ export class ArtistsEffects {
 
     getArtistSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(getArtistSourcesStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.get<HypermediaResultList<QuerySource>>(
                 GET_ARTIST_SOURCES
                     .replace(":userId", action.userId)
@@ -108,7 +108,7 @@ export class ArtistsEffects {
 
     deleteArtistStart = createEffect(() => this.actions$.pipe(
         ofType(deleteArtistStart),
-        switchMap((action) => {
+        mergeMap((action) => {
             return this.httpClient.delete(DELETE_ARTIST
                 .replace(":userId", action.userId)
                 .replace(":artistId", action.artistId), {
