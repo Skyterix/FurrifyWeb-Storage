@@ -164,6 +164,10 @@ export class PostCreateEffects {
                             return of(createTagFail({
                                 errorMessage: 'No servers available to handle your request. Try again later.'
                             }));
+                        case 409:
+                            return of(createTagFail({
+                                errorMessage: 'Tag with that value already exists.'
+                            }));
                         case 400:
                             return of(createTagFail({
                                 errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'

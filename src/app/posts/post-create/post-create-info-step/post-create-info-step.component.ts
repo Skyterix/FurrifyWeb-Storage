@@ -16,6 +16,12 @@ import {
     updatePostSavedDescription,
     updatePostSavedTitle
 } from "../store/post-create.actions";
+import {
+    ARTIST_NICKNAME_MAX_LENGTH,
+    ARTIST_REGEX,
+    TAG_REGEX,
+    TAG_VALUE_MAX_LENGTH
+} from "../../../shared/config/common.constats";
 
 @Component({
     selector: 'app-post-create-info-step',
@@ -169,7 +175,15 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         artistNickname = artistNickname
             .trim();
 
-        if (!artistNickname || !artistNickname.match("^[A-Za-z0-9_-]*$")) {
+        if (!artistNickname) {
+            return;
+        }
+
+        if (!artistNickname.match(ARTIST_REGEX)) {
+            return;
+        }
+
+        if (artistNickname.length > ARTIST_NICKNAME_MAX_LENGTH) {
             return;
         }
 
