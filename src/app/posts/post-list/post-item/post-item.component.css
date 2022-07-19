@@ -26,10 +26,12 @@
 }
 
 .badges {
-    height: 30px;
-    padding: 0 .35rem 0 .35rem;
+    min-height: 30px;
+    max-width: border-box;
+    padding: 5px .35rem;
     text-align: left;
-    line-height: 30px;
+    line-height: 22px;
+    width: 250px;
 }
 
 .thumbnail {
