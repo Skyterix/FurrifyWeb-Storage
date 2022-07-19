@@ -169,7 +169,6 @@ export const postCreateReducer = createReducer(
     ),
     on(addTagToSelectedSetStart, (state, action) => {
             const tag: Tag = {
-                title: "",
                 ownerId: "",
                 type: "",
                 value: action.value,
