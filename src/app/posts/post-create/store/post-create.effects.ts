@@ -442,6 +442,10 @@ export class PostCreateEffects {
                             return of(createPostFail({
                                 errorMessage: 'No servers available to handle your request. Try again later.'
                             }));
+                        case 404:
+                            return of(createPostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
                         case 400:
                             return of(createPostFail({
                                 errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
@@ -514,6 +518,10 @@ export class PostCreateEffects {
                             return of(createPostFail({
                                 errorMessage: 'No servers available to handle your request. Try again later.'
                             }));
+                        case 404:
+                            return of(createPostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
                         case 400:
                             return of(createPostFail({
                                 errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
@@ -585,6 +593,10 @@ export class PostCreateEffects {
                         case 503:
                             return of(createPostFail({
                                 errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 404:
+                            return of(createPostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         case 400:
                             return of(createPostFail({
@@ -674,6 +686,10 @@ export class PostCreateEffects {
                         case 503:
                             return of(createPostFail({
                                 errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 404:
+                            return of(createPostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         case 400:
                             return of(createPostFail({
@@ -767,6 +783,10 @@ export class PostCreateEffects {
                         case 503:
                             return of(createPostFail({
                                 errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 404:
+                            return of(createPostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         case 400:
                             return of(createPostFail({
@@ -918,6 +938,10 @@ export class PostCreateEffects {
                         case 503:
                             return of(createArtistSourceFail({
                                 errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 404:
+                            return of(createPostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
                             }));
                         case 400:
                             return of(createArtistSourceFail({
