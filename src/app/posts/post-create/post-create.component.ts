@@ -39,7 +39,6 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     @ViewChild('backdrop', {read: ElementRef}) backdropRef!: ElementRef;
     @ViewChild('section', {read: ElementRef}) sectionRef!: ElementRef;
 
-    isFetching = false;
     isErrorPostCreationRelated = false;
     errorMessage: string | null = null;
 
@@ -120,7 +119,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         this.storeSubscription = this.store.select('postCreate').subscribe(state => {
             this.errorMessage = state.postCreateErrorMessage;
             this.isErrorPostCreationRelated = state.isErrorPostCreationRelated;
-
+            console.log(state.currentlyFetchingCount);
         });
 
         // Load default step

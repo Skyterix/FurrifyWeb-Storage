@@ -54,7 +54,7 @@ export class ArtistCreateComponent implements OnInit {
 
     ngOnInit(): void {
         this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
-            this.isFetching = state.isFetching;
+            this.isFetching = state.currentlyFetchingCount > 0;
             this.errorMessage = state.artistErrorMessage;
         });
         this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
