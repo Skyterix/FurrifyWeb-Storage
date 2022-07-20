@@ -98,11 +98,6 @@ export class ArtistViewComponent implements OnInit {
     }
 
     loadArtist(): void {
-        // If artist already selected
-        if (this.selectedArtist != null) {
-            return;
-        }
-
         const artistId = this.activatedRoute.snapshot.params.artistId;
 
         this.store.dispatch(getArtistStart({
