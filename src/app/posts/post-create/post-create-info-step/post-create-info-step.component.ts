@@ -16,12 +16,7 @@ import {
     updatePostSavedDescription,
     updatePostSavedTitle
 } from "../store/post-create.actions";
-import {
-    ARTIST_NICKNAME_MAX_LENGTH,
-    ARTIST_REGEX,
-    TAG_REGEX,
-    TAG_VALUE_MAX_LENGTH
-} from "../../../shared/config/common.constats";
+import {ARTIST_NICKNAME_MAX_LENGTH, ARTIST_REGEX} from "../../../shared/config/common.constats";
 
 @Component({
     selector: 'app-post-create-info-step',
@@ -140,9 +135,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     onTagSelectSubmit(): void {
         const tagValues: string[] = this.tagSelectForm.controls.tag.value
             .split(",");
-        tagValues.forEach(value => setTimeout(() => {
-            this.addTagToSelected(value)
-        }, 1000));
+        tagValues.forEach(value => this.addTagToSelected(value));
 
         this.tagSelectForm.setValue({
             tag: ''
@@ -158,9 +151,7 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
     onArtistSelectSubmit(): void {
         const artistNicknames: string[] = this.artistSelectForm.controls.artist.value
             .split(",");
-        artistNicknames.forEach(value => setTimeout(() => {
-            this.addArtistToSelected(value)
-        }, 1000));
+        artistNicknames.forEach(value => this.addArtistToSelected(value));
 
         this.artistSelectForm.setValue({
             artist: ''
