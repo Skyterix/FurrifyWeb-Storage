@@ -41,6 +41,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
 
     isErrorPostCreationRelated = false;
     errorMessage: string | null = null;
+    isFetching!: boolean;
 
     private postInfoStepOpenEventSubscription!: Subscription;
     private postContentStepOpenEventSubscription!: Subscription;
@@ -81,28 +82,33 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         });
 
         this.tagCreateOpenEventSubscription = this.postCreateService.tagCreateOpenEvent.subscribe(tagValue => {
-            const componentRef = this.loadSideStep<TagCreateComponent>(TagCreateComponent);
-            componentRef.instance.value = tagValue;
+            this.loadSideStep<TagCreateComponent>(TagCreateComponent, componentRef => {
+                componentRef.instance.value = tagValue;
+            });
         });
 
         this.artistCreateOpenEventSubscription = this.postCreateService.artistCreateOpenEvent.subscribe(artistPreferredNickname => {
-            const componentRef = this.loadSideStep<ArtistCreateComponent>(ArtistCreateComponent);
-            componentRef.instance.preferredNickname = artistPreferredNickname;
+            this.loadSideStep<ArtistCreateComponent>(ArtistCreateComponent, componentRef => {
+                componentRef.instance.preferredNickname = artistPreferredNickname;
+            });
         });
 
         this.mediaSourceCreateOpenEventSubscription = this.postCreateService.mediaSourceCreateOpenEvent.subscribe(media => {
-            const componentRef = this.loadSideStep<MediaSourceCreateComponent>(MediaSourceCreateComponent);
-            componentRef.instance.media = media;
+            this.loadSideStep<MediaSourceCreateComponent>(MediaSourceCreateComponent, componentRef => {
+                componentRef.instance.media = media;
+            });
         });
 
         this.attachmentSourceCreateOpenEventSubscription = this.postCreateService.attachmentSourceCreateOpenEvent.subscribe(attachment => {
-            const componentRef = this.loadSideStep<AttachmentSourceCreateComponent>(AttachmentSourceCreateComponent);
-            componentRef.instance.attachment = attachment;
+            this.loadSideStep<AttachmentSourceCreateComponent>(AttachmentSourceCreateComponent, componentRef => {
+                componentRef.instance.attachment = attachment;
+            });
         });
 
         this.artistSourceCreateOpenEventSubscription = this.postCreateService.artistSourceCreateOpenEvent.subscribe(artist => {
-            const componentRef = this.loadSideStep<ArtistSourceCreateComponent>(ArtistSourceCreateComponent);
-            componentRef.instance.artist = artist;
+            this.loadSideStep<ArtistSourceCreateComponent>(ArtistSourceCreateComponent, componentRef => {
+                componentRef.instance.artist = artist;
+            });
         });
 
         this.mediaCreateOpenEventSubscription = this.postCreateService.mediaCreateOpenEvent.subscribe(() => {
@@ -119,6 +125,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         this.storeSubscription = this.store.select('postCreate').subscribe(state => {
             this.errorMessage = state.postCreateErrorMessage;
             this.isErrorPostCreationRelated = state.isErrorPostCreationRelated;
+            this.isFetching = state.currentlyFetchingCount > 0;
         });
 
         // Load default step
@@ -155,9 +162,19 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         this.currentStepRef!.createComponent(component);
     }
 
-    private loadSideStep<T>(component: Type<T>): ComponentRef<T> {
+    private loadSideStep<T>(component: Type<T>, executeOnComponent?: (componentRef: ComponentRef<T>) => void): void {
+        // Check if something is currently fetching, if so prevent opening of side panel
+        if (this.isFetching) {
+            return;
+        }
+
         this.currentSideStepRef!.clear();
-        return this.currentSideStepRef!.createComponent(component);
+        const componentRef = this.currentSideStepRef!.createComponent(component);
+
+        // If additional execute command is passed
+        if (!!executeOnComponent) {
+            executeOnComponent(componentRef);
+        }
     }
 
     private clearSideView(): void {
