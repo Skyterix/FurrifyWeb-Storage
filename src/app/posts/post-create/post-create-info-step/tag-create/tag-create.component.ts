@@ -42,7 +42,7 @@ export class TagCreateComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
-            this.isFetching = state.isFetching;
+            this.isFetching = state.currentlyFetchingCount > 0;
             this.errorMessage = state.tagErrorMessage;
         });
         this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {

@@ -28,7 +28,7 @@ export class PostCreateStepsMenuComponent implements OnInit {
 
     ngOnInit(): void {
         this.store.select('postCreate').subscribe(state => {
-            this.isFetching = state.isFetching;
+            this.isFetching = state.currentlyFetchingCount > 0;
         });
 
         this.postInfoOpenEventSubscription = this.postCreateService.postInfoStepOpenEvent.subscribe(() => {

@@ -42,7 +42,7 @@ export class AttachmentSourceCreateComponent implements OnInit {
 
     ngOnInit(): void {
         this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
-            this.isFetching = state.isFetching;
+            this.isFetching = state.currentlyFetchingCount > 0;
             this.attachments = state.attachments;
             this.data = state.createSourceData;
         });

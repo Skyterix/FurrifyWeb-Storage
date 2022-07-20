@@ -33,13 +33,11 @@ import {
     createTagFail,
     createTagStart,
     fetchArtistAfterCreationFail,
-    fetchArtistAfterCreationStart,
     fetchArtistAfterCreationSuccess,
     fetchArtistSourcesFail,
     fetchArtistSourcesStart,
     fetchArtistSourcesSuccess,
     fetchTagAfterCreationFail,
-    fetchTagAfterCreationStart,
     fetchTagAfterCreationSuccess,
     removeArtistFromSelected,
     removeArtistSourceFail,
@@ -114,7 +112,7 @@ export enum WrapperSourcesFetchingStatus {
 export interface State {
     // Create Post
     isErrorPostCreationRelated: boolean;
-    isFetching: boolean;
+    currentlyFetchingCount: number;
     selectedTags: TagWrapper[];
     selectedArtists: ArtistWrapper[];
     postSavedTitle: string;
@@ -134,7 +132,7 @@ export interface State {
 const initialState: State = {
     // Create Post
     isErrorPostCreationRelated: false,
-    isFetching: false,
+    currentlyFetchingCount: 0,
     selectedTags: [],
     selectedArtists: [],
     postSavedTitle: "",
@@ -177,7 +175,7 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                isFetching: true,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
                 postCreateErrorMessage: null,
                 // Set temporarily isExisting value to null to show loading spinner
                 selectedTags: [...state.selectedTags, new TagWrapper(tag, WrapperStatus.NOT_QUERIED)]
@@ -197,7 +195,7 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 selectedTags: newSelectedTags
             };
         }
@@ -205,7 +203,7 @@ export const postCreateReducer = createReducer(
     on(addTagToSelectedSetFail, (state, action) => {
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 postCreateErrorMessage: action.errorMessage,
                 selectedTags: state.selectedTags.slice().filter(item => item.tag.value !== action.value)
             };
@@ -214,7 +212,7 @@ export const postCreateReducer = createReducer(
     on(createTagStart, (state, action) => {
             return {
                 ...state,
-                isFetching: true,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
                 tagErrorMessage: null
             };
         }
@@ -222,29 +220,21 @@ export const postCreateReducer = createReducer(
     on(createTagFail, (state, action) => {
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 tagErrorMessage: action.errorMessage
-            };
-        }
-    ),
-    on(fetchTagAfterCreationStart, (state, action) => {
-            return {
-                ...state,
-                isFetching: true,
-                tagErrorMessage: null
             };
         }
     ),
     on(fetchTagAfterCreationFail, (state, action) => {
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 tagErrorMessage: action.errorMessage
             };
         }
     ),
     on(fetchTagAfterCreationSuccess, (state, action) => {
-            const newTags = state.selectedTags.slice();
+        const newTags = state.selectedTags.slice();
 
             // Find tag with same value
             const oldTagIndex = newTags.findIndex((tagWrapper) => {
@@ -256,7 +246,7 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 selectedTags: newTags
             };
         }
@@ -281,7 +271,7 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                isFetching: true,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
                 postCreateErrorMessage: null,
                 // Set temporarily isExisting value to null to show loading spinner
                 selectedArtists: [...state.selectedArtists, new ArtistWrapper(artist, [], WrapperStatus.NOT_QUERIED, WrapperSourcesFetchingStatus.NOT_QUERIED)]
@@ -301,7 +291,7 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 selectedArtists: newSelectedArtists
             };
         }
@@ -309,7 +299,7 @@ export const postCreateReducer = createReducer(
     on(addArtistToSelectedSetFail, (state, action) => {
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 postCreateErrorMessage: action.errorMessage,
                 selectedArtists: state.selectedArtists.slice().filter(item => item.artist.preferredNickname !== action.preferredNickname)
             };
@@ -332,7 +322,7 @@ export const postCreateReducer = createReducer(
     on(createArtistStart, (state, action) => {
             return {
                 ...state,
-                isFetching: true,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
                 artistErrorMessage: null
             };
         }
@@ -340,23 +330,15 @@ export const postCreateReducer = createReducer(
     on(createArtistFail, (state, action) => {
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 artistErrorMessage: action.errorMessage
-            };
-        }
-    ),
-    on(fetchArtistAfterCreationStart, (state, action) => {
-            return {
-                ...state,
-                isFetching: true,
-                artistErrorMessage: null
             };
         }
     ),
     on(fetchArtistAfterCreationFail, (state, action) => {
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 artistErrorMessage: action.errorMessage
             };
         }
@@ -374,7 +356,7 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 selectedArtists: newArtists
             };
         }
@@ -417,7 +399,7 @@ export const postCreateReducer = createReducer(
     on(createPostStart, (state, action) => {
             return {
                 ...state,
-                isFetching: true,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
                 postCreateErrorMessage: null,
                 isErrorPostCreationRelated: false,
                 currentIndex: 0,
@@ -428,6 +410,7 @@ export const postCreateReducer = createReducer(
     on(createPostSuccess, (state, action) => {
             return {
                 ...state,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 createdPostId: action.postId
             };
         }
@@ -435,7 +418,7 @@ export const postCreateReducer = createReducer(
     on(createPostFail, (state, action) => {
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 postCreateErrorMessage: action.errorMessage,
                 isErrorPostCreationRelated: true
             };
@@ -444,7 +427,7 @@ export const postCreateReducer = createReducer(
     on(createMediaSetStart, (state, action) => {
         return {
             ...state,
-            isFetching: true,
+            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentIndex
@@ -453,7 +436,7 @@ export const postCreateReducer = createReducer(
     on(createAttachmentsStart, (state, action) => {
         return {
             ...state,
-            isFetching: true,
+            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentIndex
@@ -462,7 +445,7 @@ export const postCreateReducer = createReducer(
     on(createMediaSetSourcesStart, (state, action) => {
         return {
             ...state,
-            isFetching: true,
+            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentMediaIndex,
@@ -472,7 +455,7 @@ export const postCreateReducer = createReducer(
     on(createAttachmentsSourcesStart, (state, action) => {
         return {
             ...state,
-            isFetching: true,
+            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentAttachmentIndex,
@@ -489,7 +472,7 @@ export const postCreateReducer = createReducer(
     on(createAttachmentsSourcesSuccess, (state, action) => {
             return {
                 ...state,
-                isFetching: false
+                currentlyFetchingCount: state.currentlyFetchingCount - 1
             };
         }
     ),
@@ -741,7 +724,7 @@ export const postCreateReducer = createReducer(
     on(createArtistSourceStart, (state, action) => {
             return {
                 ...state,
-                isFetching: true,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
                 artistSourceCreateErrorMessage: null
             };
         }
@@ -749,14 +732,14 @@ export const postCreateReducer = createReducer(
     on(createArtistSourceSuccess, (state, action) => {
             return {
                 ...state,
-                isFetching: false
+                currentlyFetchingCount: state.currentlyFetchingCount - 1
             };
         }
     ),
     on(createArtistSourceFail, (state, action) => {
             return {
                 ...state,
-                isFetching: false,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 artistSourceCreateErrorMessage: action.errorMessage
             };
         }
