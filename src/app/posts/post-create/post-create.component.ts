@@ -119,7 +119,6 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         this.storeSubscription = this.store.select('postCreate').subscribe(state => {
             this.errorMessage = state.postCreateErrorMessage;
             this.isErrorPostCreationRelated = state.isErrorPostCreationRelated;
-            console.log(state.currentlyFetchingCount);
         });
 
         // Load default step
