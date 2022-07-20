@@ -3,7 +3,7 @@ import {PostCreateStatusEnum} from "../../shared/enum/post-create-status.enum";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../store/app.reducer";
 import {KeycloakProfile} from "keycloak-js";
-import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper} from "./store/post-create.reducer";
+import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper, WrapperStatus} from "./store/post-create.reducer";
 import {
     createAttachmentsSourcesStart,
     createAttachmentsStart,
@@ -97,8 +97,8 @@ export class PostCreateService {
             return false;
         }
 
-        // If some tag is not created
-        if (!!this.tags.find(tag => !tag.status)) {
+        // If some tag is not created or not yet fetched
+        if (!!this.tags.find(tag => tag.status === WrapperStatus.NOT_FOUND || tag.status === WrapperStatus.NOT_QUERIED)) {
             return false;
         }
 
@@ -107,8 +107,8 @@ export class PostCreateService {
             return false;
         }
 
-        // If some tag is not created
-        if (!!this.artists.find(artist => !artist.status)) {
+        // If some artist is not created or not yet fetched
+        if (!!this.artists.find(artist => artist.status === WrapperStatus.NOT_FOUND || artist.status === WrapperStatus.NOT_QUERIED)) {
             return false;
         }
 
