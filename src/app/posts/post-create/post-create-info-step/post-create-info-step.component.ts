@@ -54,12 +54,12 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
 
         // Tag form
         this.tagSelectForm = new FormGroup({
-            tag: new FormControl(null, [Validators.required])
+            tag: new FormControl(null, [])
         });
 
         // Artist form
         this.artistSelectForm = new FormGroup({
-            artist: new FormControl(null, [Validators.required])
+            artist: new FormControl(null, [])
         });
     }
 
