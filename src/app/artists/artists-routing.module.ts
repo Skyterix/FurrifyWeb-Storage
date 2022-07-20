@@ -13,7 +13,6 @@ const routes: Routes = [
                 path: '',
                 redirectTo: '/',
                 pathMatch: 'full',
-                canActivate: [AuthGuard]
             },
             {
                 path: ':artistId',
