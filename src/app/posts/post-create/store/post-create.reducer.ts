@@ -39,6 +39,7 @@ import {
     fetchArtistSourcesSuccess,
     fetchTagAfterCreationFail,
     fetchTagAfterCreationSuccess,
+    loadPostToEdit,
     removeArtistFromSelected,
     removeArtistSourceFail,
     removeArtistSourceStart,
@@ -801,6 +802,26 @@ export const postCreateReducer = createReducer(
                 ...state,
                 selectedArtists: newArtists
             };
+        }
+    ),
+    on(loadPostToEdit, (state, action) => {
+            const tags = action.post.tags.map(tag => {
+                return new TagWrapper(tag, WrapperStatus.FOUND);
+            });
+
+            // TODO Fetch media sources and attachment sources
+            /*            const mediaSet = action.post.mediaSet.map(media => {
+                            return new MediaWrapper(media, WrapperStatus.FOUND);
+                        });*/
+
+            return {
+                ...state,
+                postSavedTitle: action.post.title,
+                postSavedDescription: action.post.description,
+                selectedTags: tags,
+                mediaSet: action.post.mediaSet,
+                attachments: action.post.attachments
+            }
         }
     ),
 );

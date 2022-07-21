@@ -41,6 +41,7 @@ import {
     fetchTagAfterCreationFail,
     fetchTagAfterCreationStart,
     fetchTagAfterCreationSuccess,
+    loadPostToEdit,
     removeArtistSourceFail,
     removeArtistSourceStart,
     removeArtistSourceSuccess
@@ -1044,6 +1045,19 @@ export class PostCreateEffects {
         ofType(addAttachment),
         tap(() => {
             this.postCreateService.clearPostCreateSideStepModalEvent.emit();
+        })
+    ), {dispatch: false});
+
+    loadPostToEdit = createEffect(() => this.actions$.pipe(
+        ofType(loadPostToEdit),
+        tap(action => {
+            // Load artists with sources
+            action.post.artists.forEach(artist => {
+                this.store.dispatch(addArtistToSelectedSetStart({
+                    userId: action.post.ownerId,
+                    preferredNickname: artist.preferredNickname
+                }));
+            });
         })
     ), {dispatch: false});
 

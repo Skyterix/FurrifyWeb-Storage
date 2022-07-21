@@ -8,5 +8,5 @@ export interface Artist {
     preferredNickname: string;
     avatar: Avatar | null;
     sources: Source[];
-    createDate: Date;
+    createDate: Date | undefined;
 }

@@ -4,6 +4,7 @@ import {Tag} from "../tag.model";
 import {QueryPostArtist} from "./query-post-artist.model";
 
 export interface QueryPost {
+    ownerId: string;
     postId: string;
     title: string;
     description: string;

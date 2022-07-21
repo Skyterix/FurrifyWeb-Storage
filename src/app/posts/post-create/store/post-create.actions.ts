@@ -6,6 +6,7 @@ import {CreateSource} from "../../../shared/model/request/create-source.model";
 import {CreatePost} from "../../../shared/model/request/create-post.model";
 import {PostCreateStatusEnum} from "../../../shared/enum/post-create-status.enum";
 import {QuerySource} from "../../../shared/model/query/query-source.model";
+import {QueryPost} from "../../../shared/model/query/query-post.model";
 
 export const updatePostSavedTitle = createAction(
     '[PostCreate] Update post saved title',
@@ -324,4 +325,10 @@ export const addArtistSourceAfterCreationFail = createAction(
 export const addArtistSourceAfterCreationSuccess = createAction(
     '[PostCreate] Add artist source after creation success',
     props<{ artistId: string, source: QuerySource }>()
+);
+
+
+export const loadPostToEdit = createAction(
+    '[Posts] Load post to edit',
+    props<{ post: QueryPost }>()
 );

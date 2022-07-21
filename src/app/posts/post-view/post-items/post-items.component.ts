@@ -18,6 +18,8 @@ import {getPostAttachmentsSourcesStart} from "../../store/posts.actions";
 import {Subscription} from "rxjs";
 import {KeycloakProfile} from "keycloak-js";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
+import {PostCreateService} from "../../post-create/post-create.service";
+import {loadPostToEdit} from "../../post-create/store/post-create.actions";
 
 @Component({
     selector: 'app-post-items',
@@ -50,7 +52,8 @@ export class PostItemsComponent implements OnInit, OnDestroy {
                 private postsService: PostsService,
                 private keycloakService: KeycloakService,
                 private activatedRoute: ActivatedRoute,
-                private router: Router) {
+                private router: Router,
+                private postCreateService: PostCreateService) {
     }
 
     ngOnInit(): void {
@@ -74,6 +77,12 @@ export class PostItemsComponent implements OnInit, OnDestroy {
         });
 
         setTimeout(() => this.loadAttachmentSources());
+
+        if (this.activatedRoute.snapshot.queryParams.edit === 'true') {
+            this.store.dispatch(loadPostToEdit({
+                post: this.post
+            }));
+        }
     }
 
 
@@ -109,7 +118,10 @@ export class PostItemsComponent implements OnInit, OnDestroy {
 
     // TODO Implement
     onEditPost(): void {
-        alert("Not implemented yet.");
+        this.postCreateService.clearPostData();
+        this.postCreateService.loadPostToEdit(this.post);
+
+        this.postCreateService.postCreateOpenEvent.emit();
     }
 
     onDeletePost(): void {

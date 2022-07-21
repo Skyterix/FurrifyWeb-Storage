@@ -5,12 +5,15 @@ import * as fromApp from "../../store/app.reducer";
 import {KeycloakProfile} from "keycloak-js";
 import {ArtistWrapper, AttachmentWrapper, MediaWrapper, TagWrapper, WrapperStatus} from "./store/post-create.reducer";
 import {
+    clearPostData,
     createAttachmentsSourcesStart,
     createAttachmentsStart,
     createMediaSetSourcesStart,
     createMediaSetStart,
-    createPostStart
+    createPostStart,
+    loadPostToEdit
 } from "./store/post-create.actions";
+import {QueryPost} from "../../shared/model/query/query-post.model";
 
 @Injectable({
     providedIn: 'root'
@@ -214,5 +217,15 @@ export class PostCreateService {
                 currentSourceIndex: startSourceIndex
             }
         ))
+    }
+
+    clearPostData(): void {
+        this.store.dispatch(clearPostData());
+    }
+
+    loadPostToEdit(post: QueryPost): void {
+        this.store.dispatch(loadPostToEdit({
+            post
+        }));
     }
 }
