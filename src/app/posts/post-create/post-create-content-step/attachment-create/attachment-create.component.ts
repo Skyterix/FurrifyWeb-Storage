@@ -26,6 +26,10 @@ export class AttachmentCreateComponent implements OnInit {
     selectedFile!: File;
     errorMessage!: string;
 
+    private static defaultPickerLabel = "Select attachment file";
+    private static filePickerDropLabel = "Drop file to attach";
+    filePickerLabel = AttachmentCreateComponent.defaultPickerLabel;
+
     constructor(private postCreateService: PostCreateService,
                 private store: Store<fromApp.AppState>,
                 private renderer: Renderer2) {
@@ -47,44 +51,75 @@ export class AttachmentCreateComponent implements OnInit {
         }, 100);
     }
 
-    onFileSelected(event: any): void {
+    onFileSelected(event: any) {
+        this.selectAttachmentFiles(event.target.files);
+    }
+
+    selectAttachmentFiles(files: File[]): void {
         this.errorMessage = "";
 
         // If file is not selected
-        if (event.target.files.length === 0) {
+        if (files.length === 0) {
             return;
         }
 
         // Is filename is invalid
-        if (!FILENAME_REGEX.test(event.target.files[0].name)) {
-            this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
+        if (!FILENAME_REGEX.test(files[0].name)) {
+            this.errorMessage = "File \"" + files[0].name + "\" has invalid name."
 
             this.addFileForm.reset();
 
             return;
         }
 
-        if (event.target.files[0].name.length > MAX_FILENAME_LENGTH) {
-            this.errorMessage = "File \"" + event.target.files[0].name + "\" has too long filename."
+        if (files[0].name.length > MAX_FILENAME_LENGTH) {
+            this.errorMessage = "File \"" + files[0].name + "\" has too long filename."
 
             this.addFileForm.reset();
 
             return;
         }
 
-        const extension = EXTENSION_EXTRACT_REGEX.exec(event.target.files[0].name);
+        const extension = EXTENSION_EXTRACT_REGEX.exec(files[0].name);
 
         /* Check extension against accepted extensions list.
            The check for null is not required, regex check above ensures that extension must be present. */
         if (!AttachmentExtensionsConfig.EXTENSIONS.includes(extension![1].toLowerCase())) {
-            this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as attachment."
+            this.errorMessage = "File \"" + files[0].name + "\" has extension which is not accepted as attachment."
 
             this.addFileForm.reset();
 
             return;
         }
 
-        this.selectedFile = event.target.files[0];
+        this.selectedFile = files[0];
+        this.filePickerLabel = files[0].name;
+    }
+
+    onFileDrop(event: any): void {
+        event.preventDefault();
+
+        this.selectAttachmentFiles(event.dataTransfer.files);
+
+        // Trigger drag leave manually because JS doesn't on drop
+        this.onFileDragLeave();
+    }
+
+    onFileDragOver(event: any): void {
+        event.preventDefault();
+    }
+
+    onFileDragEnter(): void {
+        this.filePickerLabel = AttachmentCreateComponent.filePickerDropLabel;
+    }
+
+    onFileDragLeave(): void {
+        // For media file
+        if (!this.selectedFile) {
+            this.filePickerLabel = AttachmentCreateComponent.defaultPickerLabel;
+        } else {
+            this.filePickerLabel = this.selectedFile.name;
+        }
     }
 
     onSubmit(): void {
