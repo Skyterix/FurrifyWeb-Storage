@@ -16,7 +16,14 @@ import {
     updatePostSavedDescription,
     updatePostSavedTitle
 } from "../store/post-create.actions";
-import {ARTIST_NICKNAME_MAX_LENGTH, ARTIST_REGEX, TAG_VALUE_MAX_LENGTH} from "../../../shared/config/common.constats";
+import {
+    ARTIST_NICKNAME_MAX_LENGTH,
+    ARTIST_REGEX,
+    MAX_ARTISTS_IN_POST,
+    MAX_TAGS_IN_POST,
+    TAG_REGEX,
+    TAG_VALUE_MAX_LENGTH
+} from "../../../shared/config/common.constats";
 
 @Component({
     selector: 'app-post-create-info-step',
@@ -136,10 +143,6 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         const tagValues: string[] = this.tagSelectForm.controls.tag.value
             .split(",");
         tagValues.forEach(value => this.addTagToSelected(value));
-
-        this.tagSelectForm.setValue({
-            tag: ''
-        });
     }
 
     onArtistRemove(artistWrapper: ArtistWrapper): void {
@@ -152,10 +155,6 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         const artistNicknames: string[] = this.artistSelectForm.controls.artist.value
             .split(",");
         artistNicknames.forEach(value => this.addArtistToSelected(value));
-
-        this.artistSelectForm.setValue({
-            artist: ''
-        });
     }
 
     loadCreateArtistSourceForm(artistWrapper: ArtistWrapper): void {
@@ -175,6 +174,10 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
         }
 
         if (artistNickname.length > ARTIST_NICKNAME_MAX_LENGTH) {
+            return;
+        }
+
+        if (this.selectedArtists.length >= MAX_ARTISTS_IN_POST) {
             return;
         }
 
@@ -208,11 +211,15 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (!tagValue.match("^[a-zA-Z0-9_-]*$")) {
+        if (!tagValue.match(TAG_REGEX)) {
             return;
         }
 
         if (tagValue.length > TAG_VALUE_MAX_LENGTH) {
+            return;
+        }
+
+        if (this.selectedTags.length >= MAX_TAGS_IN_POST) {
             return;
         }
 
@@ -228,6 +235,10 @@ export class PostCreateInfoStepComponent implements OnInit, OnDestroy {
                     value: tagValue
                 }
             ));
+
+            this.tagSelectForm.setValue({
+                tag: ''
+            });
         }
     }
 }
