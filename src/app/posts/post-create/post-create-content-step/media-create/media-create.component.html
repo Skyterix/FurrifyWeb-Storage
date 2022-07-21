@@ -17,23 +17,28 @@
         <div>
 
             <!-- Thumbnail upload -->
-            <form [formGroup]="mediaThumbnailFileForm" class="mb-3">
+            <form (dragenter)="onThumbnailFileDragEnter()" (dragleave)="onThumbnailFileDragLeave()"
+                  (dragover)="onFileDragOver($event)" (drop)="onThumbnailFileDrop($event)"
+                  [formGroup]="mediaThumbnailFileForm" appDropArea class="mb-3">
                 <!-- Workaround for styling input[type=file] -->
                 <label class="form-input file" for="thumbnailFile">
                     <fa-icon [icon]="uploadIcon" class="me-1"></fa-icon>
                     <span
-                        [innerText]="(!!this.selectedThumbnailFile) ? selectedThumbnailFile.name : 'Select thumbnail (optional)'"></span>
+                        [innerText]="this.thumbnailFilePickerLabel"></span>
                 </label>
 
                 <input (change)="onThumbnailFileSelected($event)" class="d-none" formControlName="thumbnailFile"
                        id="thumbnailFile" type="file">
             </form>
 
-            <div class="mb-3">
+            <div (dragenter)="onMediaFileDragEnter()" (dragleave)="onMediaFileDragLeave()"
+                 (dragover)="onFileDragOver($event)" (drop)="onMediaFileDrop($event)" appDropArea
+                 class="mb-3">
                 <!-- Workaround for styling input[type=file] -->
                 <label class="form-input file" for="mediaFile">
                     <fa-icon [icon]="uploadIcon" class="me-1"></fa-icon>
-                    <span [innerText]="(!!this.selectedMediaFile) ? selectedMediaFile.name : 'Select media'"></span>
+                    <span
+                        [innerText]="this.mediaFilePickerLabel"></span>
                 </label>
 
                 <input (change)="onMediaFileSelected($event)" formControlName="mediaFile" id="mediaFile" type="file">

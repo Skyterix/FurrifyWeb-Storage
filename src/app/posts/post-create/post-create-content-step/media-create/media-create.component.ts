@@ -30,6 +30,12 @@ export class MediaCreateComponent implements OnInit {
     selectedMediaFile!: File;
     errorMessage!: string;
 
+    private static defaultMediaFilePickerLabel = "Select media file";
+    private static defaultThumbnailFilePickerLabel = "Select thumbnail file (optional)";
+    private static filePickerDropLabel = "Drop file to attach";
+    mediaFilePickerLabel = MediaCreateComponent.defaultMediaFilePickerLabel;
+    thumbnailFilePickerLabel = MediaCreateComponent.defaultThumbnailFilePickerLabel;
+
     constructor(private postCreateService: PostCreateService,
                 private store: Store<fromApp.AppState>,
                 private renderer: Renderer2) {
@@ -55,71 +61,85 @@ export class MediaCreateComponent implements OnInit {
     }
 
     onThumbnailFileSelected(event: any): void {
+        this.selectThumbnailFiles(event.target.files);
+    }
+
+    selectThumbnailFiles(files: File[]): void {
         this.errorMessage = "";
 
         // If file is not selected
-        if (event.target.files.length === 0) {
+        if (files.length === 0) {
             return;
         }
 
         // Is filename is invalid
-        if (!FILENAME_REGEX.test(event.target.files[0].name)) {
-            this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
+        if (!FILENAME_REGEX.test(files[0].name)) {
+            this.errorMessage = "File \"" + files[0].name + "\" has invalid name."
 
             this.mediaThumbnailFileForm.reset();
+
+            return;
         }
 
-        const extension = EXTENSION_EXTRACT_REGEX.exec(event.target.files[0].name);
+        const extension = EXTENSION_EXTRACT_REGEX.exec(files[0].name);
 
         /* Check extension against accepted extensions list.
            The check for null is not required, regex check above ensures that extension must be present. */
         if (!ThumbnailExtensionsConfig.EXTENSIONS.includes(extension![1].toLowerCase())) {
-            this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as thumbnail."
+            this.errorMessage = "File \"" + files[0].name + "\" has extension which is not accepted as thumbnail."
 
             this.mediaThumbnailFileForm.reset();
+
+            return;
         }
 
-        this.selectedThumbnailFile = event.target.files[0];
+        this.selectedThumbnailFile = files[0];
+        this.thumbnailFilePickerLabel = files[0].name;
     }
 
     onMediaFileSelected(event: any): void {
+        this.selectMediaFiles(event.target.files);
+    }
+
+    selectMediaFiles(files: File[]): void {
         this.errorMessage = "";
 
         // If file is not selected
-        if (event.target.files.length === 0) {
+        if (files.length === 0) {
             return;
         }
 
         // Is filename is invalid
-        if (!FILENAME_REGEX.test(event.target.files[0].name)) {
-            this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
+        if (!FILENAME_REGEX.test(files[0].name)) {
+            this.errorMessage = "File \"" + files[0].name + "\" has invalid name."
 
             this.mediaFileForm.reset();
 
             return;
         }
 
-        if (event.target.files[0].name.length > MAX_FILENAME_LENGTH) {
-            this.errorMessage = "File \"" + event.target.files[0].name + "\" has too long filename."
+        if (files[0].name.length > MAX_FILENAME_LENGTH) {
+            this.errorMessage = "File \"" + files[0].name + "\" has too long filename."
 
             this.mediaFileForm.reset();
 
             return;
         }
 
-        const extension = EXTENSION_EXTRACT_REGEX.exec(event.target.files[0].name);
+        const extension = EXTENSION_EXTRACT_REGEX.exec(files[0].name);
 
         /* Check extension against accepted extensions list.
            The check for null is not required, regex check above ensures that extension must be present. */
         if (!MediaExtensionsConfig.EXTENSIONS.includes(extension![1].toLowerCase())) {
-            this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as media."
+            this.errorMessage = "File \"" + files[0].name + "\" has extension which is not accepted as media."
 
             this.mediaFileForm.reset();
 
             return;
         }
 
-        this.selectedMediaFile = event.target.files[0];
+        this.selectedMediaFile = files[0];
+        this.mediaFilePickerLabel = files[0].name;
     }
 
     onSubmit(): void {
@@ -146,4 +166,51 @@ export class MediaCreateComponent implements OnInit {
         }));
     }
 
+    onMediaFileDrop(event: any): void {
+        event.preventDefault();
+
+        this.selectMediaFiles(event.dataTransfer.files);
+
+        // Trigger drag leave manually because JS doesn't on drop
+        this.onMediaFileDragLeave();
+    }
+
+    onThumbnailFileDrop(event: any): void {
+        event.preventDefault();
+
+        this.selectThumbnailFiles(event.dataTransfer.files);
+
+        // Trigger drag leave manually because JS doesn't on drop
+        this.onThumbnailFileDragLeave();
+    }
+
+    onFileDragOver(event: any): void {
+        event.preventDefault();
+    }
+
+    onMediaFileDragEnter(): void {
+        this.mediaFilePickerLabel = MediaCreateComponent.filePickerDropLabel;
+    }
+
+    onMediaFileDragLeave(): void {
+        // For media file
+        if (!this.selectedMediaFile) {
+            this.mediaFilePickerLabel = MediaCreateComponent.defaultMediaFilePickerLabel;
+        } else {
+            this.mediaFilePickerLabel = this.selectedMediaFile.name;
+        }
+    }
+
+    onThumbnailFileDragEnter(): void {
+        this.thumbnailFilePickerLabel = MediaCreateComponent.filePickerDropLabel;
+    }
+
+    onThumbnailFileDragLeave(): void {
+        // For thumbnail file
+        if (!this.selectedThumbnailFile) {
+            this.thumbnailFilePickerLabel = MediaCreateComponent.defaultThumbnailFilePickerLabel;
+        } else {
+            this.thumbnailFilePickerLabel = this.selectedThumbnailFile.name;
+        }
+    }
 }

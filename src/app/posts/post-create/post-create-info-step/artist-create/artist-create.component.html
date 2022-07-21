@@ -21,7 +21,9 @@
             </div>
 
             <!-- Avatar upload -->
-            <form [formGroup]="artistAvatarFileForm" class="mb-3">
+            <form (dragenter)="onFileDragEnter()" (dragleave)="onFileDragLeave()"
+                  (dragover)="onFileDragOver($event)" (drop)="onFileDrop($event)"
+                  [formGroup]="artistAvatarFileForm" appDropArea class="mb-3">
                 <!-- Workaround for styling input[type=file] -->
                 <label class="form-input file" for="file">
                     <fa-icon [icon]="uploadIcon" class="me-1"></fa-icon>

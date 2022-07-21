@@ -9,6 +9,7 @@ import {
 } from "./component/confirmations/post-delete-confirmation/delete-confirmation.component";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {CommonModule} from "@angular/common";
+import {DropAreaDirective} from "./directive/drop-area.directive";
 
 @NgModule({
     declarations: [
@@ -16,6 +17,7 @@ import {CommonModule} from "@angular/common";
         RemoveSourceStrategyTextPipe,
         AccountLinkDirective,
         SourceToHrefDirective,
+        DropAreaDirective,
         GalleryViewComponent,
         DeleteConfirmationComponent
     ],
@@ -25,7 +27,8 @@ import {CommonModule} from "@angular/common";
         AccountLinkDirective,
         SourceToHrefDirective,
         GalleryViewComponent,
-        DeleteConfirmationComponent
+        DeleteConfirmationComponent,
+        DropAreaDirective
     ],
     imports: [
         FontAwesomeModule,

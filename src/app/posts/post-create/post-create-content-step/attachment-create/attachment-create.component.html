@@ -15,11 +15,14 @@
 
     <form [formGroup]="addFileForm" class="p-3">
         <div>
-            <div class="mb-3">
+            <div (dragenter)="onFileDragEnter()"
+                 (dragleave)="onFileDragLeave()" (dragover)="onFileDragOver($event)"
+                 (drop)="onFileDrop($event)" appDropArea class="mb-3">
                 <!-- Workaround for styling input[type=file] -->
                 <label class="form-input file" for="file">
                     <fa-icon [icon]="uploadIcon" class="me-1"></fa-icon>
-                    <span [innerText]="(!!this.selectedFile) ? selectedFile.name : 'Select file'"></span>
+                    <span
+                        [innerText]="this.filePickerLabel"></span>
                 </label>
 
                 <input (change)="onFileSelected($event)" formControlName="attachmentFile" id="file"

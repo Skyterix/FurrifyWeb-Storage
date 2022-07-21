@@ -44,8 +44,13 @@ export class ArtistCreateComponent implements OnInit {
     selectedSources: Source[] = [];
     selectedNicknames: string[] = [];
 
+
+    private static defaultPickerLabel = "Select attachment file";
+
     private postCreateStoreSubscription!: Subscription;
     private authenticationStoreSubscription!: Subscription;
+    private static filePickerDropLabel = "Drop file to attach";
+    filePickerLabel = ArtistCreateComponent.defaultPickerLabel;
 
     constructor(private store: Store<fromApp.AppState>,
                 private postCreateService: PostCreateService,
@@ -144,42 +149,74 @@ export class ArtistCreateComponent implements OnInit {
     }
 
     onFileSelected(event: any) {
+        this.selectAvatarFiles(event.target.files);
+    }
+
+    selectAvatarFiles(files: File[]) {
         this.errorMessage = "";
 
         // If file is not selected
-        if (event.target.files.length === 0) {
+        if (files.length === 0) {
             return;
         }
 
         // Is filename is invalid
-        if (!FILENAME_REGEX.test(event.target.files[0].name)) {
-            this.errorMessage = "File \"" + event.target.files[0].name + "\" has invalid name."
+        if (!FILENAME_REGEX.test(files[0].name)) {
+            this.errorMessage = "File \"" + files[0].name + "\" has invalid name."
 
             this.artistAvatarFileForm.reset();
 
             return;
         }
 
-        if (event.target.files[0].name.length > MAX_FILENAME_LENGTH) {
-            this.errorMessage = "File \"" + event.target.files[0].name + "\" has too long filename."
+        if (files[0].name.length > MAX_FILENAME_LENGTH) {
+            this.errorMessage = "File \"" + files[0].name + "\" has too long filename."
 
             this.artistAvatarFileForm.reset();
 
             return;
         }
 
-        const extension = EXTENSION_EXTRACT_REGEX.exec(event.target.files[0].name);
+        const extension = EXTENSION_EXTRACT_REGEX.exec(files[0].name);
 
         /* Check extension against accepted extensions list.
            The check for null is not required, regex check above ensures that extension must be present. */
         if (!AvatarExtensionsConfig.IMAGES.includes(extension![1].toLowerCase())) {
-            this.errorMessage = "File \"" + event.target.files[0].name + "\" has extension which is not accepted as avatar."
+            this.errorMessage = "File \"" + files[0].name + "\" has extension which is not accepted as avatar."
 
             this.artistAvatarFileForm.reset();
 
             return;
         }
 
-        this.selectedFile = event.target.files[0];
+        this.selectedFile = files[0];
+        this.filePickerLabel = files[0].name;
+    }
+
+
+    onFileDrop(event: any): void {
+        event.preventDefault();
+
+        this.selectAvatarFiles(event.dataTransfer.files);
+
+        // Trigger drag leave manually because JS doesn't on drop
+        this.onFileDragLeave();
+    }
+
+    onFileDragOver(event: any): void {
+        event.preventDefault();
+    }
+
+    onFileDragEnter(): void {
+        this.filePickerLabel = ArtistCreateComponent.filePickerDropLabel;
+    }
+
+    onFileDragLeave(): void {
+        // For media file
+        if (!this.selectedFile) {
+            this.filePickerLabel = ArtistCreateComponent.defaultPickerLabel;
+        } else {
+            this.filePickerLabel = this.selectedFile.name;
+        }
     }
 }
