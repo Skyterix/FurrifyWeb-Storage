@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Store} from "@ngrx/store";
 import * as fromApp from '../store/app.reducer';
-import {startSearch, updateSearchParams, updateSearchQuery} from "./store/posts.actions";
+import {getPostStart, startSearch, updateSearchParams, updateSearchQuery} from "./store/posts.actions";
 import {KeycloakProfile} from "keycloak-js";
 import {MAX_SIZE} from "../shared/config/limit.constants";
 
@@ -49,6 +49,8 @@ export class PostsService {
                 userId: this.currentUser!.id!
             }
         ));
+
+        this.router.navigate(['/posts']);
     }
 
     private updateSearchQuery(query: string): void {
@@ -103,6 +105,13 @@ export class PostsService {
             order,
             size,
             page
+        }));
+    }
+
+    loadPost(userId: string, postId: string): void {
+        this.store.dispatch(getPostStart({
+            userId: this.currentUser?.id!,
+            postId: postId
         }));
     }
 }

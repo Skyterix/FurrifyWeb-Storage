@@ -1,7 +1,7 @@
 <article class="animate__animated animate__fadeIn pt-4">
     <div class="p-3 text-start">
         <p *ngIf="!!errorMessage" class="alert-danger p-3 mb-4">{{ errorMessage }}</p>
-        <p class="p-3">Your post is almost ready. Click the button below to start uploading your content.</p>
+        <p class="p-3">Your post is almost ready. Click the button below to start saving your content.</p>
 
         <p id="result"></p>
         <!-- Submit -->
@@ -11,7 +11,7 @@
                     type="button">
                 <fa-icon *ngIf="isFetching" [fixedWidth]="true" [icon]="spinnerIcon" [spin]="true" class="text-white"
                          size="sm"></fa-icon>
-                <span *ngIf="!isFetching">Create</span>
+                <span *ngIf="!isFetching">Save</span>
             </button>
         </div>
     </div>

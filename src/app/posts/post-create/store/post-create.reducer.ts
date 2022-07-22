@@ -49,6 +49,9 @@ import {
     removeSourceFromAttachment,
     removeSourceFromMedia,
     removeTagFromSelected,
+    savePostFail,
+    savePostStart,
+    savePostSuccess,
     updateMediaSet,
     updatePostSavedDescription,
     updatePostSavedTitle,
@@ -124,8 +127,8 @@ export interface State {
     attachments: AttachmentWrapper[];
     postCreateErrorMessage: string | null;
     artistSourceCreateErrorMessage: string | null;
+    savedPostId: string;
     createSourceData: any;
-    createdPostId: string;
     currentIndex: number;
     currentSourceIndex: number
 }
@@ -145,7 +148,7 @@ const initialState: State = {
     postCreateErrorMessage: null,
     artistSourceCreateErrorMessage: null,
     createSourceData: {},
-    createdPostId: "",
+    savedPostId: "",
     currentIndex: 0,
     currentSourceIndex: 0
 };
@@ -412,7 +415,7 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 currentlyFetchingCount: state.currentlyFetchingCount - 1,
-                createdPostId: action.postId
+                savedPostId: action.postId
             };
         }
     ),
@@ -572,7 +575,7 @@ export const postCreateReducer = createReducer(
                 attachments: [],
                 postCreateErrorMessage: null,
                 createSourceData: {},
-                createdPostId: ""
+                savedPostId: ""
             };
         }
     ),
@@ -818,8 +821,34 @@ export const postCreateReducer = createReducer(
                 ...state,
                 postSavedTitle: action.post.title,
                 postSavedDescription: action.post.description,
+                savedPostId: action.post.postId,
                 selectedTags: tags
-            }
+            };
+        }
+    ),
+    on(savePostStart, (state, action) => {
+            return {
+                ...state,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
+                postCreateErrorMessage: null,
+                isErrorPostCreationRelated: false
+            };
+        }
+    ),
+    on(savePostSuccess, (state, action) => {
+            return {
+                ...state,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1
+            };
+        }
+    ),
+    on(savePostFail, (state, action) => {
+            return {
+                ...state,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
+                postCreateErrorMessage: action.errorMessage,
+                isErrorPostCreationRelated: true
+            };
         }
     ),
 );

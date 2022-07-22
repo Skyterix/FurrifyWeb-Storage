@@ -33,5 +33,7 @@ export const DELETE_ARTIST = SERVER_ADDRESS + '/users/:userId/artists/:artistId'
 
 export const DELETE_SOURCE = SERVER_ADDRESS + '/users/:userId/sources/:sourceId';
 
+export const REPLACE_POST = SERVER_ADDRESS + '/users/:userId/posts/:postId';
+
 // Fixes not getting hal+json from response
 export const RESPONSE_TYPE = "*";

@@ -24,6 +24,7 @@ import {
 import {ConfirmationsService} from "../shared/component/confirmations/confirmations.service";
 import {deletePostStart} from "./store/posts.actions";
 import {KeycloakProfile} from "keycloak-js";
+import {loadPostToEdit} from "./post-create/store/post-create.actions";
 
 @Component({
     selector: 'app-posts',
@@ -39,7 +40,10 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
     private selectedPost!: QueryPost | null;
     private currentUser!: KeycloakProfile | null;
 
+    private postEditMode = false;
+
     private postCreateOpenSubscription!: Subscription;
+    private postEditOpenSubscription!: Subscription;
     private postDeleteConfirmationOpenSubscription!: Subscription;
     private clearPostCreateModalSubscription!: Subscription;
     private clearConfirmationModalSubscription!: Subscription;
@@ -59,15 +63,19 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.postCreateOpenSubscription = this.postCreateService.postCreateOpenEvent.subscribe(() => {
             this.loadPostCreateForm();
         });
+        this.postEditOpenSubscription = this.postCreateService.postEditOpenEvent.subscribe(post => {
+            this.loadPostEditForm(post);
+        });
         this.clearPostCreateModalSubscription = this.postCreateService.clearPostCreateModalEvent.subscribe(() => {
+            this.clearModal();
+
             this.router.navigate([], {
                 queryParams: {
-                    create: false
+                    create: false,
+                    edit: false
                 },
                 queryParamsHandling: "merge"
             });
-
-            this.clearModal();
         });
         this.clearConfirmationModalSubscription = this.confirmationsService.clearConfirmationModalEvent.subscribe(() => {
             this.clearModal();
@@ -79,13 +87,15 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
             this.currentUser = state.currentUser;
         });
 
+        this.activatedRoute.queryParams.subscribe(queryParams => {
+            this.postEditMode = queryParams.edit === 'true';
+        });
+
         const isCreatePostModeOn = this.activatedRoute.snapshot.queryParams.create;
         if (isCreatePostModeOn == 'true') {
             // Set timeout to let @ViewChild initialize
             setTimeout(() => this.postCreateService.postCreateOpenEvent.emit());
         }
-
-        this.postsService.triggerSearch();
     }
 
     ngAfterViewInit(): void {
@@ -96,16 +106,36 @@ export class PostsComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 this.loadBackground();
             }
+
         });
     }
 
     ngOnDestroy(): void {
         this.storeSubscription.unsubscribe();
         this.postCreateOpenSubscription.unsubscribe();
+        this.postEditOpenSubscription.unsubscribe();
         this.clearPostCreateModalSubscription.unsubscribe();
         this.clearConfirmationModalSubscription.unsubscribe();
         this.postDeleteConfirmationOpenSubscription.unsubscribe();
         this.authenticationStoreSubscription.unsubscribe();
+    }
+
+    private loadPostEditForm(post: QueryPost): void {
+        this.postCreateService.clearPostData();
+        this.store.dispatch(loadPostToEdit({
+            post
+        }));
+
+        this.router.navigate([], {
+            queryParams: {
+                create: true,
+                edit: true
+            },
+            queryParamsHandling: "merge"
+        });
+
+        this.modalRef!.clear();
+        this.modalRef!.createComponent(PostCreateComponent);
     }
 
     private loadPostCreateForm(): void {

@@ -25,6 +25,7 @@ import {
     AttachmentSourceCreateComponent
 } from "./post-create-content-step/attachment-source-create/attachment-source-create.component";
 import {ArtistSourceCreateComponent} from "./post-create-info-step/artist-source-create/artist-source-create.component";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'app-post-create',
@@ -42,6 +43,8 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     isErrorPostCreationRelated = false;
     errorMessage: string | null = null;
     isFetching!: boolean;
+
+    private editMode = false;
 
     private postInfoStepOpenEventSubscription!: Subscription;
     private postContentStepOpenEventSubscription!: Subscription;
@@ -64,6 +67,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
 
     constructor(private postCreateService: PostCreateService,
                 private renderer: Renderer2,
+                private activatedRoute: ActivatedRoute,
                 private store: Store<fromApp.AppState>) {
     }
 
@@ -128,6 +132,10 @@ export class PostCreateComponent implements OnInit, OnDestroy {
             this.isFetching = state.currentlyFetchingCount > 0;
         });
 
+        this.activatedRoute.queryParams.subscribe(queryParams => {
+            this.editMode = queryParams.edit === 'true';
+        });
+
         // Load default step
         setTimeout(() => this.postCreateService.postInfoStepOpenEvent.emit());
     }
@@ -186,6 +194,10 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     }
 
     onRetry(): void {
-        this.postCreateService.retryPostCreate();
+        if (this.editMode) {
+            this.postCreateService.retryPostSave();
+        } else {
+            this.postCreateService.retryPostCreate();
+        }
     }
 }

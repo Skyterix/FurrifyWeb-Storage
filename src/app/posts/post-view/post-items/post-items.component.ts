@@ -19,7 +19,6 @@ import {Subscription} from "rxjs";
 import {KeycloakProfile} from "keycloak-js";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import {PostCreateService} from "../../post-create/post-create.service";
-import {loadPostToEdit} from "../../post-create/store/post-create.actions";
 
 @Component({
     selector: 'app-post-items',
@@ -76,13 +75,12 @@ export class PostItemsComponent implements OnInit, OnDestroy {
             this.attachmentSources = state.selectedPostAttachmentsSources;
         });
 
-        setTimeout(() => this.loadAttachmentSources());
-
+        // If in edit mode then load post edit form
         if (this.activatedRoute.snapshot.queryParams.edit === 'true') {
-            this.store.dispatch(loadPostToEdit({
-                post: this.post
-            }));
+            this.onEditPost();
         }
+
+        setTimeout(() => this.loadAttachmentSources());
     }
 
 
@@ -116,12 +114,8 @@ export class PostItemsComponent implements OnInit, OnDestroy {
         }
     }
 
-    // TODO Implement
     onEditPost(): void {
-        this.postCreateService.clearPostData();
-        this.postCreateService.loadPostToEdit(this.post);
-
-        this.postCreateService.postCreateOpenEvent.emit();
+        this.postCreateService.postEditOpenEvent.emit(this.post);
     }
 
     onDeletePost(): void {

@@ -12,7 +12,6 @@ import {
     addTagToSelectedSetFail,
     addTagToSelectedSetStart,
     addTagToSelectedSetSuccess,
-    clearPostData,
     createArtistFail,
     createArtistSourceFail,
     createArtistSourceStart,
@@ -44,7 +43,10 @@ import {
     loadPostToEdit,
     removeArtistSourceFail,
     removeArtistSourceStart,
-    removeArtistSourceSuccess
+    removeArtistSourceSuccess,
+    savePostFail,
+    savePostStart,
+    savePostSuccess
 } from "./post-create.actions";
 import {catchError, map, mergeMap, retryWhen, tap} from "rxjs/operators";
 import {Tag} from "../../../shared/model/tag.model";
@@ -64,6 +66,7 @@ import {
     GET_ARTISTS_BY_PREFERRED_NICKNAME,
     GET_SOURCE,
     GET_TAG,
+    REPLACE_POST,
     RESPONSE_TYPE
 } from "../../../shared/config/api.constants";
 import {of} from "rxjs";
@@ -90,6 +93,7 @@ import {
 } from "./post-create.reducer";
 import {QuerySource} from "../../../shared/model/query/query-source.model";
 import {dummy} from "../../../shared/store/shared.actions";
+import {PostSaveStatusEnum} from "../../../shared/enum/post-save-status.enum";
 
 @Injectable()
 export class PostCreateEffects {
@@ -460,13 +464,6 @@ export class PostCreateEffects {
             );
         })
     ));
-
-    createPostSuccess = createEffect(() => this.actions$.pipe(
-        ofType(createPostSuccess),
-        tap(() => {
-            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.POST_CREATED);
-        })
-    ), {dispatch: false});
 
     createMediaSetStart = createEffect(() => this.actions$.pipe(
         ofType(createMediaSetStart),
@@ -996,21 +993,66 @@ export class PostCreateEffects {
                             errorMessage
                         }));
                     })
-                );
+            );
             }
         )
     ));
+
+    savePostStart = createEffect(() => this.actions$.pipe(
+        ofType(savePostStart),
+        mergeMap((action) => {
+            return this.httpClient.put(REPLACE_POST
+                    .replace(":userId", action.userId)
+                    .replace(":postId", action.postId),
+                action.savePost, {
+                    observe: 'response'
+                }).pipe(
+                map(response => {
+                    return savePostSuccess();
+                }),
+                catchError(error => {
+                    switch (error.status) {
+                        case 503:
+                            return of(savePostFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 404:
+                            return of(savePostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
+                        case 400:
+                            return of(savePostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
+                        default:
+                            return of(savePostFail({
+                                errorMessage: 'Something went wrong. Try again later.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+
+    savePostSuccess = createEffect(() => this.actions$.pipe(
+        ofType(savePostSuccess),
+        tap(() => {
+            this.postCreateService.postSaveStatusChangeEvent.emit(PostSaveStatusEnum.POST_REPLACED);
+        })
+    ), {dispatch: false});
+
+    createPostSuccess = createEffect(() => this.actions$.pipe(
+        ofType(createPostSuccess),
+        tap(() => {
+            this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.POST_CREATED);
+        })
+    ), {dispatch: false});
 
     // On last thing created in post
     createAttachmentsSourcesSuccess = createEffect(() => this.actions$.pipe(
         ofType(createAttachmentsSourcesSuccess),
         tap(() => {
             this.postCreateService.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.ATTACHMENTS_SOURCES_CREATED);
-            setTimeout(() => {
-                this.postCreateService.clearPostCreateModalEvent.emit();
-                this.store.dispatch(clearPostData());
-                this.postsService.triggerSearch()
-            }, 50)
         })
     ), {dispatch: false});
 

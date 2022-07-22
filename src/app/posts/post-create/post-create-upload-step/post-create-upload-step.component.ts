@@ -6,6 +6,8 @@ import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import {KeycloakProfile} from "keycloak-js";
 import {PostCreateService} from "../post-create.service";
 import {PostCreateStatusEnum} from "../../../shared/enum/post-create-status.enum";
+import {ActivatedRoute} from "@angular/router";
+import {PostSaveStatusEnum} from "../../../shared/enum/post-save-status.enum";
 
 @Component({
     selector: 'app-post-create-upload-step',
@@ -24,9 +26,12 @@ export class PostCreateUploadStepComponent implements OnInit, OnDestroy {
 
     private postsStoreSubscription!: Subscription;
     private postCreateStatusChangeSubscription!: Subscription;
+    private postSaveStatusChangeSubscription!: Subscription;
+    private editMode = false;
 
     constructor(private store: Store<fromApp.AppState>,
-                private postCreateService: PostCreateService) {
+                private postCreateService: PostCreateService,
+                private activatedRoute: ActivatedRoute) {
     }
 
     ngOnInit(): void {
@@ -39,6 +44,13 @@ export class PostCreateUploadStepComponent implements OnInit, OnDestroy {
         this.postCreateStatusChangeSubscription = this.postCreateService.postCreateStatusChangeEvent.subscribe(
             status => this.handlePostCreateStatusChange(status)
         );
+        this.postSaveStatusChangeSubscription = this.postCreateService.postSaveStatusChangeEvent.subscribe(
+            status => this.handlePostSaveStatusChange(status)
+        );
+
+        this.activatedRoute.queryParams.subscribe(queryParams => {
+            this.editMode = queryParams.edit === 'true';
+        });
     }
 
     ngOnDestroy(): void {
@@ -51,7 +63,23 @@ export class PostCreateUploadStepComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.postCreateService.triggerPostCreate();
+        if (this.editMode) {
+            this.postCreateService.triggerPostSave();
+        } else {
+            this.postCreateService.triggerPostCreate();
+        }
+
+    }
+
+    private handlePostSaveStatusChange(status: PostSaveStatusEnum) {
+        switch (status) {
+            case PostSaveStatusEnum.REQUEST_RECEIVED:
+                document.querySelector("#result")!.innerHTML = "REQUEST_RECEIVED";
+                break;
+            case PostSaveStatusEnum.POST_REPLACED:
+                document.querySelector("#result")!.innerHTML = "POST_REPLACED";
+                break;
+        }
     }
 
     private handlePostCreateStatusChange(status: PostCreateStatusEnum) {

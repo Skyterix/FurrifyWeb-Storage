@@ -11,9 +11,13 @@ import {
     createMediaSetSourcesStart,
     createMediaSetStart,
     createPostStart,
-    loadPostToEdit
+    savePostStart
 } from "./store/post-create.actions";
 import {QueryPost} from "../../shared/model/query/query-post.model";
+import {ReplacePost} from "../../shared/model/request/replace-post.model";
+import {CreatePost} from "../../shared/model/request/create-post.model";
+import {PostSaveStatusEnum} from "../../shared/enum/post-save-status.enum";
+import {PostsService} from "../posts.service";
 
 @Injectable({
     providedIn: 'root'
@@ -21,6 +25,7 @@ import {QueryPost} from "../../shared/model/query/query-post.model";
 export class PostCreateService {
 
     postCreateOpenEvent: EventEmitter<void> = new EventEmitter<void>();
+    postEditOpenEvent: EventEmitter<QueryPost> = new EventEmitter<QueryPost>();
     clearPostCreateModalEvent: EventEmitter<void> = new EventEmitter<void>();
 
     clearPostCreateSideStepModalEvent: EventEmitter<void> = new EventEmitter<void>();
@@ -37,7 +42,10 @@ export class PostCreateService {
     postContentStepOpenEvent: EventEmitter<void> = new EventEmitter<void>();
     postUploadStepOpenEvent: EventEmitter<void> = new EventEmitter<void>();
 
+    // Create
     postCreateStatusChangeEvent: EventEmitter<PostCreateStatusEnum> = new EventEmitter<PostCreateStatusEnum>();
+    // Edit
+    postSaveStatusChangeEvent: EventEmitter<PostSaveStatusEnum> = new EventEmitter<PostSaveStatusEnum>();
 
     private title!: string;
     private description!: string;
@@ -47,14 +55,15 @@ export class PostCreateService {
     private attachments!: AttachmentWrapper[];
     private currentUser!: KeycloakProfile | null;
 
-    private currentStatus: PostCreateStatusEnum | undefined;
+    private currentCreateStatus: PostCreateStatusEnum | undefined;
+    private currentSaveStatus: PostSaveStatusEnum | undefined;
 
-    private createdPostId!: string;
+    private savedPostId!: string;
 
     private currentIndex!: number;
     private currentSourceIndex!: number;
 
-    constructor(private store: Store<fromApp.AppState>) {
+    constructor(private store: Store<fromApp.AppState>, private postsService: PostsService) {
         this.store.select('postCreate').subscribe(state => {
             this.title = state.postSavedTitle;
             this.description = state.postSavedDescription;
@@ -66,7 +75,7 @@ export class PostCreateService {
             this.currentIndex = state.currentIndex;
             this.currentSourceIndex = state.currentSourceIndex;
 
-            this.createdPostId = state.createdPostId;
+            this.savedPostId = state.savedPostId;
         });
 
         this.store.select('authentication').subscribe(state => {
@@ -75,17 +84,30 @@ export class PostCreateService {
 
         this.postCreateStatusChangeEvent.subscribe(status =>
             this.handlePostCreateStatusChange(status, 0, 0));
+
+        this.postSaveStatusChangeEvent.subscribe(status =>
+            this.handlePostEditStatusChange(status));
     }
 
     retryPostCreate(): void {
-        if (!this.currentStatus) {
+        if (!this.currentCreateStatus) {
             return;
         }
 
         this.handlePostCreateStatusChange(
-            this.currentStatus,
+            this.currentCreateStatus,
             this.currentIndex,
             this.currentSourceIndex
+        );
+    }
+
+    retryPostSave(): void {
+        if (!this.currentSaveStatus) {
+            return;
+        }
+
+        this.handlePostEditStatusChange(
+            this.currentSaveStatus
         );
     }
 
@@ -127,10 +149,44 @@ export class PostCreateService {
         this.postCreateStatusChangeEvent.emit(PostCreateStatusEnum.REQUEST_RECEIVED);
     }
 
+
+    triggerPostSave(): void {
+        this.postSaveStatusChangeEvent.emit(PostSaveStatusEnum.REQUEST_RECEIVED);
+    }
+
+    clearPostData(): void {
+        this.currentCreateStatus = undefined;
+        this.currentSaveStatus = undefined;
+
+        this.store.dispatch(clearPostData());
+    }
+
+    private handlePostEditStatusChange(status: PostSaveStatusEnum) {
+        this.currentSaveStatus = status;
+
+        switch (status) {
+            case PostSaveStatusEnum.REQUEST_RECEIVED:
+                this.savePost();
+
+                break;
+            case PostSaveStatusEnum.POST_REPLACED:
+                setTimeout(() => {
+                    this.clearPostCreateModalEvent.emit();
+                    // Replace post with new one
+                    // TODO Make this use values in store instead of fetching cause post might have not been updated yet or think of other solution
+                    this.postsService.loadPost(this.currentUser?.id!, this.savedPostId);
+                    this.clearPostData();
+                }, 100);
+
+                break;
+        }
+    }
+
+
     private handlePostCreateStatusChange(status: PostCreateStatusEnum,
                                          currentIndex: number,
                                          currentSourceIndex: number) {
-        this.currentStatus = status;
+        this.currentCreateStatus = status;
 
         switch (status) {
             case PostCreateStatusEnum.REQUEST_RECEIVED:
@@ -142,11 +198,18 @@ export class PostCreateService {
             case PostCreateStatusEnum.MEDIA_SET_UPLOADED:
                 this.uploadAttachments(currentIndex);
                 break;
-            case PostCreateStatusEnum.ATTACHMENTS_UPLOADED:
-                this.createMediaSetSources(currentIndex, currentSourceIndex);
-                break;
             case PostCreateStatusEnum.MEDIA_SET_SOURCES_CREATED:
                 this.createAttachmentsSources(currentIndex, currentSourceIndex);
+                break;
+            case PostCreateStatusEnum.ATTACHMENTS_UPLOADED:
+                this.createMediaSetSources(currentIndex, currentSourceIndex);
+
+                setTimeout(() => {
+                    this.clearPostCreateModalEvent.emit();
+                    this.clearPostData();
+                    this.postsService.triggerSearch()
+                }, 100);
+
                 break;
         }
     }
@@ -156,7 +219,7 @@ export class PostCreateService {
             return;
         }
 
-        const createPost = {
+        const createPost: CreatePost = {
             title: this.title,
             description: this.description,
             artists: this.artists.map(artistWrapper => artistWrapper.artist),
@@ -173,22 +236,43 @@ export class PostCreateService {
         ))
     }
 
+    // Save post after edit
+    private savePost(): void {
+        if (!this.currentUser || !this.isFormDataValid()) {
+            return;
+        }
+
+        const savePost: ReplacePost = {
+            title: this.title,
+            description: this.description,
+            artists: this.artists.map(artistWrapper => artistWrapper.artist),
+            tags: this.tags.map(tagWrapper => tagWrapper.tag)
+        }
+
+        this.store.dispatch(savePostStart(
+            {
+                userId: this.currentUser?.id!,
+                postId: this.savedPostId,
+                savePost
+            }
+        ))
+    }
+
     private uploadMediaSet(startIndex: number): void {
         this.store.dispatch(createMediaSetStart(
             {
                 userId: this.currentUser?.id!,
-                postId: this.createdPostId,
+                postId: this.savedPostId,
                 mediaSet: this.mediaSet,
                 currentIndex: startIndex
             }
         ))
     }
-
     private uploadAttachments(startIndex: number): void {
         this.store.dispatch(createAttachmentsStart(
             {
                 userId: this.currentUser?.id!,
-                postId: this.createdPostId,
+                postId: this.savedPostId,
                 attachments: this.attachments,
                 currentIndex: startIndex
             }
@@ -199,33 +283,22 @@ export class PostCreateService {
         this.store.dispatch(createMediaSetSourcesStart(
             {
                 userId: this.currentUser?.id!,
-                postId: this.createdPostId,
+                postId: this.savedPostId,
                 mediaSet: this.mediaSet,
                 currentMediaIndex: startMediaIndex,
                 currentSourceIndex: startSourceIndex
             }
         ))
     }
-
     private createAttachmentsSources(startMediaIndex: number, startSourceIndex: number): void {
         this.store.dispatch(createAttachmentsSourcesStart(
             {
                 userId: this.currentUser?.id!,
-                postId: this.createdPostId,
+                postId: this.savedPostId,
                 attachments: this.attachments,
                 currentAttachmentIndex: startMediaIndex,
                 currentSourceIndex: startSourceIndex
             }
         ))
-    }
-
-    clearPostData(): void {
-        this.store.dispatch(clearPostData());
-    }
-
-    loadPostToEdit(post: QueryPost): void {
-        this.store.dispatch(loadPostToEdit({
-            post
-        }));
     }
 }

@@ -2,10 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {Store} from "@ngrx/store";
 import * as fromApp from "../../store/app.reducer";
-import {getPostStart} from "../store/posts.actions";
 import {KeycloakProfile} from "keycloak-js";
 import {Subscription} from "rxjs";
 import {QueryPost} from "../../shared/model/query/query-post.model";
+import {PostsService} from "../posts.service";
 
 @Component({
     selector: 'app-post-view',
@@ -23,6 +23,7 @@ export class PostViewComponent implements OnInit, OnDestroy {
     private storeSubscription!: Subscription;
 
     constructor(private activatedRoute: ActivatedRoute,
+                private postsService: PostsService,
                 private store: Store<fromApp.AppState>,) {
     }
 
@@ -50,13 +51,10 @@ export class PostViewComponent implements OnInit, OnDestroy {
         if (this.selectedPost != null) {
             return;
         }
-
+        const userId = this.currentUser!.id!;
         const postId = this.activatedRoute.snapshot.params.postId;
 
-        this.store.dispatch(getPostStart({
-            postId: postId,
-            userId: this.currentUser?.id!
-        }));
+        this.postsService.loadPost(userId, postId);
     }
 
 }
