@@ -818,9 +818,7 @@ export const postCreateReducer = createReducer(
                 ...state,
                 postSavedTitle: action.post.title,
                 postSavedDescription: action.post.description,
-                selectedTags: tags,
-                mediaSet: action.post.mediaSet,
-                attachments: action.post.attachments
+                selectedTags: tags
             }
         }
     ),
