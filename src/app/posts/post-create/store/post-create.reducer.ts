@@ -238,7 +238,7 @@ export const postCreateReducer = createReducer(
         }
     ),
     on(fetchTagAfterCreationSuccess, (state, action) => {
-        const newTags = state.selectedTags.slice();
+            const newTags = state.selectedTags.slice();
 
             // Find tag with same value
             const oldTagIndex = newTags.findIndex((tagWrapper) => {
@@ -808,22 +808,28 @@ export const postCreateReducer = createReducer(
         }
     ),
     on(loadPostToEdit, (state, action) => {
-            const tags = action.post.tags.map(tag => {
-                return new TagWrapper(tag, WrapperStatus.FOUND);
-            });
+        const tags = action.post.tags.map(tag => {
+            return new TagWrapper(tag, WrapperStatus.FOUND);
+        });
 
-            // TODO Fetch media sources and attachment sources
-            /*            const mediaSet = action.post.mediaSet.map(media => {
-                            return new MediaWrapper(media, WrapperStatus.FOUND);
-                        });*/
+        // TODO Fetch media sources and attachment sources
+        const mediaSet = action.post.mediaSet.map(media => {
+            return new MediaWrapper(media, [], null!, null!);
+        });
 
-            return {
-                ...state,
-                postSavedTitle: action.post.title,
-                postSavedDescription: action.post.description,
-                savedPostId: action.post.postId,
-                selectedTags: tags
-            };
+        const attachments = action.post.attachments.map(attachment => {
+            return new AttachmentWrapper(attachment, [], null!);
+        });
+
+        return {
+            ...state,
+            postSavedTitle: action.post.title,
+            postSavedDescription: action.post.description,
+            mediaSet: mediaSet,
+            attachments: attachments,
+            savedPostId: action.post.postId,
+            selectedTags: tags
+        };
         }
     ),
     on(savePostStart, (state, action) => {
