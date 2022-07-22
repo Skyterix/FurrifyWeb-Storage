@@ -11,7 +11,7 @@
   "private": true,
   "dependencies": {
       "@angular/animations": "~14.0.6",
-      "@angular/cdk": "^14.0.4",
+      "@angular/cdk": "^14.1.0",
       "@angular/common": "~14.0.5",
       "@angular/compiler": "~14.0.5",
       "@angular/core": "~14.0.5",
@@ -25,7 +25,7 @@
       "@ngrx/effects": "^14.0.2",
       "@ngrx/store": "^14.0.2",
       "@ngrx/store-devtools": "^14.0.2",
-      "@ngtools/webpack": "^14.0.5",
+      "@ngtools/webpack": "^14.1.0",
       "animate.css": "^4.1.1",
       "base64url": "^3.0.1",
       "bootstrap": "^5.1.3",
