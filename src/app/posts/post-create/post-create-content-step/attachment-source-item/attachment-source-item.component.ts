@@ -20,14 +20,14 @@ export class AttachmentSourceItemComponent implements OnInit {
 
     strategyName!: string;
     // Param uniquely identification record in strategy data
-    firstParam!: string;
+    url!: string;
 
     constructor(private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit(): void {
         this.strategyName = this.source.strategy.replace("SourceStrategy", "");
-        this.firstParam = this.source.data[Object.keys(this.source.data)[0]];
+        this.url = this.source.data['url'];
     }
 
     onRemove(): void {
