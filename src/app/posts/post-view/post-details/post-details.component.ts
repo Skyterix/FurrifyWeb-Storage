@@ -203,11 +203,15 @@ export class PostDetailsComponent implements OnInit, OnDestroy {
                 break;
         }
 
-        this.store.dispatch(getPostMediaSourcesStart({
-            userId: this.currentUser!.id!,
-            postId: this.post.postId,
-            mediaId: media.mediaId
-        }));
+
+        // If in edit mode then prevent loading media sources
+        if (this.activatedRoute.snapshot.queryParams.edit !== 'true') {
+            this.store.dispatch(getPostMediaSourcesStart({
+                userId: this.currentUser!.id!,
+                postId: this.post.postId,
+                mediaId: media.mediaId
+            }));
+        }
 
     }
 }

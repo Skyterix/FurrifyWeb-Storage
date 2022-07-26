@@ -1172,8 +1172,7 @@ export class PostCreateEffects {
 
             // Load attachment sources
             action.post.attachments.map(attachment => {
-                // TODO Maybe use sources already loaded in posts store
-                // TODO And prevent loading postfetchAttachmentSourcesStart view if in edit mode
+                // TODO Prevent loading postfetchAttachmentSourcesStart view if in edit mode
 
                 this.store.dispatch(fetchAttachmentSourcesStart({
                     userId: action.post.ownerId,

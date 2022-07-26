@@ -55,6 +55,8 @@ export class PostItemsComponent implements OnInit, OnDestroy {
                 private postCreateService: PostCreateService) {
     }
 
+
+    // TODO REload sources on everyting on post edit save
     ngOnInit(): void {
         this.sortedMedia = MediaUtils.sortByPriority([...this.post.mediaSet]);
 
@@ -77,10 +79,10 @@ export class PostItemsComponent implements OnInit, OnDestroy {
 
         // If in edit mode then load post edit form
         if (this.activatedRoute.snapshot.queryParams.edit === 'true') {
-            this.onEditPost();
+            setTimeout(() => this.onEditPost());
+        } else {
+            setTimeout(() => this.loadAttachmentSources());
         }
-
-        setTimeout(() => this.loadAttachmentSources());
     }
 
 
