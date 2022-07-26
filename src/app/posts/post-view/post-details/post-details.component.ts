@@ -18,6 +18,8 @@ import {getPostMediaSourcesStart} from "../../store/posts.actions";
 import {Subscription} from "rxjs";
 import {KeycloakProfile} from "keycloak-js";
 import {QuerySource} from "../../../shared/model/query/query-source.model";
+import {PostCreateService} from "../../post-create/post-create.service";
+import {PostSaveStatusEnum} from "../../../shared/enum/post-save-status.enum";
 
 declare var videojs: any;
 
@@ -59,6 +61,7 @@ export class PostDetailsComponent implements OnInit, OnDestroy {
 
     constructor(private renderer: Renderer2,
                 private postsService: PostsService,
+                private postCreateService: PostCreateService,
                 private store: Store<fromApp.AppState>,
                 private activatedRoute: ActivatedRoute,
                 private router: Router) {
@@ -115,6 +118,21 @@ export class PostDetailsComponent implements OnInit, OnDestroy {
                 setTimeout(() => this.loadMedia(this.sortedMedia[this.index]));
             } else {
                 this.router.navigate(['/posts', this.post.postId, 'media', 0]);
+            }
+        });
+
+        // On post edit status change
+        this.postCreateService.postSaveStatusChangeEvent.subscribe(status => {
+            // On post saved
+            if (status === PostSaveStatusEnum.POST_REPLACED) {
+                // Reload possibly changed sources
+                setTimeout(() => {
+                    this.store.dispatch(getPostMediaSourcesStart({
+                        userId: this.currentUser!.id!,
+                        postId: this.post.postId,
+                        mediaId: this.sortedMedia[this.index].mediaId
+                    }));
+                }, 50);
             }
         });
     }
@@ -203,15 +221,11 @@ export class PostDetailsComponent implements OnInit, OnDestroy {
                 break;
         }
 
-
-        // If in edit mode then prevent loading media sources
-        if (this.activatedRoute.snapshot.queryParams.edit !== 'true') {
-            this.store.dispatch(getPostMediaSourcesStart({
-                userId: this.currentUser!.id!,
-                postId: this.post.postId,
-                mediaId: media.mediaId
-            }));
-        }
+        this.store.dispatch(getPostMediaSourcesStart({
+            userId: this.currentUser!.id!,
+            postId: this.post.postId,
+            mediaId: media.mediaId
+        }));
 
     }
 }

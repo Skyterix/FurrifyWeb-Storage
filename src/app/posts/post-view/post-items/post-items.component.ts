@@ -19,6 +19,7 @@ import {Subscription} from "rxjs";
 import {KeycloakProfile} from "keycloak-js";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import {PostCreateService} from "../../post-create/post-create.service";
+import {PostSaveStatusEnum} from "../../../shared/enum/post-save-status.enum";
 
 @Component({
     selector: 'app-post-items',
@@ -56,7 +57,6 @@ export class PostItemsComponent implements OnInit, OnDestroy {
     }
 
 
-    // TODO REload sources on everyting on post edit save
     ngOnInit(): void {
         this.sortedMedia = MediaUtils.sortByPriority([...this.post.mediaSet]);
 
@@ -77,12 +77,23 @@ export class PostItemsComponent implements OnInit, OnDestroy {
             this.attachmentSources = state.selectedPostAttachmentsSources;
         });
 
+        // On post edit status change
+        this.postCreateService.postSaveStatusChangeEvent.subscribe(status => {
+            // On post saved
+            if (status === PostSaveStatusEnum.POST_REPLACED) {
+                // Reload possibly changed sources
+                setTimeout(() => {
+                    this.loadAttachmentSources();
+                }, 50);
+            }
+        });
+
         // If in edit mode then load post edit form
         if (this.activatedRoute.snapshot.queryParams.edit === 'true') {
             setTimeout(() => this.onEditPost());
-        } else {
-            setTimeout(() => this.loadAttachmentSources());
         }
+
+        setTimeout(() => this.loadAttachmentSources());
     }
 
 
