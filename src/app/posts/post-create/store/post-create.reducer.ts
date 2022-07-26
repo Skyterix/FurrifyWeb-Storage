@@ -40,6 +40,9 @@ import {
     fetchAttachmentSourcesFail,
     fetchAttachmentSourcesStart,
     fetchAttachmentSourcesSuccess,
+    fetchMediaSourcesFail,
+    fetchMediaSourcesStart,
+    fetchMediaSourcesSuccess,
     fetchTagAfterCreationFail,
     fetchTagAfterCreationSuccess,
     loadPostToEdit,
@@ -66,6 +69,7 @@ import {CreateMedia} from "../../../shared/model/request/create-media.model";
 import {CreateSource} from "../../../shared/model/request/create-source.model";
 import {CreateAttachment} from "../../../shared/model/request/create-attachment.model";
 import {QuerySource} from "../../../shared/model/query/query-source.model";
+import {URI_TO_FILENAME_REGEX} from "../../../shared/config/common.constats";
 
 export class ArtistWrapper {
     constructor(public artist: Artist,
@@ -831,14 +835,43 @@ export const postCreateReducer = createReducer(
                 return new AttachmentWrapper(attachment, [], file, WrapperSourcesFetchingStatus.NOT_QUERIED, attachment.attachmentId);
             });
 
-            return {
-                ...state,
-                postSavedTitle: action.post.title,
-                postSavedDescription: action.post.description,
-                attachments: attachments,
-                savedPostId: action.post.postId,
-                selectedTags: tags
+        const mediaSet = action.post.mediaSet.map(media => {
+            const file: File = {
+                name: URI_TO_FILENAME_REGEX.exec(media.fileUri)![0],
+                text: undefined!,
+                stream: undefined!,
+                slice: undefined!,
+                arrayBuffer: undefined!,
+                type: undefined!,
+                size: undefined!,
+                lastModified: undefined!,
+                webkitRelativePath: undefined!
             };
+
+            const thumbnailFile: File = {
+                name: URI_TO_FILENAME_REGEX.exec(media.thumbnailUri)![0],
+                text: undefined!,
+                stream: undefined!,
+                slice: undefined!,
+                arrayBuffer: undefined!,
+                type: undefined!,
+                size: undefined!,
+                lastModified: undefined!,
+                webkitRelativePath: undefined!
+            };
+
+            return new MediaWrapper(media, [], file, thumbnailFile, WrapperSourcesFetchingStatus.NOT_QUERIED, media.mediaId);
+        });
+
+        return {
+            ...state,
+            postSavedTitle: action.post.title,
+            postSavedDescription: action.post.description,
+            attachments,
+            savedPostId: action.post.postId,
+            selectedTags: tags,
+            mediaSet
+        };
         }
     ),
     on(savePostStart, (state, action) => {
@@ -922,6 +955,68 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 attachments: newAttachments
+            };
+        }
+    ),
+    on(fetchMediaSourcesStart, (state, action) => {
+            const mediaIndex = state.mediaSet.findIndex((mediaWrapper) => {
+                return mediaWrapper.mediaId === action.mediaId;
+            });
+
+            const newMediaSet = [...state.mediaSet];
+
+            const newMedia = {...newMediaSet[mediaIndex]};
+            newMedia.sources = [];
+            newMedia.sourcesFetchingStatus = WrapperSourcesFetchingStatus.IN_PROGRESS;
+
+
+            newMediaSet[mediaIndex] = newMedia;
+
+            return {
+                ...state,
+                mediaSet: newMediaSet,
+                postCreateErrorMessage: null
+            };
+        }
+    ),
+    on(fetchMediaSourcesFail, (state, action) => {
+            const mediaIndex = state.mediaSet.findIndex((mediaWrapper) => {
+                return mediaWrapper.mediaId === action.mediaId;
+            });
+
+            const newMediaSet = [...state.mediaSet];
+
+            const newMedia = {...newMediaSet[mediaIndex]};
+            newMedia.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
+
+            newMediaSet[mediaIndex] = newMedia;
+
+            return {
+                ...state,
+                mediaSet: newMediaSet,
+                postCreateErrorMessage: action.errorMessage
+            };
+        }
+    ),
+    on(fetchMediaSourcesSuccess, (state, action) => {
+            const mediaIndex = state.mediaSet.findIndex((mediaWrapper) => {
+                return mediaWrapper.mediaId === action.mediaId;
+            });
+
+            const newMediaSet = [...state.mediaSet];
+
+            const newMedia = {...newMediaSet[mediaIndex]};
+            newMedia.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
+
+            newMedia.sources = action.mediaSources;
+
+            newMedia.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
+
+            newMediaSet[mediaIndex] = newMedia;
+
+            return {
+                ...state,
+                mediaSet: newMediaSet
             };
         }
     ),

@@ -368,3 +368,18 @@ export const fetchAttachmentSourcesSuccess = createAction(
     '[PostCreate] Fetch attachment sources success',
     props<{ attachmentId: string, attachmentSources: QuerySource[] }>()
 );
+
+export const fetchMediaSourcesStart = createAction(
+    '[PostCreate] Fetch media sources start',
+    props<{ userId: string, postId: string, mediaId: string }>()
+);
+
+export const fetchMediaSourcesFail = createAction(
+    '[PostCreate] Fetch media sources fail',
+    props<{ mediaId: string, errorMessage: string }>()
+);
+
+export const fetchMediaSourcesSuccess = createAction(
+    '[PostCreate] Fetch media sources success',
+    props<{ mediaId: string, mediaSources: QuerySource[] }>()
+);

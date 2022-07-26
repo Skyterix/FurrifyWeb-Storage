@@ -40,6 +40,9 @@ import {
     fetchAttachmentSourcesFail,
     fetchAttachmentSourcesStart,
     fetchAttachmentSourcesSuccess,
+    fetchMediaSourcesFail,
+    fetchMediaSourcesStart,
+    fetchMediaSourcesSuccess,
     fetchTagAfterCreationFail,
     fetchTagAfterCreationStart,
     fetchTagAfterCreationSuccess,
@@ -67,7 +70,8 @@ import {
     GET_ARTIST,
     GET_ARTIST_SOURCES,
     GET_ARTISTS_BY_PREFERRED_NICKNAME,
-    GET_ATTACHMENT_SOURCES,
+    GET_POST_ATTACHMENT_SOURCES,
+    GET_POST_MEDIA_SOURCES,
     GET_SOURCE,
     GET_TAG,
     REPLACE_POST,
@@ -1047,14 +1051,13 @@ export class PostCreateEffects {
         })
     ));
 
-
-    fetchAttachmentSourcesStart = createEffect(() => this.actions$.pipe(
-        ofType(fetchAttachmentSourcesStart),
+    fetchMediaSourcesStart = createEffect(() => this.actions$.pipe(
+        ofType(fetchMediaSourcesStart),
         mergeMap((action) => {
-                return this.httpClient.get<HypermediaResultList<QuerySource>>(GET_ATTACHMENT_SOURCES
+                return this.httpClient.get<HypermediaResultList<QuerySource>>(GET_POST_MEDIA_SOURCES
                         .replace(":userId", action.userId)
                         .replace(":postId", action.postId)
-                        .replace(":attachmentId", action.attachmentId), {
+                        .replace(":mediaId", action.mediaId), {
                         params: new HttpParams()
                             // TODO probably needs pagination
                             .append("size", 100),
@@ -1069,11 +1072,67 @@ export class PostCreateEffects {
                             sources = sourcesResponse._embedded.sourceSnapshotList;
                         }
 
-                        return fetchAttachmentSourcesSuccess({
-                            attachmentId: action.attachmentId,
-                            attachmentSources: sources
+                        return fetchMediaSourcesSuccess({
+                            mediaId: action.mediaId,
+                            mediaSources: sources
                         });
                     }),
+                    retryWhen(RETRY_HANDLER),
+                    catchError(error => {
+                        let errorMessage;
+
+                        switch (error.status) {
+                            case 503:
+                                errorMessage = 'No servers available to handle your request. Try again later.'
+                                break;
+                            case 400:
+                                errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
+                                break;
+                            case 404:
+                                errorMessage = 'Media was not found and sources could not be fetched. Try again in a moment.';
+                                break;
+                            default:
+                                errorMessage = 'Something went wrong. Try again later.';
+                                break;
+                        }
+
+                        return of(fetchMediaSourcesFail({
+                            mediaId: action.mediaId,
+                            errorMessage: errorMessage
+                        }));
+                    })
+                );
+            }
+        )
+    ));
+
+
+    fetchAttachmentSourcesStart = createEffect(() => this.actions$.pipe(
+        ofType(fetchAttachmentSourcesStart),
+        mergeMap((action) => {
+            return this.httpClient.get<HypermediaResultList<QuerySource>>(GET_POST_ATTACHMENT_SOURCES
+                    .replace(":userId", action.userId)
+                    .replace(":postId", action.postId)
+                    .replace(":attachmentId", action.attachmentId), {
+                    params: new HttpParams()
+                        // TODO probably needs pagination
+                        .append("size", 100),
+                    headers: new HttpHeaders()
+                        .append("Accept", RESPONSE_TYPE)
+                },
+            ).pipe(
+                map(sourcesResponse => {
+                    let sources: QuerySource[] = [];
+
+                    if (!!sourcesResponse._embedded) {
+                        sources = sourcesResponse._embedded.sourceSnapshotList;
+                    }
+
+                    return fetchAttachmentSourcesSuccess({
+                        attachmentId: action.attachmentId,
+                        attachmentSources: sources
+                    });
+                }),
                     retryWhen(RETRY_HANDLER),
                     catchError(error => {
                         let errorMessage;
@@ -1171,13 +1230,20 @@ export class PostCreateEffects {
             });
 
             // Load attachment sources
-            action.post.attachments.map(attachment => {
-                // TODO Prevent loading postfetchAttachmentSourcesStart view if in edit mode
-
+            action.post.attachments.forEach(attachment => {
                 this.store.dispatch(fetchAttachmentSourcesStart({
                     userId: action.post.ownerId,
                     postId: action.post.postId,
                     attachmentId: attachment.attachmentId
+                }));
+            });
+
+            // Load media sources
+            action.post.mediaSet.forEach(media => {
+                this.store.dispatch(fetchMediaSourcesStart({
+                    userId: action.post.ownerId,
+                    postId: action.post.postId,
+                    mediaId: media.mediaId
                 }));
             });
         })
