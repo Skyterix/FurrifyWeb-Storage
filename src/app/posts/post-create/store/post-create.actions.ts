@@ -353,3 +353,18 @@ export const savePostFail = createAction(
 export const savePostSuccess = createAction(
     '[PostCreate] Save post success'
 );
+
+export const fetchAttachmentSourcesStart = createAction(
+    '[PostCreate] Fetch attachment sources start',
+    props<{ userId: string, postId: string, attachmentId: string }>()
+);
+
+export const fetchAttachmentSourcesFail = createAction(
+    '[PostCreate] Fetch attachment sources fail',
+    props<{ attachmentId: string, errorMessage: string }>()
+);
+
+export const fetchAttachmentSourcesSuccess = createAction(
+    '[PostCreate] Fetch attachment sources success',
+    props<{ attachmentId: string, attachmentSources: QuerySource[] }>()
+);

@@ -37,6 +37,9 @@ import {
     fetchArtistSourcesFail,
     fetchArtistSourcesStart,
     fetchArtistSourcesSuccess,
+    fetchAttachmentSourcesFail,
+    fetchAttachmentSourcesStart,
+    fetchAttachmentSourcesSuccess,
     fetchTagAfterCreationFail,
     fetchTagAfterCreationStart,
     fetchTagAfterCreationSuccess,
@@ -64,6 +67,7 @@ import {
     GET_ARTIST,
     GET_ARTIST_SOURCES,
     GET_ARTISTS_BY_PREFERRED_NICKNAME,
+    GET_ATTACHMENT_SOURCES,
     GET_SOURCE,
     GET_TAG,
     REPLACE_POST,
@@ -644,6 +648,11 @@ export class PostCreateEffects {
             const mediaWrapper = action.mediaSet[action.currentMediaIndex];
             const source = mediaWrapper.sources[action.currentSourceIndex];
 
+
+            if (!mediaWrapper.mediaId) {
+                throw new Error("Media uuid is empty!");
+            }
+
             return this.httpClient.post(CREATE_MEDIA_SOURCE
                     .replace(":userId", action.userId)
                     .replace(":postId", action.postId)
@@ -740,6 +749,10 @@ export class PostCreateEffects {
 
             const attachmentWrapper = action.attachments[action.currentAttachmentIndex];
             const source = attachmentWrapper.sources[action.currentSourceIndex];
+
+            if (!attachmentWrapper.attachmentId) {
+                throw new Error("Attachment uuid is empty!");
+            }
 
             return this.httpClient.post(CREATE_ATTACHMENT_SOURCE
                     .replace(":userId", action.userId)
@@ -1034,6 +1047,62 @@ export class PostCreateEffects {
         })
     ));
 
+
+    fetchAttachmentSourcesStart = createEffect(() => this.actions$.pipe(
+        ofType(fetchAttachmentSourcesStart),
+        mergeMap((action) => {
+                return this.httpClient.get<HypermediaResultList<QuerySource>>(GET_ATTACHMENT_SOURCES
+                        .replace(":userId", action.userId)
+                        .replace(":postId", action.postId)
+                        .replace(":attachmentId", action.attachmentId), {
+                        params: new HttpParams()
+                            // TODO probably needs pagination
+                            .append("size", 100),
+                        headers: new HttpHeaders()
+                            .append("Accept", RESPONSE_TYPE)
+                    },
+                ).pipe(
+                    map(sourcesResponse => {
+                        let sources: QuerySource[] = [];
+
+                        if (!!sourcesResponse._embedded) {
+                            sources = sourcesResponse._embedded.sourceSnapshotList;
+                        }
+
+                        return fetchAttachmentSourcesSuccess({
+                            attachmentId: action.attachmentId,
+                            attachmentSources: sources
+                        });
+                    }),
+                    retryWhen(RETRY_HANDLER),
+                    catchError(error => {
+                        let errorMessage;
+
+                        switch (error.status) {
+                            case 503:
+                                errorMessage = 'No servers available to handle your request. Try again later.'
+                                break;
+                            case 400:
+                                errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
+                                break;
+                            case 404:
+                                errorMessage = 'Attachment was not found and sources could not be fetched. Try again in a moment.';
+                                break;
+                            default:
+                                errorMessage = 'Something went wrong. Try again later.';
+                                break;
+                        }
+
+                        return of(fetchAttachmentSourcesFail({
+                            attachmentId: action.attachmentId,
+                            errorMessage: errorMessage
+                        }));
+                    })
+                );
+            }
+        )
+    ));
+
     savePostSuccess = createEffect(() => this.actions$.pipe(
         ofType(savePostSuccess),
         tap(() => {
@@ -1098,6 +1167,18 @@ export class PostCreateEffects {
                 this.store.dispatch(addArtistToSelectedSetStart({
                     userId: action.post.ownerId,
                     preferredNickname: artist.preferredNickname
+                }));
+            });
+
+            // Load attachment sources
+            action.post.attachments.map(attachment => {
+                // TODO Maybe use sources already loaded in posts store
+                // TODO And prevent loading postfetchAttachmentSourcesStart view if in edit mode
+
+                this.store.dispatch(fetchAttachmentSourcesStart({
+                    userId: action.post.ownerId,
+                    postId: action.post.postId,
+                    attachmentId: attachment.attachmentId
                 }));
             });
         })

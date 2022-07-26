@@ -5,7 +5,8 @@ import * as fromApp from "../../../store/app.reducer";
 import {Subscription} from "rxjs";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {removeAttachment, removeMedia, updateMediaSet} from "../store/post-create.actions";
-import {AttachmentWrapper, MediaWrapper} from "../store/post-create.reducer";
+import {AttachmentWrapper, MediaWrapper, WrapperSourcesFetchingStatus} from "../store/post-create.reducer";
+import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
     selector: 'app-post-create-content-step',
@@ -14,8 +15,12 @@ import {AttachmentWrapper, MediaWrapper} from "../store/post-create.reducer";
 })
 export class PostCreateContentStepComponent implements OnInit, OnDestroy {
 
+    spinnerIcon = faCircleNotch;
+
     mediaSet: MediaWrapper[] = [];
     attachments: AttachmentWrapper[] = [];
+
+    readonly WrapperSourcesFetchingStatus = WrapperSourcesFetchingStatus;
 
     private postCreateStoreSubscription!: Subscription;
 

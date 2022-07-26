@@ -14,6 +14,7 @@ export const GET_ARTISTS_BY_PREFERRED_NICKNAME = SERVER_ADDRESS + '/users/:userI
 
 export const GET_POST_MEDIA_SOURCES = SERVER_ADDRESS + '/users/:userId/posts/:postId/media/:mediaId/sources';
 export const GET_ARTIST_SOURCES = SERVER_ADDRESS + '/users/:userId/artists/:artistId/sources';
+export const GET_ATTACHMENT_SOURCES = SERVER_ADDRESS + '/users/:userId/posts/:postId/attachments/:attachmentId/sources';
 export const GET_POST_ATTACHMENT_SOURCES = SERVER_ADDRESS + '/users/:userId/posts/:postId/attachments/:attachmentId/sources';
 
 

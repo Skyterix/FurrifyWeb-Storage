@@ -37,6 +37,9 @@ import {
     fetchArtistSourcesFail,
     fetchArtistSourcesStart,
     fetchArtistSourcesSuccess,
+    fetchAttachmentSourcesFail,
+    fetchAttachmentSourcesStart,
+    fetchAttachmentSourcesSuccess,
     fetchTagAfterCreationFail,
     fetchTagAfterCreationSuccess,
     loadPostToEdit,
@@ -79,23 +82,21 @@ export class TagWrapper {
 }
 
 export class MediaWrapper {
-    mediaId: string;
-
     constructor(public media: CreateMedia,
                 public sources: CreateSource[],
                 public mediaFile: File,
-                public thumbnailFile: File | undefined) {
-        this.mediaId = "";
+                public thumbnailFile: File | undefined,
+                public sourcesFetchingStatus?: WrapperSourcesFetchingStatus,
+                public mediaId?: string) {
     }
 }
 
 export class AttachmentWrapper {
-    attachmentId: string;
-
     constructor(public attachment: CreateAttachment,
                 public sources: CreateSource[],
-                public file: File) {
-        this.attachmentId = "";
+                public file: File,
+                public sourcesFetchingStatus?: WrapperSourcesFetchingStatus,
+                public attachmentId?: string) {
     }
 }
 
@@ -808,28 +809,36 @@ export const postCreateReducer = createReducer(
         }
     ),
     on(loadPostToEdit, (state, action) => {
-        const tags = action.post.tags.map(tag => {
-            return new TagWrapper(tag, WrapperStatus.FOUND);
-        });
+            const tags = action.post.tags.map(tag => {
+                return new TagWrapper(tag, WrapperStatus.FOUND);
+            });
 
-        // TODO Fetch media sources and attachment sources
-        const mediaSet = action.post.mediaSet.map(media => {
-            return new MediaWrapper(media, [], null!, null!);
-        });
 
-        const attachments = action.post.attachments.map(attachment => {
-            return new AttachmentWrapper(attachment, [], null!);
-        });
+            const attachments = action.post.attachments.map(attachment => {
 
-        return {
-            ...state,
-            postSavedTitle: action.post.title,
-            postSavedDescription: action.post.description,
-            mediaSet: mediaSet,
-            attachments: attachments,
-            savedPostId: action.post.postId,
-            selectedTags: tags
-        };
+                const file: File = {
+                    name: attachment.filename,
+                    text: undefined!,
+                    stream: undefined!,
+                    slice: undefined!,
+                    arrayBuffer: undefined!,
+                    type: undefined!,
+                    size: undefined!,
+                    lastModified: undefined!,
+                    webkitRelativePath: undefined!
+                };
+
+                return new AttachmentWrapper(attachment, [], file, WrapperSourcesFetchingStatus.NOT_QUERIED, attachment.attachmentId);
+            });
+
+            return {
+                ...state,
+                postSavedTitle: action.post.title,
+                postSavedDescription: action.post.description,
+                attachments: attachments,
+                savedPostId: action.post.postId,
+                selectedTags: tags
+            };
         }
     ),
     on(savePostStart, (state, action) => {
@@ -854,6 +863,65 @@ export const postCreateReducer = createReducer(
                 currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 postCreateErrorMessage: action.errorMessage,
                 isErrorPostCreationRelated: true
+            };
+        }
+    ),
+    on(fetchAttachmentSourcesStart, (state, action) => {
+            const attachmentIndex = state.attachments.findIndex((attachmentWrapper) => {
+                return attachmentWrapper.attachmentId === action.attachmentId;
+            });
+
+            const newAttachments = [...state.attachments];
+
+            const newAttachment = {...newAttachments[attachmentIndex]};
+            newAttachment.sources = [];
+            newAttachment.sourcesFetchingStatus = WrapperSourcesFetchingStatus.IN_PROGRESS;
+
+
+            newAttachments[attachmentIndex] = newAttachment;
+
+            return {
+                ...state,
+                attachments: newAttachments,
+                postCreateErrorMessage: null
+            };
+        }
+    ),
+    on(fetchAttachmentSourcesFail, (state, action) => {
+            const attachmentIndex = state.attachments.findIndex((attachmentWrapper) => {
+                return attachmentWrapper.attachmentId === action.attachmentId;
+            });
+
+            const newAttachments = [...state.attachments];
+
+            const newAttachment = {...newAttachments[attachmentIndex]};
+            newAttachment.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
+
+            newAttachments[attachmentIndex] = newAttachment;
+
+            return {
+                ...state,
+                attachments: newAttachments,
+                postCreateErrorMessage: action.errorMessage
+            };
+        }
+    ),
+    on(fetchAttachmentSourcesSuccess, (state, action) => {
+            const attachmentIndex = state.attachments.findIndex((attachmentWrapper) => {
+                return attachmentWrapper.attachmentId === action.attachmentId;
+            });
+
+            const newAttachments = [...state.attachments];
+            const newAttachment = {...newAttachments[attachmentIndex]};
+            newAttachment.sources = action.attachmentSources;
+
+            newAttachment.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
+
+            newAttachments[attachmentIndex] = newAttachment;
+
+            return {
+                ...state,
+                attachments: newAttachments
             };
         }
     ),

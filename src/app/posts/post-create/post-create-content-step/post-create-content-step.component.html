@@ -52,6 +52,13 @@
 
                 <!-- Sources -->
                 <div>
+                    <!-- Sources Spinner -->
+                    <div *ngIf="attachment.sourcesFetchingStatus === WrapperSourcesFetchingStatus.IN_PROGRESS"
+                         class="text-center">
+                        <fa-icon [icon]="spinnerIcon" [spin]="true"
+                                 class="me-1" size="sm"></fa-icon>
+                    </div>
+
                     <app-attachment-source-item *ngFor="let source of attachment.sources; let sourceIndex = index"
                                                 [attachmentIndex]="attachmentIndex" [sourceIndex]="sourceIndex"
                                                 [source]="source"></app-attachment-source-item>
