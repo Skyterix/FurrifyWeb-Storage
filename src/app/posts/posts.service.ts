@@ -50,7 +50,9 @@ export class PostsService {
             }
         ));
 
-        this.router.navigate(['/posts']);
+        this.router.navigate(['/posts'], {
+            queryParamsHandling: "merge"
+        });
     }
 
     private updateSearchQuery(query: string): void {
