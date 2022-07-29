@@ -143,7 +143,7 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
 
-.alert-danger {
+.alert alert-danger {
     border-radius: 8px;
     word-wrap: anywhere;
 }
