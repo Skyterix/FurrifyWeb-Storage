@@ -5,6 +5,8 @@ article {
 }
 
 .close {
+    background: transparent;
+    border: none;
     position: absolute;
     top: 16px;
     right: 18px;
