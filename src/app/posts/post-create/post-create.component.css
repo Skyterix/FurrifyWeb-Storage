@@ -9,6 +9,8 @@ section {
 }
 
 .close {
+    background: transparent;
+    border: none;
     position: absolute;
     top: .75rem;
     right: .75rem;
