@@ -43,8 +43,7 @@ import {
     fetchTagAfterCreationSuccess,
     removeArtistSourceFail,
     removeArtistSourceStart,
-    removeArtistSourceSuccess,
-    resetFetchingCounter
+    removeArtistSourceSuccess
 } from "./post-create.actions";
 import {catchError, map, mergeMap, retryWhen, tap} from "rxjs/operators";
 import {Tag} from "../../../shared/model/tag.model";
@@ -1009,7 +1008,6 @@ export class PostCreateEffects {
             setTimeout(() => {
                 this.postCreateService.clearPostCreateModalEvent.emit();
                 this.store.dispatch(clearPostData());
-                this.store.dispatch(resetFetchingCounter());
                 this.postsService.triggerSearch()
             }, 50)
         })
