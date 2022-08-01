@@ -48,7 +48,6 @@ import {
     removeSourceFromAttachment,
     removeSourceFromMedia,
     removeTagFromSelected,
-    resetFetchingCounter,
     updateMediaSet,
     updatePostSavedDescription,
     updatePostSavedTitle,
@@ -566,7 +565,8 @@ export const postCreateReducer = createReducer(
                 attachments: [],
                 postCreateErrorMessage: null,
                 createSourceData: {},
-                createdPostId: ""
+                createdPostId: "",
+                currentlyFetchingCount: 0
             };
         }
     ),
@@ -804,10 +804,4 @@ export const postCreateReducer = createReducer(
             };
         }
     ),
-    on(resetFetchingCounter, (state, action) => {
-        return {
-            ...state,
-            currentlyFetchingCount: 0,
-        };
-    }),
 );

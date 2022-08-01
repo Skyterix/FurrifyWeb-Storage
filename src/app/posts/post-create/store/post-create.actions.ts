@@ -325,7 +325,3 @@ export const addArtistSourceAfterCreationSuccess = createAction(
     '[PostCreate] Add artist source after creation success',
     props<{ artistId: string, source: QuerySource }>()
 );
-
-export const resetFetchingCounter = createAction(
-    '[PostCreate] Reset fetching counter'
-);
