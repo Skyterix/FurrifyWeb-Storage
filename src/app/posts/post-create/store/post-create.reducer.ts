@@ -48,6 +48,7 @@ import {
     removeSourceFromAttachment,
     removeSourceFromMedia,
     removeTagFromSelected,
+    resetFetchingCounter,
     updateMediaSet,
     updatePostSavedDescription,
     updatePostSavedTitle,
@@ -410,7 +411,6 @@ export const postCreateReducer = createReducer(
     on(createPostSuccess, (state, action) => {
             return {
                 ...state,
-                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 createdPostId: action.postId
             };
         }
@@ -427,7 +427,6 @@ export const postCreateReducer = createReducer(
     on(createMediaSetStart, (state, action) => {
         return {
             ...state,
-            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentIndex
@@ -436,7 +435,6 @@ export const postCreateReducer = createReducer(
     on(createAttachmentsStart, (state, action) => {
         return {
             ...state,
-            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentIndex
@@ -445,7 +443,6 @@ export const postCreateReducer = createReducer(
     on(createMediaSetSourcesStart, (state, action) => {
         return {
             ...state,
-            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentMediaIndex,
@@ -455,7 +452,6 @@ export const postCreateReducer = createReducer(
     on(createAttachmentsSourcesStart, (state, action) => {
         return {
             ...state,
-            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentAttachmentIndex,
@@ -472,7 +468,6 @@ export const postCreateReducer = createReducer(
     on(createAttachmentsSourcesSuccess, (state, action) => {
             return {
                 ...state,
-                currentlyFetchingCount: state.currentlyFetchingCount - 1
             };
         }
     ),
@@ -661,7 +656,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: null
+                postCreateErrorMessage: null,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
             };
         }
     ),
@@ -692,7 +688,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: action.errorMessage
+                postCreateErrorMessage: action.errorMessage,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
             };
         }
     ),
@@ -717,7 +714,8 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                selectedArtists: newArtists
+                selectedArtists: newArtists,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
             };
         }
     ),
@@ -760,7 +758,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: null
+                postCreateErrorMessage: null,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
             };
         }
     ),
@@ -779,7 +778,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: action.errorMessage
+                postCreateErrorMessage: action.errorMessage,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
             };
         }
     ),
@@ -799,8 +799,15 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                selectedArtists: newArtists
+                selectedArtists: newArtists,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
             };
         }
     ),
+    on(resetFetchingCounter, (state, action) => {
+        return {
+            ...state,
+            currentlyFetchingCount: 0,
+        };
+    }),
 );
