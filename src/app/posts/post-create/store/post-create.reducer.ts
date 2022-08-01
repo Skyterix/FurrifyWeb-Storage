@@ -51,7 +51,13 @@ import {
     removeArtistSourceStart,
     removeArtistSourceSuccess,
     removeAttachment,
+    removeAttachmentFromPostFail,
+    removeAttachmentFromPostStart,
+    removeAttachmentFromPostSuccess,
     removeMedia,
+    removeMediaFromPostFail,
+    removeMediaFromPostStart,
+    removeMediaFromPostSuccess,
     removeSourceFromAttachment,
     removeSourceFromMedia,
     removeTagFromSelected,
@@ -601,7 +607,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: null
+                postCreateErrorMessage: null,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
             };
         }
     ),
@@ -620,7 +627,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: action.errorMessage
+                postCreateErrorMessage: action.errorMessage,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
             };
         }
     ),
@@ -639,7 +647,8 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                selectedArtists: newArtists
+                selectedArtists: newArtists,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
             };
         }
     ),
@@ -835,43 +844,43 @@ export const postCreateReducer = createReducer(
                 return new AttachmentWrapper(attachment, [], file, WrapperSourcesFetchingStatus.NOT_QUERIED, attachment.attachmentId);
             });
 
-        const mediaSet = action.post.mediaSet.map(media => {
-            const file: File = {
-                name: URI_TO_FILENAME_REGEX.exec(media.fileUri)![0],
-                text: undefined!,
-                stream: undefined!,
-                slice: undefined!,
-                arrayBuffer: undefined!,
-                type: undefined!,
-                size: undefined!,
-                lastModified: undefined!,
-                webkitRelativePath: undefined!
+            const mediaSet = action.post.mediaSet.map(media => {
+                const file: File = {
+                    name: URI_TO_FILENAME_REGEX.exec(media.fileUri)![0],
+                    text: undefined!,
+                    stream: undefined!,
+                    slice: undefined!,
+                    arrayBuffer: undefined!,
+                    type: undefined!,
+                    size: undefined!,
+                    lastModified: undefined!,
+                    webkitRelativePath: undefined!
+                };
+
+                const thumbnailFile: File = {
+                    name: URI_TO_FILENAME_REGEX.exec(media.thumbnailUri)![0],
+                    text: undefined!,
+                    stream: undefined!,
+                    slice: undefined!,
+                    arrayBuffer: undefined!,
+                    type: undefined!,
+                    size: undefined!,
+                    lastModified: undefined!,
+                    webkitRelativePath: undefined!
+                };
+
+                return new MediaWrapper(media, [], file, thumbnailFile, WrapperSourcesFetchingStatus.NOT_QUERIED, media.mediaId);
+            });
+
+            return {
+                ...state,
+                postSavedTitle: action.post.title,
+                postSavedDescription: action.post.description,
+                attachments,
+                savedPostId: action.post.postId,
+                selectedTags: tags,
+                mediaSet
             };
-
-            const thumbnailFile: File = {
-                name: URI_TO_FILENAME_REGEX.exec(media.thumbnailUri)![0],
-                text: undefined!,
-                stream: undefined!,
-                slice: undefined!,
-                arrayBuffer: undefined!,
-                type: undefined!,
-                size: undefined!,
-                lastModified: undefined!,
-                webkitRelativePath: undefined!
-            };
-
-            return new MediaWrapper(media, [], file, thumbnailFile, WrapperSourcesFetchingStatus.NOT_QUERIED, media.mediaId);
-        });
-
-        return {
-            ...state,
-            postSavedTitle: action.post.title,
-            postSavedDescription: action.post.description,
-            attachments,
-            savedPostId: action.post.postId,
-            selectedTags: tags,
-            mediaSet
-        };
         }
     ),
     on(savePostStart, (state, action) => {
@@ -916,7 +925,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 attachments: newAttachments,
-                postCreateErrorMessage: null
+                postCreateErrorMessage: null,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
             };
         }
     ),
@@ -935,7 +945,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 attachments: newAttachments,
-                postCreateErrorMessage: action.errorMessage
+                postCreateErrorMessage: action.errorMessage,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
             };
         }
     ),
@@ -954,7 +965,8 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                attachments: newAttachments
+                attachments: newAttachments,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
             };
         }
     ),
@@ -975,7 +987,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 mediaSet: newMediaSet,
-                postCreateErrorMessage: null
+                postCreateErrorMessage: null,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
             };
         }
     ),
@@ -994,7 +1007,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 mediaSet: newMediaSet,
-                postCreateErrorMessage: action.errorMessage
+                postCreateErrorMessage: action.errorMessage,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
             };
         }
     ),
@@ -1016,7 +1030,56 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                mediaSet: newMediaSet
+                mediaSet: newMediaSet,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1,
+            };
+        }
+    ),
+    on(removeMediaFromPostStart, (state, action) => {
+            return {
+                ...state,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
+                postCreateErrorMessage: null
+            };
+        }
+    ),
+    on(removeMediaFromPostFail, (state, action) => {
+            return {
+                ...state,
+                postCreateErrorMessage: action.errorMessage,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1
+            };
+        }
+    ),
+    on(removeMediaFromPostSuccess, (state, action) => {
+            return {
+                ...state,
+                mediaSet: state.mediaSet.slice().filter((item, index) => item.mediaId !== action.mediaId),
+                currentlyFetchingCount: state.currentlyFetchingCount - 1
+            };
+        }
+    ),
+    on(removeAttachmentFromPostStart, (state, action) => {
+            return {
+                ...state,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1,
+                postCreateErrorMessage: null
+            };
+        }
+    ),
+    on(removeAttachmentFromPostFail, (state, action) => {
+            return {
+                ...state,
+                postCreateErrorMessage: action.errorMessage,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1
+            };
+        }
+    ),
+    on(removeAttachmentFromPostSuccess, (state, action) => {
+            return {
+                ...state,
+                attachments: state.attachments.slice().filter((item, index) => item.attachmentId !== action.attachmentId),
+                currentlyFetchingCount: state.currentlyFetchingCount - 1
             };
         }
     ),

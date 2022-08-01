@@ -14,12 +14,13 @@ ul li .badge, .cdk-drag-preview .badge {
     cursor: pointer;
     height: 18px;
     min-width: 18px;
+    padding: 0.25em;
 }
 
 .badges {
     float: right;
     word-break: keep-all;
-    width: 120px;
+    width: auto;
     text-align: right;
 }
 
@@ -34,4 +35,8 @@ h6 {
 
 .animate__animated {
     animation-duration: .1s;
+}
+
+.disabled {
+    cursor: auto !important;
 }

@@ -4,9 +4,17 @@ import {Store} from "@ngrx/store";
 import * as fromApp from "../../../store/app.reducer";
 import {Subscription} from "rxjs";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
-import {removeAttachment, removeMedia, updateMediaSet} from "../store/post-create.actions";
+import {
+    removeAttachment,
+    removeAttachmentFromPostStart,
+    removeMedia,
+    removeMediaFromPostStart,
+    updateMediaSet
+} from "../store/post-create.actions";
 import {AttachmentWrapper, MediaWrapper, WrapperSourcesFetchingStatus} from "../store/post-create.reducer";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
+import {ActivatedRoute} from "@angular/router";
+import {KeycloakProfile} from "keycloak-js";
 
 @Component({
     selector: 'app-post-create-content-step',
@@ -20,18 +28,37 @@ export class PostCreateContentStepComponent implements OnInit, OnDestroy {
     mediaSet: MediaWrapper[] = [];
     attachments: AttachmentWrapper[] = [];
 
+    postEditMode = false;
+
+    isFetching = false;
+
     readonly WrapperSourcesFetchingStatus = WrapperSourcesFetchingStatus;
 
+    private currentPostId!: string | undefined;
+    private currentUser!: KeycloakProfile | null;
+
     private postCreateStoreSubscription!: Subscription;
+    private authenticationStoreSubscription!: Subscription;
 
     constructor(private postCreateService: PostCreateService,
-                private store: Store<fromApp.AppState>) {
+                private store: Store<fromApp.AppState>,
+                private activatedRoute: ActivatedRoute) {
     }
 
     ngOnInit(): void {
+        this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
+            this.currentUser = state.currentUser;
+        });
+
         this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
             this.mediaSet = state.mediaSet;
             this.attachments = state.attachments;
+            this.currentPostId = state.savedPostId;
+            this.isFetching = state.currentlyFetchingCount > 0;
+        });
+
+        this.activatedRoute.queryParams.subscribe(queryParams => {
+            this.postEditMode = queryParams.edit === 'true';
         });
     }
 
@@ -48,6 +75,21 @@ export class PostCreateContentStepComponent implements OnInit, OnDestroy {
     }
 
     onMediaRemove(index: number): void {
+        if (this.isFetching) {
+            return;
+        }
+
+        // If in post edit mode and current media already exists
+        if (this.postEditMode && this.mediaSet[index].mediaId !== undefined) {
+            this.store.dispatch(removeMediaFromPostStart({
+                userId: this.currentUser!.id!,
+                postId: this.currentPostId!,
+                mediaId: this.mediaSet[index].mediaId!
+            }));
+
+            return;
+        }
+
         this.store.dispatch(removeMedia({
             index
         }));
@@ -63,6 +105,21 @@ export class PostCreateContentStepComponent implements OnInit, OnDestroy {
     }
 
     onAttachmentRemove(index: number): void {
+        if (this.isFetching) {
+            return;
+        }
+
+        // If in post edit mode and current attachment already exists
+        if (this.postEditMode && this.attachments[index].attachmentId !== undefined) {
+            this.store.dispatch(removeAttachmentFromPostStart({
+                userId: this.currentUser!.id!,
+                postId: this.currentPostId!,
+                attachmentId: this.attachments[index].attachmentId!
+            }));
+
+            return;
+        }
+
         this.store.dispatch(removeAttachment({
             index
         }));

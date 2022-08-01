@@ -383,3 +383,33 @@ export const fetchMediaSourcesSuccess = createAction(
     '[PostCreate] Fetch media sources success',
     props<{ mediaId: string, mediaSources: QuerySource[] }>()
 );
+
+export const removeMediaFromPostStart = createAction(
+    '[PostCreate] Remove media from post start',
+    props<{ userId: string, postId: string, mediaId: string }>()
+);
+
+export const removeMediaFromPostFail = createAction(
+    '[PostCreate] Remove media from post fail',
+    props<{ mediaId: string, errorMessage: string }>()
+);
+
+export const removeMediaFromPostSuccess = createAction(
+    '[PostCreate] Remove media from post success',
+    props<{ mediaId: string }>()
+);
+
+export const removeAttachmentFromPostStart = createAction(
+    '[PostCreate] Remove attachment from post start',
+    props<{ userId: string, postId: string, attachmentId: string }>()
+);
+
+export const removeAttachmentFromPostFail = createAction(
+    '[PostCreate] Remove attachment from post fail',
+    props<{ attachmentId: string, errorMessage: string }>()
+);
+
+export const removeAttachmentFromPostSuccess = createAction(
+    '[PostCreate] Remove attachment from post success',
+    props<{ attachmentId: string }>()
+);

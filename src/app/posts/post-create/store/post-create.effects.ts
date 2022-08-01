@@ -50,6 +50,12 @@ import {
     removeArtistSourceFail,
     removeArtistSourceStart,
     removeArtistSourceSuccess,
+    removeAttachmentFromPostFail,
+    removeAttachmentFromPostStart,
+    removeAttachmentFromPostSuccess,
+    removeMediaFromPostFail,
+    removeMediaFromPostStart,
+    removeMediaFromPostSuccess,
     savePostFail,
     savePostStart,
     savePostSuccess
@@ -66,6 +72,8 @@ import {
     CREATE_MEDIA_SOURCE,
     CREATE_POST,
     CREATE_TAG,
+    DELETE_ATTACHMENT,
+    DELETE_MEDIA,
     DELETE_SOURCE,
     GET_ARTIST,
     GET_ARTIST_SOURCES,
@@ -1106,7 +1114,6 @@ export class PostCreateEffects {
         )
     ));
 
-
     fetchAttachmentSourcesStart = createEffect(() => this.actions$.pipe(
         ofType(fetchAttachmentSourcesStart),
         mergeMap((action) => {
@@ -1153,6 +1160,90 @@ export class PostCreateEffects {
                         }
 
                         return of(fetchAttachmentSourcesFail({
+                            attachmentId: action.attachmentId,
+                            errorMessage: errorMessage
+                        }));
+                    })
+            );
+            }
+        )
+    ));
+
+    removeMediaFromPostStart = createEffect(() => this.actions$.pipe(
+        ofType(removeMediaFromPostStart),
+        mergeMap((action) => {
+                return this.httpClient.delete<HypermediaResultList<QuerySource>>(DELETE_MEDIA
+                    .replace(":userId", action.userId)
+                    .replace(":postId", action.postId)
+                    .replace(":mediaId", action.mediaId),
+                ).pipe(
+                    map(() => {
+                        return removeMediaFromPostSuccess({
+                            mediaId: action.mediaId
+                        });
+                    }),
+                    retryWhen(RETRY_HANDLER),
+                    catchError(error => {
+                        let errorMessage;
+
+                        switch (error.status) {
+                            case 503:
+                                errorMessage = 'No servers available to handle your request. Try again later.'
+                                break;
+                            case 400:
+                                errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
+                                break;
+                            case 404:
+                                errorMessage = 'Media was not found and could not be deleted. Try again later.';
+                                break;
+                            default:
+                                errorMessage = 'Something went wrong. Try again later.';
+                                break;
+                        }
+
+                        return of(removeMediaFromPostFail({
+                            mediaId: action.mediaId,
+                            errorMessage: errorMessage
+                        }));
+                    })
+                );
+            }
+        )
+    ));
+
+    removeAttachmentFromPostStart = createEffect(() => this.actions$.pipe(
+        ofType(removeAttachmentFromPostStart),
+        mergeMap((action) => {
+                return this.httpClient.delete<HypermediaResultList<QuerySource>>(DELETE_ATTACHMENT
+                    .replace(":userId", action.userId)
+                    .replace(":postId", action.postId)
+                    .replace(":attachmentId", action.attachmentId),
+                ).pipe(
+                    map(() => {
+                        return removeAttachmentFromPostSuccess({
+                            attachmentId: action.attachmentId
+                        });
+                    }),
+                    retryWhen(RETRY_HANDLER),
+                    catchError(error => {
+                        let errorMessage;
+
+                        switch (error.status) {
+                            case 503:
+                                errorMessage = 'No servers available to handle your request. Try again later.'
+                                break;
+                            case 400:
+                                errorMessage = error.error.message + ' If you think this is a bug, please contact the administrator.';
+                                break;
+                            case 404:
+                                errorMessage = 'Attachment was not found and could not be deleted. Try again later.';
+                                break;
+                            default:
+                                errorMessage = 'Something went wrong. Try again later.';
+                                break;
+                        }
+
+                        return of(removeAttachmentFromPostFail({
                             attachmentId: action.attachmentId,
                             errorMessage: errorMessage
                         }));

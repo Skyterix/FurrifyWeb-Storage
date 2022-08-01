@@ -27,10 +27,17 @@ export class ArtistSourceItemComponent implements OnInit, OnDestroy {
     private currentUser!: KeycloakProfile | null;
     private authenticationStoreSubscription!: Subscription;
 
+    private isFetching = false;
+    private postCreateStoreSubscription!: Subscription;
+
     constructor(private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit(): void {
+        this.postCreateStoreSubscription = this.store.select('postCreate').subscribe(state => {
+            this.isFetching = state.currentlyFetchingCount > 0;
+        });
+
         this.strategyName = this.source.strategy.replace("SourceStrategy", "");
         this.firstParam = this.source.data[Object.keys(this.source.data)[0]];
         this.authenticationStoreSubscription = this.store.select('authentication').subscribe(state => {
@@ -42,9 +49,14 @@ export class ArtistSourceItemComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.authenticationStoreSubscription.unsubscribe();
+        this.postCreateStoreSubscription.unsubscribe();
     }
 
     onRemove(): void {
+        if (this.isFetching) {
+            return;
+        }
+
         this.store.dispatch(removeArtistSourceStart({
             userId: this.currentUser?.id!,
             artistId: this.artistId,

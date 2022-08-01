@@ -4,8 +4,8 @@
         <!-- Media Set -->
         <h6 class="mt-3 mb-2 ms-2">Media set</h6>
         <ul (cdkDropListDropped)="dropMediaItem($event)" cdkDropList class="list-group mt-3">
-            <li *ngFor="let media of this.mediaSet; let mediaIndex = index" cdkDrag
-                class="list-group-item">
+            <li *ngFor="let media of this.mediaSet; let mediaIndex = index"
+                [cdkDragDisabled]="this.postEditMode && this.isFetching" cdkDrag class="list-group-item">
 
                 <!-- Media Info and controls -->
                 <div>
@@ -16,7 +16,15 @@
                               class="badge bg-dark badge-pill">Add source</span>
 
                         <span class="badge badge-primary badge-pill">{{ mediaIndex }}</span>
-                        <span (click)="onMediaRemove(mediaIndex)" class="badge badge-pill remove">x</span>
+                        <span (click)="onMediaRemove(mediaIndex)"
+                              [class.disabled]="this.postEditMode && this.isFetching" class="badge badge-pill remove">
+                            <!-- Spinner -->
+                            <fa-icon *ngIf="this.postEditMode && isFetching" [fixedWidth]="true" [icon]="spinnerIcon"
+                                     [spin]="true"
+                                     class="text-white" size="sm"></fa-icon>
+                            <!-- Remove symbol -->
+                            <span *ngIf="!this.postEditMode || (this.postEditMode && !isFetching)">x</span>
+                        </span>
                     </span>
                 </div>
 
@@ -44,7 +52,14 @@
                     <span class="badges">
                         <span (click)="loadCreateAttachmentSourceForm(attachment)" class="badge bg-dark badge-pill">Add source</span>
 
-                        <span (click)="onAttachmentRemove(attachmentIndex)" class="badge badge-pill remove">x</span>
+                        <span (click)="onAttachmentRemove(attachmentIndex)"
+                              [class.disabled]="this.postEditMode && this.isFetching" class="badge badge-pill remove">
+                            <!-- Spinner -->
+                            <fa-icon *ngIf="this.postEditMode && isFetching" [fixedWidth]="true" [icon]="spinnerIcon"
+                                     [spin]="true" class="text-white" size="sm"></fa-icon>
+                            <!-- Remove symbol -->
+                            <span *ngIf="!this.postEditMode || (this.postEditMode && !isFetching)">x</span>
+                        </span>
                     </span>
                 </div>
 
