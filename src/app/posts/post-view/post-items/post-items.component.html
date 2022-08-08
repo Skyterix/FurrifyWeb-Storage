@@ -60,7 +60,7 @@
         </ul>
     </div>
 
-    <div class="d-inline-block p-1 justify-content-start">
+    <div *ngIf="!!fileUrl" class="d-inline-block p-1 justify-content-start">
         <a [href]="fileUrl">
             <button class="btn btn-accent">Download</button>
         </a>

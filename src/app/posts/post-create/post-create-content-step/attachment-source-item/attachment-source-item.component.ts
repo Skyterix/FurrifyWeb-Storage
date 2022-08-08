@@ -21,7 +21,7 @@ export class AttachmentSourceItemComponent implements OnInit, OnDestroy {
 
     strategyName!: string;
     // Param uniquely identification record in strategy data
-    firstParam!: string;
+    url!: string;
 
     private isFetching = false;
     private postCreateStoreSubscription!: Subscription;
@@ -35,7 +35,7 @@ export class AttachmentSourceItemComponent implements OnInit, OnDestroy {
         });
 
         this.strategyName = this.source.strategy.replace("SourceStrategy", "");
-        this.firstParam = this.source.data[Object.keys(this.source.data)[0]];
+        this.url = this.source.data['url'];
     }
 
     ngOnDestroy(): void {

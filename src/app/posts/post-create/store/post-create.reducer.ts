@@ -142,8 +142,8 @@ export interface State {
     attachments: AttachmentWrapper[];
     postCreateErrorMessage: string | null;
     artistSourceCreateErrorMessage: string | null;
-    savedPostId: string;
     createSourceData: any;
+    savedPostId: string;
     currentIndex: number;
     currentSourceIndex: number
 }
@@ -371,7 +371,7 @@ export const postCreateReducer = createReducer(
             });
 
             // Replace old tag with new one
-        newArtists[oldArtistIndex] = new ArtistWrapper(action.artist, [], WrapperStatus.FOUND, WrapperSourcesFetchingStatus.NOT_QUERIED);
+            newArtists[oldArtistIndex] = new ArtistWrapper(action.artist, [], WrapperStatus.FOUND, WrapperSourcesFetchingStatus.NOT_QUERIED);
 
             return {
                 ...state,
@@ -429,7 +429,6 @@ export const postCreateReducer = createReducer(
     on(createPostSuccess, (state, action) => {
             return {
                 ...state,
-                currentlyFetchingCount: state.currentlyFetchingCount - 1,
                 savedPostId: action.postId
             };
         }
@@ -446,7 +445,6 @@ export const postCreateReducer = createReducer(
     on(createMediaSetStart, (state, action) => {
         return {
             ...state,
-            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentIndex
@@ -455,7 +453,6 @@ export const postCreateReducer = createReducer(
     on(createAttachmentsStart, (state, action) => {
         return {
             ...state,
-            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentIndex
@@ -464,7 +461,6 @@ export const postCreateReducer = createReducer(
     on(createMediaSetSourcesStart, (state, action) => {
         return {
             ...state,
-            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentMediaIndex,
@@ -474,7 +470,6 @@ export const postCreateReducer = createReducer(
     on(createAttachmentsSourcesStart, (state, action) => {
         return {
             ...state,
-            currentlyFetchingCount: state.currentlyFetchingCount + 1,
             postCreateErrorMessage: null,
             isErrorPostCreationRelated: false,
             currentIndex: action.currentAttachmentIndex,
@@ -490,8 +485,7 @@ export const postCreateReducer = createReducer(
     ),
     on(createAttachmentsSourcesSuccess, (state, action) => {
             return {
-                ...state,
-                currentlyFetchingCount: state.currentlyFetchingCount - 1
+                ...state
             };
         }
     ),
@@ -590,7 +584,8 @@ export const postCreateReducer = createReducer(
                 attachments: [],
                 postCreateErrorMessage: null,
                 createSourceData: {},
-                savedPostId: ""
+                savedPostId: "",
+                currentlyFetchingCount: 0
             };
         }
     ),
@@ -611,8 +606,7 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: null,
-                currentlyFetchingCount: state.currentlyFetchingCount + 1,
+                postCreateErrorMessage: null
             };
         }
     ),
@@ -624,15 +618,14 @@ export const postCreateReducer = createReducer(
             const newArtists = [...state.selectedArtists];
 
             const newArtist = {...newArtists[artistIndex]};
-        newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
+            newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
 
             newArtists[artistIndex] = newArtist;
 
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: action.errorMessage,
-                currentlyFetchingCount: state.currentlyFetchingCount - 1,
+                postCreateErrorMessage: action.errorMessage
             };
         }
     ),
@@ -651,8 +644,7 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                selectedArtists: newArtists,
-                currentlyFetchingCount: state.currentlyFetchingCount - 1,
+                selectedArtists: newArtists
             };
         }
     ),
@@ -683,7 +675,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: null
+                postCreateErrorMessage: null,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1
             };
         }
     ),
@@ -714,7 +707,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: action.errorMessage
+                postCreateErrorMessage: action.errorMessage,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1
             };
         }
     ),
@@ -739,7 +733,8 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                selectedArtists: newArtists
+                selectedArtists: newArtists,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1
             };
         }
     ),
@@ -774,7 +769,7 @@ export const postCreateReducer = createReducer(
             const newArtists = [...state.selectedArtists];
 
             const newArtist = {...newArtists[artistIndex]};
-        newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.IN_PROGRESS;
+            newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.IN_PROGRESS;
 
 
             newArtists[artistIndex] = newArtist;
@@ -782,7 +777,8 @@ export const postCreateReducer = createReducer(
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: null
+                postCreateErrorMessage: null,
+                currentlyFetchingCount: state.currentlyFetchingCount + 1
             };
         }
     ),
@@ -794,14 +790,15 @@ export const postCreateReducer = createReducer(
             const newArtists = [...state.selectedArtists];
 
             const newArtist = {...newArtists[artistIndex]};
-        newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
+            newArtist.sourcesFetchingStatus = WrapperSourcesFetchingStatus.COMPLETED;
 
             newArtists[artistIndex] = newArtist;
 
             return {
                 ...state,
                 selectedArtists: newArtists,
-                postCreateErrorMessage: action.errorMessage
+                postCreateErrorMessage: action.errorMessage,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1
             };
         }
     ),
@@ -821,7 +818,8 @@ export const postCreateReducer = createReducer(
 
             return {
                 ...state,
-                selectedArtists: newArtists
+                selectedArtists: newArtists,
+                currentlyFetchingCount: state.currentlyFetchingCount - 1
             };
         }
     ),

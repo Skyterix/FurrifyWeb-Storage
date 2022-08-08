@@ -117,8 +117,8 @@ a:focus {
 
 .btn-accent {
     outline: 0;
-    background: rgba(50, 50, 50, 0.9);
-    color: rgba(255, 255, 255, 0.9);
+    background: rgba(50, 50, 50, 0.9) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
     padding: 7px 15px;
     font-size: 15px;
     border: 0;
@@ -143,7 +143,7 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
 
-.alert-danger {
+.alert alert-danger {
     border-radius: 8px;
     word-wrap: anywhere;
 }
@@ -176,4 +176,11 @@ Fix for JS weirdness with "dragleave" event
 */
 #drop-area * {
     pointer-events: none;
+}
+
+#drop-area {
+    background: rgba(50, 50, 50, 0.9);
+    color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    user-select: none;
 }

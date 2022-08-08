@@ -8,30 +8,30 @@
 
     <!-- Error message -->
     <div *ngIf="!!errorMessage" class="text-center">
-        <p class="alert-danger d-inline-block p-3">
+        <p class="alert alert-danger d-inline-block p-3">
             <span>{{ errorMessage }}</span>
         </p>
     </div>
 
     <form [formGroup]="addFileForm" class="p-3">
-        <div>
-            <div (dragenter)="onFileDragEnter()"
-                 (dragleave)="onFileDragLeave()" (dragover)="onFileDragOver($event)"
-                 (drop)="onFileDrop($event)" appDropArea class="mb-3">
-                <!-- Workaround for styling input[type=file] -->
-                <label class="form-input file" for="file">
-                    <fa-icon [icon]="uploadIcon" class="me-1"></fa-icon>
-                    <span
-                        [innerText]="this.filePickerLabel"></span>
-                </label>
+        <p (dragenter)="onFileDragEnter()"
+           (dragleave)="onFileDragLeave()" (dragover)="onFileDragOver($event)"
+           (drop)="onFileDrop($event)" appDropArea class="p-5">Drop file here to upload.</p>
 
-                <input (change)="onFileSelected($event)" formControlName="attachmentFile" id="file"
-                       type="file">
-            </div>
-            <button (click)="onSubmit()" [disabled]="!selectedFile"
-                    class="btn btn-accent">
-                <span>Create</span>
-            </button>
+        <div class="mb-3">
+            <!-- Workaround for styling input[type=file] -->
+            <label class="form-input file" for="file">
+                <fa-icon [icon]="uploadIcon" class="me-1"></fa-icon>
+                <span
+                    [innerText]="this.filePickerLabel"></span>
+            </label>
+
+            <input (change)="onFileSelected($event)" formControlName="attachmentFile" id="file"
+                   type="file">
         </div>
+        <button (click)="onSubmit()" [disabled]="!selectedFile"
+                class="btn btn-accent">
+            <span>Create</span>
+        </button>
     </form>
 </article>
