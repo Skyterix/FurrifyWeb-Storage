@@ -60,6 +60,11 @@ export class PostCreateContentStepComponent implements OnInit, OnDestroy {
         this.activatedRoute.queryParams.subscribe(queryParams => {
             this.postEditMode = queryParams.edit === 'true';
         });
+
+        // Sort media set when loaded
+        setTimeout(() => {
+            this.mediaSet = this.sortMediaSetByPriority(this.mediaSet);
+        });
     }
 
     ngOnDestroy(): void {
@@ -128,17 +133,32 @@ export class PostCreateContentStepComponent implements OnInit, OnDestroy {
     dropMediaItem(event: CdkDragDrop<string[]>): void {
         let newMediaSet = [...this.mediaSet];
 
+        // Set as changed
+        const currentMedia = {...newMediaSet[event.currentIndex]};
+        currentMedia.hasChanged = true;
+
+        const previousMedia = {...newMediaSet[event.previousIndex]};
+        previousMedia.hasChanged = true;
+
+        newMediaSet[event.previousIndex] = previousMedia;
+        newMediaSet[event.currentIndex] = currentMedia;
+
         moveItemInArray(newMediaSet, event.previousIndex, event.currentIndex);
 
         this.store.dispatch(updateMediaSet({
             mediaSet: newMediaSet
         }));
     }
+
     onNextStep(): void {
         if (this.mediaSet.length == 0) {
             return;
         }
 
         this.postCreateService.postUploadStepOpenEvent.emit();
+    }
+
+    sortMediaSetByPriority(mediaSet: MediaWrapper[]): MediaWrapper[] {
+        return mediaSet.slice().sort((media, media2) => +media2.media.priority - +media.media.priority);
     }
 }

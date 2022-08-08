@@ -413,3 +413,20 @@ export const removeAttachmentFromPostSuccess = createAction(
     '[PostCreate] Remove attachment from post success',
     props<{ attachmentId: string }>()
 );
+
+export const replaceMediaSetStart = createAction(
+    '[PostCreate] Replace media set start',
+    props<{
+        userId: string,
+        postId: string,
+        mediaSet: MediaWrapper[],
+        currentIndex: number
+    }>()
+);
+
+export const replaceMediaSetSuccess = createAction(
+    '[PostCreate] Replace media set success',
+    props<{
+        mediaSet: MediaWrapper[]
+    }>()
+);

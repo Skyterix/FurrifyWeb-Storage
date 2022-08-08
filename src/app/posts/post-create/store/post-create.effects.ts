@@ -56,6 +56,8 @@ import {
     removeMediaFromPostFail,
     removeMediaFromPostStart,
     removeMediaFromPostSuccess,
+    replaceMediaSetStart,
+    replaceMediaSetSuccess,
     savePostFail,
     savePostStart,
     savePostSuccess
@@ -82,14 +84,15 @@ import {
     GET_POST_MEDIA_SOURCES,
     GET_SOURCE,
     GET_TAG,
-    REPLACE_POST,
-    RESPONSE_TYPE
+    RESPONSE_TYPE,
+    UPDATE_MEDIA,
+    UPDATE_POST
 } from "../../../shared/config/api.constants";
-import {of} from "rxjs";
+import {Observable, of} from "rxjs";
 import {RETRY_HANDLER} from "../../../shared/store/shared.effects";
 import {HypermediaResultList} from "../../../shared/model/hypermedia-result-list.model";
 import {Artist} from "../../../shared/model/artist.model";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
 import {CreateAvatar} from "../../../shared/model/request/create-avatar.model";
 import {AvatarExtensionsConfig} from "../../../shared/config/avatar-extensions.config";
 import {EXTENSION_EXTRACT_REGEX} from "../../../shared/config/common.constats";
@@ -1026,7 +1029,7 @@ export class PostCreateEffects {
     savePostStart = createEffect(() => this.actions$.pipe(
         ofType(savePostStart),
         mergeMap((action) => {
-            return this.httpClient.put(REPLACE_POST
+            return this.httpClient.patch(UPDATE_POST
                     .replace(":userId", action.userId)
                     .replace(":postId", action.postId),
                 action.savePost, {
@@ -1253,12 +1256,136 @@ export class PostCreateEffects {
         )
     ));
 
+    replaceMediaSetStart = createEffect(() => this.actions$.pipe(
+        ofType(replaceMediaSetStart),
+        mergeMap((action) => {
+            const data = new FormData();
+
+            const mediaSet = [...action.mediaSet];
+            const mediaWrapper: MediaWrapper = {...mediaSet[action.currentIndex]};
+            const media = {...mediaWrapper.media};
+
+            // If current media has not changed then skip it
+            if (!mediaWrapper.hasChanged) {
+                // If last media in set
+                if (action.currentIndex == action.mediaSet.length - 1) {
+                    return of(replaceMediaSetSuccess({
+                        mediaSet: action.mediaSet
+                    }));
+                } else {
+                    return of(replaceMediaSetStart({
+                        userId: action.userId,
+                        postId: action.postId,
+                        currentIndex: action.currentIndex + 1,
+                        mediaSet: action.mediaSet
+                    }));
+                }
+            }
+
+            // Overwrite priority based on index given by user
+            media.priority = mediaSet.length - action.currentIndex - 1;
+
+            data.append("media", new Blob([JSON.stringify(media)], {
+                type: "application/json"
+            }));
+
+            // If file changed and path to it exists
+            if (!!mediaWrapper.mediaFile.webkitRelativePath) {
+                data.append("file", mediaWrapper.mediaFile, mediaWrapper.mediaFile.name);
+            }
+            // If thumbnail changed and path to it exists
+            if (!!mediaWrapper.thumbnailFile && !!mediaWrapper.thumbnailFile.webkitRelativePath) {
+                data.append("thumbnail", mediaWrapper.thumbnailFile, mediaWrapper.thumbnailFile.name);
+            }
+
+            let request;
+
+
+            // If media not existing
+            if (!mediaWrapper.mediaId) {
+                request = this.buildCreateMediaRequest(
+                    action.userId,
+                    action.postId,
+                    data
+                );
+            } else {
+                request = this.buildReplaceMediaRequest(
+                    action.userId,
+                    action.postId,
+                    mediaWrapper.mediaId,
+                    data
+                );
+            }
+
+            return request.pipe(
+                map(response => {
+                    mediaSet[action.currentIndex] = mediaWrapper;
+
+                    // If all media are replaced
+                    if (action.currentIndex == action.mediaSet.length - 1) {
+                        return replaceMediaSetSuccess({
+                            mediaSet: mediaSet
+                        });
+                    }
+
+                    return replaceMediaSetStart({
+                        userId: action.userId,
+                        postId: action.postId,
+                        currentIndex: action.currentIndex + 1,
+                        mediaSet
+                    });
+                }),
+                retryWhen(RETRY_HANDLER),
+                catchError(error => {
+                    switch (error.status) {
+                        case 503:
+                            return of(savePostFail({
+                                errorMessage: 'No servers available to handle your request. Try again later.'
+                            }));
+                        case 404:
+                            return of(savePostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
+                        case 400:
+                            return of(savePostFail({
+                                errorMessage: error.error.message + ' If you think this is a bug, please contact the administrator.'
+                            }));
+                        default:
+                            return of(savePostFail({
+                                errorMessage: 'Something went wrong while updating media. The update of other media has been canceled.'
+                            }));
+                    }
+                })
+            );
+        })
+    ));
+    replaceMediaSetSuccess = createEffect(() => this.actions$.pipe(
+        ofType(replaceMediaSetSuccess),
+        tap(() => {
+            this.postCreateService.postSaveStatusChangeEvent.emit(PostSaveStatusEnum.MEDIA_UPDATED);
+        })
+    ), {dispatch: false});
     savePostSuccess = createEffect(() => this.actions$.pipe(
         ofType(savePostSuccess),
         tap(() => {
-            this.postCreateService.postSaveStatusChangeEvent.emit(PostSaveStatusEnum.POST_REPLACED);
+            this.postCreateService.postSaveStatusChangeEvent.emit(PostSaveStatusEnum.POST_UPDATED);
         })
     ), {dispatch: false});
+
+    private buildCreateMediaRequest(userId: string, postId: string, data: FormData): Observable<HttpResponse<Object>> {
+        return this.httpClient.post(CREATE_MEDIA
+                .replace(":userId", userId)
+                .replace(":postId", postId),
+            data, {observe: 'response'})
+    }
+
+    private buildReplaceMediaRequest(userId: string, postId: string, mediaId: string, data: FormData): Observable<HttpResponse<Object>> {
+        return this.httpClient.patch(UPDATE_MEDIA
+                .replace(":userId", userId)
+                .replace(":postId", postId)
+                .replace(":mediaId", mediaId),
+            data, {observe: 'response'})
+    }
 
     createPostSuccess = createEffect(() => this.actions$.pipe(
         ofType(createPostSuccess),

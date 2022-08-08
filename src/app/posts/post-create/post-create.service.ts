@@ -11,6 +11,7 @@ import {
     createMediaSetSourcesStart,
     createMediaSetStart,
     createPostStart,
+    replaceMediaSetStart,
     savePostStart
 } from "./store/post-create.actions";
 import {QueryPost} from "../../shared/model/query/query-post.model";
@@ -83,10 +84,12 @@ export class PostCreateService {
         });
 
         this.postCreateStatusChangeEvent.subscribe(status =>
+            // Reset index counter on status change
             this.handlePostCreateStatusChange(status, 0, 0));
 
         this.postSaveStatusChangeEvent.subscribe(status =>
-            this.handlePostEditStatusChange(status));
+            // Reset index counter on status change
+            this.handlePostEditStatusChange(status, 0, 0));
     }
 
     retryPostCreate(): void {
@@ -107,7 +110,9 @@ export class PostCreateService {
         }
 
         this.handlePostEditStatusChange(
-            this.currentSaveStatus
+            this.currentSaveStatus,
+            this.currentIndex,
+            this.currentSourceIndex
         );
     }
 
@@ -161,7 +166,9 @@ export class PostCreateService {
         this.store.dispatch(clearPostData());
     }
 
-    private handlePostEditStatusChange(status: PostSaveStatusEnum) {
+    private handlePostEditStatusChange(status: PostSaveStatusEnum,
+                                       currentIndex: number,
+                                       currentSourceIndex: number) {
         this.currentSaveStatus = status;
 
         switch (status) {
@@ -169,7 +176,14 @@ export class PostCreateService {
                 this.savePost();
 
                 break;
-            case PostSaveStatusEnum.POST_REPLACED:
+            case PostSaveStatusEnum.POST_UPDATED:
+                this.replaceMediaSet(currentIndex);
+                break;
+            case PostSaveStatusEnum.MEDIA_UPDATED: // TODO
+            case PostSaveStatusEnum.ATTACHMENTS_UPDATED: //TODO
+            case PostSaveStatusEnum.MEDIA_SOURCES_REPLACED: //TODO
+            case PostSaveStatusEnum.ATTACHMENT_SOURCES_REPLACED: //TODO
+                // TODO Move this to effects
                 setTimeout(() => {
                     this.clearPostCreateModalEvent.emit();
                     // Replace post with new one
@@ -177,7 +191,6 @@ export class PostCreateService {
                     this.postsService.loadPost(this.currentUser?.id!, this.savedPostId);
                     this.clearPostData();
                 }, 100);
-
                 break;
         }
     }
@@ -258,6 +271,17 @@ export class PostCreateService {
         ))
     }
 
+    private replaceMediaSet(startIndex: number): void {
+        this.store.dispatch(replaceMediaSetStart(
+            {
+                userId: this.currentUser?.id!,
+                postId: this.savedPostId,
+                mediaSet: this.mediaSet,
+                currentIndex: startIndex
+            }
+        ))
+    }
+
     private uploadMediaSet(startIndex: number): void {
         this.store.dispatch(createMediaSetStart(
             {
@@ -268,6 +292,7 @@ export class PostCreateService {
             }
         ))
     }
+
     private uploadAttachments(startIndex: number): void {
         this.store.dispatch(createAttachmentsStart(
             {
@@ -290,6 +315,7 @@ export class PostCreateService {
             }
         ))
     }
+
     private createAttachmentsSources(startMediaIndex: number, startSourceIndex: number): void {
         this.store.dispatch(createAttachmentsSourcesStart(
             {

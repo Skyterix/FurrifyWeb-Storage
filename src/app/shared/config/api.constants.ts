@@ -35,7 +35,8 @@ export const DELETE_ATTACHMENT = SERVER_ADDRESS + '/users/:userId/posts/:postId/
 
 export const DELETE_SOURCE = SERVER_ADDRESS + '/users/:userId/sources/:sourceId';
 
-export const REPLACE_POST = SERVER_ADDRESS + '/users/:userId/posts/:postId';
+export const UPDATE_POST = SERVER_ADDRESS + '/users/:userId/posts/:postId';
+export const UPDATE_MEDIA = SERVER_ADDRESS + '/users/:userId/posts/:postId/media/:mediaId';
 
 // Fixes not getting hal+json from response
 export const RESPONSE_TYPE = "*";

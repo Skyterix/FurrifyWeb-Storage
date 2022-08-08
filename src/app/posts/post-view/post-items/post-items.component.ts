@@ -80,7 +80,7 @@ export class PostItemsComponent implements OnInit, OnDestroy {
         // On post edit status change
         this.postCreateService.postSaveStatusChangeEvent.subscribe(status => {
             // On post saved
-            if (status === PostSaveStatusEnum.POST_REPLACED) {
+            if (status === PostSaveStatusEnum.POST_UPDATED) {
                 // Reload possibly changed sources
                 setTimeout(() => {
                     this.loadAttachmentSources();

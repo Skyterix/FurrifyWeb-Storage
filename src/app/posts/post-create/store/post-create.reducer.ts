@@ -61,6 +61,8 @@ import {
     removeSourceFromAttachment,
     removeSourceFromMedia,
     removeTagFromSelected,
+    replaceMediaSetStart,
+    replaceMediaSetSuccess,
     savePostFail,
     savePostStart,
     savePostSuccess,
@@ -92,6 +94,8 @@ export class TagWrapper {
 }
 
 export class MediaWrapper {
+    hasChanged = false;
+
     constructor(public media: CreateMedia,
                 public sources: CreateSource[],
                 public mediaFile: File,
@@ -895,6 +899,7 @@ export const postCreateReducer = createReducer(
     on(savePostSuccess, (state, action) => {
             return {
                 ...state,
+                // TODO For some reason spinner on save post ends with this and it shouldn't
                 currentlyFetchingCount: state.currentlyFetchingCount - 1
             };
         }
@@ -1080,6 +1085,21 @@ export const postCreateReducer = createReducer(
                 ...state,
                 attachments: state.attachments.slice().filter((item, index) => item.attachmentId !== action.attachmentId),
                 currentlyFetchingCount: state.currentlyFetchingCount - 1
+            };
+        }
+    ),
+    on(replaceMediaSetStart, (state, action) => {
+        return {
+            ...state,
+            postCreateErrorMessage: null,
+            isErrorPostCreationRelated: false,
+            currentIndex: action.currentIndex
+        };
+    }),
+    on(replaceMediaSetSuccess, (state, action) => {
+            return {
+                ...state,
+                mediaSet: action.mediaSet
             };
         }
     ),

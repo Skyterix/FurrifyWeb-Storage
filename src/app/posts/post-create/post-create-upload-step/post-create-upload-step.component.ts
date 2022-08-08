@@ -76,7 +76,7 @@ export class PostCreateUploadStepComponent implements OnInit, OnDestroy {
             case PostSaveStatusEnum.REQUEST_RECEIVED:
                 document.querySelector("#result")!.innerHTML = "REQUEST_RECEIVED";
                 break;
-            case PostSaveStatusEnum.POST_REPLACED:
+            case PostSaveStatusEnum.POST_UPDATED:
                 document.querySelector("#result")!.innerHTML = "POST_REPLACED";
                 break;
         }
