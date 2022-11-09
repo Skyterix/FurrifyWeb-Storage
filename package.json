@@ -40,7 +40,7 @@
   "devDependencies": {
       "@angular-devkit/build-angular": "^14.2.5",
       "@angular/cli": "~14.2.5",
-      "@angular/compiler-cli": "~14.2.5",
+      "@angular/compiler-cli": "~14.2.10",
       "@ngrx/schematics": "^14.3.2",
       "@types/crypto-js": "^4.1.1",
       "@types/jasmine": "~4.3.0",
