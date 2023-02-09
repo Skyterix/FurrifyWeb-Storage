@@ -16,14 +16,14 @@ export class LoginComponent {
     signIn(): void {
         this.keycloak.login({
             // Fix for use_hash strategy
-            redirectUri: (this.pLocation as any).location.href
+            redirectUri: (this.pLocation as any)._location.href
         });
     }
 
     signUp(): void {
         this.keycloak.register({
             // Fix for use_hash strategy
-            redirectUri: (this.pLocation as any).location.href
+            redirectUri: (this.pLocation as any)._location.href
         });
     }
 
