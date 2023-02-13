@@ -22,7 +22,7 @@
     "@fortawesome/angular-fontawesome": "^0.12.1",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
-    "@ngrx/effects": "^15.2.1",
+    "@ngrx/effects": "^15.3.0",
     "@ngrx/store": "^15.2.1",
     "@ngrx/store-devtools": "^15.2.1",
     "@ngtools/webpack": "^15.1.4",
