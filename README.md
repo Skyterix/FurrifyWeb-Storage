@@ -1,21 +1,59 @@
-![furrify title](https://user-images.githubusercontent.com/33985207/133672173-2d7ff06e-6f94-4742-a201-c54a85c5839a.png)
+# ANGULAR19TEST
 
-Frontend for [FurrifyWS-Strorage](https://github.com/Skyterix1991/FurrifyWS-Storage) microservices.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.2.
 
-## Configuration
+## Development server
 
-All relevant configuration regarding connection with Microservices and Keycloak can be found in path below:
+To start a local development server, run:
 
-`/src/shared/config/api.constants.ts:`
+```bash
+ng serve
+```
 
-`KEYCLOAK_AUTH_URL - Keycloak authorization server url.`
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-`KEYCLOAK_REALM - Keycloak realm to use.`
+## Code scaffolding
 
-`KEYCLOAK_CLIENT_ID - Keycloak client id to use.`
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
 
-`CDN_ADDRESS - Address to use when pulling files, thumbnails etc. You specify the location to upload the files in microservices then configure endpoint you can access thoose files with. You can use nginx server for example.`
+```bash
+ng generate component component-name
+```
 
-`SERVER_ADDRESS - Address corresponding to your gateway from hosted microservices.`
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
-The folder `config` contains more files that you can tweak for better looks or default behaviour.
+```bash
+ng generate --help
+```
+
+## Building
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+## Running unit tests
+
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
